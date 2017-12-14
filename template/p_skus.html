@@ -3346,7 +3346,9 @@ License: You must have a valid license purchased only from themeforest(the above
         <script src="{% static '/pages/scripts/ui-modals.min.js' %}" type="text/javascript"></script>
         <script src="{% static '/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js' %}" type="text/javascript"></script>
         <script src="{% static '/pages/scripts/p_SKU.js' %}" type="text/javascript"></script>
-
+        <!--
+        <script src="{% static '/pages/scripts/p_fileUpload.js' %}" type="text/javascript"></script>
+        -->
 
         <!-- END PAGE LEVEL SCRIPTS -->
         <!-- BEGIN THEME LAYOUT SCRIPTS -->
@@ -3354,6 +3356,14 @@ License: You must have a valid license purchased only from themeforest(the above
         <script src="{% static '/layouts/layout4/scripts/demo.min.js' %}" type="text/javascript"></script>
         <script src="{% static '/layouts/global/scripts/quick-sidebar.min.js' %}" type="text/javascript"></script>
         <!-- END THEME LAYOUT SCRIPTS -->
+
+        <script>
+            $('#modal-btn-confirm').click(function(){
+                $('#import').modal('hide');
+            });
+
+        </script>
+
     </body>
 
 </html>
