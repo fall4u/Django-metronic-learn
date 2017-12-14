@@ -1,8 +1,12 @@
 from django.conf.urls import url
+
 from . import views
 
-from django.views.generic import TemplateView
+app_name = 'sku'
+
 urlpatterns = [
-    url(r'^', views.SkuView.as_view(), name='sku'),
+    url(r'^$', views.SkuView.as_view(), name='sku'),
+    # download sku template
+    url(r'^download/$', views.download, name='download'),
 
 ]
