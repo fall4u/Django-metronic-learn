@@ -8,6 +8,8 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import generic
 
+from .form import UploadFileForm
+
 
 # Create your views here.
 
@@ -16,6 +18,53 @@ class SkuView(generic.View):
     def get(self, request):
         return render(request, 'p_skus.html')
 
+    def post(self, request):
+        pass
+
+
+class skuimport(generic.View):
+    def get(self, request):
+        pass
+
+    def post(self, request):
+        print "skuimport POST +++"
+        if request.method == "POST":
+            print "sku skuimport"
+            for key in request.POST:
+                print key
+                value = request.POST.getlist(key)
+                print value
+
+            form = UploadFileForm(request.POST, request.FILES)
+
+            if form.is_valid():
+                print "form is valid"
+                handle_uploaded_file(request.FILES['skufile'], "skufile.jpg")
+            else:
+                print "form is not valid"
+
+            # if request.FILES:
+            #     print " we have request files "
+            #     handle_uploaded_file(request.FILES['skufile'], "skufile")
+            # else:
+            #     print "request files is null "
+            return render(
+                request,
+                'p_test.html',
+                {'form': form}
+            )
+            # return HttpResponse("ok")
+
+
+def handle_uploaded_file(file, filename):
+    print (" +++ handle_uploaded_file +++")
+    if not os.path.exists('upload/'):
+        os.mkdir('upload/')
+
+    with open('upload/' + filename, 'wb+') as destination:
+        for chunk in file.chunks():
+            destination.write(chunk)
+    print (" --- handle_uploaded_file ---")
 
 def somevie(request):
     # Create the HttpResponse object with the appropriate CSV header.

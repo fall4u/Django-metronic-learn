@@ -2,7 +2,8 @@
 
 <link href="{% static '/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css' %}" rel="stylesheet" type="text/css" />
 
-<div class="modal fade" id="import" tabindex="-1" role="basic" aria-hidden="true">
+<div class="modal fade" id="import" tabindex="-1" role="basic" aria-hidden="true" data-backdrop="static"
+     data-keyboard="false">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-info">
@@ -10,82 +11,67 @@
                 <h2 class="modal-title">商品导入</h2>
             </div>
             <div class="modal-body ">
-                <div class="scroller" style="height:250px" data-always-visible="1" data-rail-visible1="1">
-                    <div class="row bg-primary margin-bottom-10">
-                        <div class="input-group input-group-lg ">
-                                <p>第一次导入请点击右侧按钮下载模板</p>
-                                <span class="input-group-btn">
-                                    <button class="btn green" type="button" id="downloadSKUTemplate">下载
-                                        <i class="fa fa-download"></i>
-                                    </button>
-                                </span>
-                        </div>
-                    </div>
-
-                    <div class="row bg-primary margin-bottom-10">
-                        <div class="col-md-6 ">
-                            <label>导入门店：</label>
-                        </div>
-                        <div class = "col-md-6">
-                            <select class="bs-select green form-control pull-right" data-style="btn-primary">
-                                <option value="NULL">--请选择门店--</option>
-                                <option value="CO">Colorado</option>
-                                <option value="ID">Idaho</option>
-                                <option value="MT">Montana</option>
-                                <option value="NE">Nebraska</option>
-                                <option value="NM">New Mexico</option>
-                                <option value="ND">North Dakota</option>
-                                <option value="UT">Utah</option>
-                                <option value="WY">Wyoming</option>
-                            </select>
-                        </div>
-
-                        <!-- /input-group -->
-                    </div>
-                    <div class="row bg-primary margin-bottom-10" >
-                        <div>
-                            <ol>
-                                <li>第一次使用系统时， 先下载商品模板</li>
-                                <li>使用商品模板，编辑店内商品列表</li>
-                                <li>选取在步骤2中的文件</li>
-                                <li>点击导入按钮完成商品导入</li>
-                            </ol>
-                        </div>
-                    </div>
-
-                    <div class="containter">
-                        <div class="span12">
-                            <div class="fileinput fileinput-new" data-provides="fileinput">
-                                <div class="input-group input-large">
-                                    <div class="form-control uneditable-input input-fixed input-large" data-trigger="fileinput">
-                                        <i class="fa fa-file fileinput-exists"></i>&nbsp;
-                                        <span class="fileinput-filename"> </span>
-                                    </div>
-                                    <span class="input-group-addon btn default btn-file ">
-                                        <span class="fileinput-new">选取文件</span>
-                                        <span class="fileinput-exists"> 换一个 </span>
-                                        <input type="file" name="..."> </span>
-                                    <a href="javascript:;" class="input-group-addon btn red fileinput-exists" data-dismiss="fileinput"> 取消 </a>
-                                </div>
+                <!-- <div class="form-group">
+                    <h4>使用说明：</h4>
+                    <ol>
+                        <li>第一次使用系统时， 先下载商品模板</li>
+                        <li>使用商品模板，编辑店内商品列表</li>
+                        <li>选取在步骤2中的文件</li>
+                        <li>点击导入按钮完成商品导入</li>
+                    </ol>
+                </div>
+ -->
+                <div class="container-fluid">
+                    <form>
+                        <div class="row justify-content-center align-items-center">
+                            <label class="col-sm-8 col-form-label text-align:center">初次使用请先下载商品模板</label>
+                            <div class="col-sm-4">
+                                <button class="btn green" type="button" id="downloadSKUTemplate">下载
+                                    <i class="fa fa-download"></i>
+                                </button>
                             </div>
                         </div>
-                    </div>
+
+                        <div class="justify-content-center align-items-center">
+                            <label for="storesel" class="col-sm-8 col-form-label">导入门店: </label>
+                            \
+                            <div class="col-sm-4">
+                                <select class="bs-select green form-control pull-right" id="storesel"
+                                        data-style="btn-info" name="store">
+                                    <option value="NULL" selected="selected">--请选择门店--</option>
+                                    <option value="CO">Colorado</option>
+                                    <option value="ID">Idaho</option>
+                                    <option value="MT">Montana</option>
+                                    <option value="NE">Nebraska</option>
+                                    <option value="NM">New Mexico</option>
+                                    <option value="ND">North Dakota</option>
+                                    <option value="UT">Utah</option>
+                                    <option value="WY">Wyoming</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="fileinput fileinput-new" data-provides="fileinput">
+                                <span class="btn btn-default btn-file">
+                                    <span class="fileinput-new">Select file</span>
+                                    <span class="fileinput-exists">Change</span>
+                                    <input id="skuimport" type="file" name="skufile"></span>
+                                <span class="fileinput-filename"></span>
+                                <a href="#" class="close fileinput-exists" data-dismiss="fileinput" style="float: none">&times;</a>
+                            </div>
+                        </div>
+                    </form>
+
                 </div>
-                <!--
-                <div class="row">
 
-                </div> -->
-                <!--
-
-                -->
-            </div>
-            <div class="modal-footer bg-secondary">
+                <div class="modal-footer bg-secondary">
                 <button type="button" class="btn dark btn-outline" data-dismiss="modal">取消</button>
-                <button type="button" class="btn green">确认</button>
+                    <button id="btn-confirm" type="button" class="btn green" id="modal-btn-confirm">确认</button>
             </div>
         </div>
         <!-- /.modal-content -->
     </div>
     <!-- /.modal-dialog -->
 </div>
-
+</div>
