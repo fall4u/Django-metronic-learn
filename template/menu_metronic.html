@@ -1,0 +1,24 @@
+{% load static   %}
+{% load sitetree %}
+
+<div class="page-sidebar-wrapper">
+    <div class="page-sidebar navbar-collapse collapse">
+        <ul class="page-sidebar-menu   " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
+            {% for item in sitetree_items %}
+            <li class="nav-item">
+                <a href="javascript:;" class="nav-link nav-toggle">
+                    <span class="title">{{ item.title_resolved }}</span>
+                    {% if item.has_children %}
+                    <span class="arrow"></span>
+                    {% endif %}
+                </a>
+                {% if item.has_children %}
+                {% sitetree_children of item for menu template "menu_metronic_dropdown.html" %}
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+

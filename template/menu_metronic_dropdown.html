@@ -1,0 +1,13 @@
+{% load static   %}
+{% load sitetree %}
+
+
+<ul class="sub-menu">
+    {% for item in sitetree_items %}
+    <li class="nav-item">
+        <a href="{% sitetree_url for item % }" class="nav-link">
+            <span class="title">{{ item.title_resolved }}</span>
+        </a>
+    </li>
+    {% endfor %}
+</ul>
