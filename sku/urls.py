@@ -11,4 +11,7 @@ urlpatterns = [
     # sku import / add
     url(r'^skuimport/$', views.skuimport.as_view(), name='skuimport'),
 
+    #  book query 
+    url(r'^book/query/$', views.books.as_view(), name="books")
+
 ]

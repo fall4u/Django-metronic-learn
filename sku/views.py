@@ -8,7 +8,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import generic
 
-from .form import UploadFileForm
+from .form import UploadFileForm, bookQueryForm
 
 
 # Create your views here.
@@ -16,10 +16,123 @@ from .form import UploadFileForm
 class SkuView(generic.View):
 
     def get(self, request):
-        return render(request, 'p_skus.html')
+        items = []
+        testline = {}
+
+        for i in range(100):
+            testline['bookname'] = "Python Web开发测试驱动方法"
+            testline['press'] = "人民邮电出版社"
+            testline['lendCount'] = 4
+            testline['amount'] = 5
+            testline['author'] = "Harry J.W. Percival"
+            testline["importTime"] = "2017/12/29"
+            testline["status"] = "busy"
+            testline["class"] = "IT"
+            items.append(testline.copy())
+
+        # testline['bookname']  = "Python Web开发测试驱动方法"
+        # testline['press']     = "人民邮电出版社"
+        # testline['lendCount'] = 4
+        # testline['amount']    = 5
+        # testline['author']    = "Harry J.W. Percival"
+        # testline["importTime"]    = "2017/12/29"
+        # testline["status"]    = "busy"
+        # testline["class"]     = "IT"
+
+        # items.append(testline.copy())
+
+        # testline['bookname']  = "大数据架构详解从数据获取到深度学习"
+        # testline['press']     = "中国工信出版集团"
+        # testline['lendCount'] = 3
+        # testline['amount']    = 2
+        # testline['author']    = "朱洁 罗华霖"
+        # testline["importTime"]    = "2017/12/29"
+        # testline["status"]    = "busy"
+        # testline["class"]     = "IT" 
+
+        # items.append(testline.copy())
+
+        # testline['bookname']  = "大数据架构详解从数据获取到深度学习"
+        # testline['press']     = "中国工信出版集团"
+        # testline['lendCount'] = 3
+        # testline['amount']    = 2
+        # testline['author']    = "朱洁 罗华霖"
+        # testline["importTime"]    = "2017/12/29"
+        # testline["status"]    = "busy"
+        # testline["class"]     = "IT" 
+
+        # items.append(testline.copy())
+
+        # testline['bookname']  = "大数据架构详解从数据获取到深度学习"
+        # testline['press']     = "中国工信出版集团"
+        # testline['lendCount'] = 3
+        # testline['amount']    = 2
+        # testline['author']    = "朱洁 罗华霖"
+        # testline["importTime"]    = "2017/12/29"
+        # testline["status"]    = "busy"
+        # testline["class"]     = "IT" 
+
+        # items.append(testline.copy())
+
+        # testline['bookname']  = "大数据架构详解从数据获取到深度学习"
+        # testline['press']     = "中国工信出版集团"
+        # testline['lendCount'] = 3
+        # testline['amount']    = 2
+        # testline['author']    = "朱洁 罗华霖"
+        # testline["importTime"]    = "2017/12/29"
+        # testline["status"]    = "busy"
+        # testline["class"]     = "IT" 
+
+        # items.append(testline.copy())
+
+        # testline['bookname']  = "大数据架构详解从数据获取到深度学习"
+        # testline['press']     = "中国工信出版集团"
+        # testline['lendCount'] = 3
+        # testline['amount']    = 2
+        # testline['author']    = "朱洁 罗华霖"
+        # testline["importTime"]    = "2017/12/29"
+        # testline["status"]    = "busy"
+        # testline["class"]     = "IT" 
+
+        # items.append(testline.copy())
+
+
+        return render(request, 'p_books.html', {'items': items})
 
     def post(self, request):
         pass
+
+
+def dumpRequest(request):
+    if request.method == "POST":
+        for key in request.POST:
+            print key
+            value = request.POST.getlist(key)
+            print value
+
+
+class books(generic.View):
+    def post(self, request):
+        if request.method == "POST":
+            dumpRequest(request)
+
+            form = bookQueryForm(request.POST)
+
+            if form.is_valid():
+                print "form is valid"
+                author = form.cleaned_data["author"]
+                if author:
+                    print "author is not emptye " + author
+                else:
+                    print "author is empty" + author
+            else:
+                print "form is not valid "
+                print form.error_detail()
+
+            return render(request, 'p_test.html', {'form': form})
+
+            # return HttpResponse("ok")
+
 
 
 class skuimport(generic.View):
@@ -30,10 +143,7 @@ class skuimport(generic.View):
         print "skuimport POST +++"
         if request.method == "POST":
             print "sku skuimport"
-            for key in request.POST:
-                print key
-                value = request.POST.getlist(key)
-                print value
+            dumpRequest(request)
 
             form = UploadFileForm(request.POST, request.FILES)
 
