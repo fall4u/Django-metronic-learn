@@ -46,6 +46,7 @@ License: You must have a valid license purchased only from themeforest(the above
     <link href="{% static '/global/plugins/datatables/datatables.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static '/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css' %}" rel="stylesheet"
           type="text/css"/>
+
     <!-- END PAGE LEVEL PLUGINS -->
     <!-- BEGIN THEME GLOBAL STYLES -->
     <link href="{% static '/global/css/components.min.css' %}" rel="stylesheet" id="style_components" type="text/css"/>
@@ -522,13 +523,6 @@ License: You must have a valid license purchased only from themeforest(the above
         <div class="page-content">
             <!-- BEGIN PAGE HEAD-->
             <div class="page-head">
-                <!-- BEGIN PAGE TITLE -->
-                <!--                         <div class="page-title">
-                                            <h1>books
-                                                <small>书本档案</small>
-                                            </h1>
-                                        </div> -->
-                <!-- END PAGE TITLE -->
             </div>
             <!-- END PAGE HEAD-->
             <div class="row">
@@ -610,48 +604,49 @@ License: You must have a valid license purchased only from themeforest(the above
                         </div>
                     </div>
                 </div>
-
-                <table class="table table-striped table-bordered table-hover table-checkable order-column"
-                       id="id_booksTable">
-                    <thead>
-                    <tr>
-                        <th>
-                            <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                <input type="checkbox" class="group-checkable" data-set="#id_booksTable .checkboxes"/>
-                                <span></span>
-                            </label>
-                        </th>
-                        <th> 书名</th>
-                        <th> 出版社</th>
-                        <th> 借阅次数</th>
-                        <th> 数量</th>
-                        <th> 作者</th>
-                        <th> 入库时间</th>
-                        <th> 状态</th>
-                        <th> 分类</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for item in items %}
-                    <tr class="odd gradeX">
-                        <td>
-                            <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                <input type="checkbox" class="checkboxes" value="1"/>
-                                <span></span>
-                            </label>
-                        </td>
-                        <td>{{ item.bookname }}</td>
-                        <td>{{ item.press }}</td>
-                        <td>{{ item.lendCount }}</td>
-                        <td>{{ item.amount }}</td>
-                        <td>{{ item.author }}</td>
-                        <td>{{ item.importTime }}</td>
-                        <td>{{ item.status }}</td>
-                        <td>{{ item.class }}</td>
-                    </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                <div class="col-md-12">
+                    <table class="table table-striped table-bordered table-hover table-checkable order-column" id="sample_1">
+                          <thead>
+                            <tr>
+                                <th>
+                                     <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+                                        <input type="checkbox" class="group-checkable" data-set="#id_booksTable .checkboxes"/>
+                                        <span></span>
+                                    </label> 
+                                </th>
+                                <th> 书名</th>
+                                <th> 出版社</th>
+                                <th> 借阅次数</th>
+                                <th> 数量</th>
+                                <th> 作者</th>
+                                <th> 状态</th>
+                                <th> ISBN</th>
+                            </tr>
+                        </thead> 
+                        <tbody>
+                        </tbody>             
+    <!--                     <tbody>
+                            {% for item in items %}
+                            <tr class="odd gradeX">
+                                <td>
+                                    <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+                                        <input type="checkbox" class="checkboxes" value="1"/>
+                                        <span></span>
+                                    </label>
+                                </td>
+                                <td>{{ item.name }}</td>
+                                <td>{{ item.press }}</td>
+                                <td>{{ item.lendCount }}</td>
+                                <td>{{ item.acount }}</td>
+                                <td>{{ item.author }}</td>
+                                <td>{{ item.status }}</td>
+                                <td>{{ item.isbn   }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+     -->                
+                    </table>
+                </div>
                 <!-- END PAGE BASE CONTENT -->
             </div>
             <!-- END CONTENT BODY -->
@@ -723,6 +718,7 @@ License: You must have a valid license purchased only from themeforest(the above
     <!-- END THEME LAYOUT SCRIPTS -->
 
     <script>
+
             var csrftoken = Cookies.get('csrftoken');
 
             function csrfSafeMethod(method) {
@@ -899,14 +895,60 @@ License: You must have a valid license purchased only from themeforest(the above
             //   }
             // }
             
-            // $(document).ready(function() {
+            $(document).ready(function() {
 
-            //     $("#id_booksTable").dataTable(
-            //         { iDisplayLength: 30
-            //           serverSide: true }
-            //     );
+                $("#sample_1").dataTable(
+                    { 
+                        searching : false,
+                        destroy : true,
+                        "processing" : true,
+                        "serverSide" : true,
+                        "ajax": {
+                            "url": "book/query/",
+                            "type": "POST",
+                            "data": function(d){
+                                return $.extend( {}, d, {
+                                    "author":document.getElementById('id_author').value                             
+                                });
+                            }
+                            //  data: function(){
+                            //     return {
+                            //         "author":document.getElementById('id_author').value
+                            //     }
+                            // }                           
+                        },
+                        columns: [
+                            { },
+                            { data: 'name' },
+                            { data: 'press' },
+                            { data: 'lendCount' },
+                            { data: 'acount' },
+                            { data: 'author' },
+                            { data: 'status' },
+                            { data: 'isbn' }
 
-            // });
+                        ],
+                        'columnDefs': [{
+                            'targets': 0,
+                            'searchable': false,
+                            //'orderable': false,
+                            'className': 'select-checkbox',
+                            'render': function (data, type, full, meta){
+                            return  '<label class="mt-checkbox mt-checkbox-single mt-checkbox-outline"><input type="checkbox" class="checkboxes" value="1"/><span></span></label>'
+                            //return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
+                            }
+                        }],                
+
+                     }
+
+                );
+
+                // $('#sample_1').dataTable( {
+                //     paging: false,
+                //     searching: false
+                // } );              
+
+            });
 
 
 
