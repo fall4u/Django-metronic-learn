@@ -1,0 +1,48 @@
+######问题提出
+在Web后台中，对数据的增删改查是基础的功能要求。在开发的时候， 往往第一个实现的功能便是查询功能。 那么在开始的时候， 数据库中开始并没有数据， 就需要在数据库中插入测试数据。 
+
+######官方文档
+官方文档的有关数据预导入的传送门在这里[官方文档](https://docs.djangoproject.com/en/1.11/howto/initial-data/)
+
+##### 遇到的问题
+######Expecting property name enclosed in double quotes: line 13 column 9 (char 280)
+在使用loaddata命令的时候，系统报了上述错误。Json文件的定义入下：
+```
+[
+    {
+        "pk": 1,
+        "model": "sku.Book",
+        "fields": {
+           "name":"好饿的毛毛虫",
+           "author":"艾瑞.卡尔",
+           "isbn": 9787533256739,
+           "status":"busy",
+           "press": "明天出版社",
+           "acount":3,
+           "lendCount": 1
+        }
+    },
+]
+```
+经过搜索，得知出现此种情况的原因是以为Json文件的格式不正确。 那么我们可以使用线上的一些Json格式工具来检查一下自己写的Json文件。 比如笔者使用了线上工具[jsonlint](https://jsonlint.com/)来检查， 比较容易就检查得到，最后一个逗号不应该添加。 
+```
+[{
+    "pk": 1,
+    "model": "sku.Book",
+    "fields": {
+        "name": "好饿的毛毛虫",
+        "author": "艾瑞.卡尔",
+        "isbn": 9787533256739,
+        "status": "busy",
+        "press": "明天出版社",
+        "acount": 3,
+        "lendCount": 1
+    }
+}]
+```
+###### Could not load sku.Book(pk=1): no such table: sku_book
+这个问题看起来是系统里面还没有出现sku.Book的表，那么因为之前修改过models.py，只需要执行以下两个操作，便可以解决该问题。
+```
+python manage.py makemigrations
+python manage.py migrate
+```
