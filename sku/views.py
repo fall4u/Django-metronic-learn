@@ -2,13 +2,15 @@
 from __future__ import unicode_literals
 
 import csv
+import json
 import os.path
 
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import generic
 
-from .form import UploadFileForm, bookQueryForm
+from .form import UploadFileForm
+from .models import Book
 
 
 # Create your views here.
@@ -19,85 +21,22 @@ class SkuView(generic.View):
         items = []
         testline = {}
 
-        for i in range(100):
-            testline['bookname'] = "Python Web开发测试驱动方法"
-            testline['press'] = "人民邮电出版社"
-            testline['lendCount'] = 4
-            testline['amount'] = 5
-            testline['author'] = "Harry J.W. Percival"
-            testline["importTime"] = "2017/12/29"
-            testline["status"] = "busy"
-            testline["class"] = "IT"
-            items.append(testline.copy())
+        # for i in range(100):
+        #     testline['bookname'] = "Python Web开发测试驱动方法"
+        #     testline['press'] = "人民邮电出版社"
+        #     testline['lendCount'] = 4
+        #     testline['amount'] = 5
+        #     testline['author'] = "Harry J.W. Percival"
+        #     testline["importTime"] = "2017/12/29"
+        #     testline["status"] = "busy"
+        #     testline["class"] = "IT"
+        #     items.append(testline.copy())
 
-        # testline['bookname']  = "Python Web开发测试驱动方法"
-        # testline['press']     = "人民邮电出版社"
-        # testline['lendCount'] = 4
-        # testline['amount']    = 5
-        # testline['author']    = "Harry J.W. Percival"
-        # testline["importTime"]    = "2017/12/29"
-        # testline["status"]    = "busy"
-        # testline["class"]     = "IT"
+        books = Book.objects.all()
 
-        # items.append(testline.copy())
+        return render(request, 'p_books.html')
 
-        # testline['bookname']  = "大数据架构详解从数据获取到深度学习"
-        # testline['press']     = "中国工信出版集团"
-        # testline['lendCount'] = 3
-        # testline['amount']    = 2
-        # testline['author']    = "朱洁 罗华霖"
-        # testline["importTime"]    = "2017/12/29"
-        # testline["status"]    = "busy"
-        # testline["class"]     = "IT" 
-
-        # items.append(testline.copy())
-
-        # testline['bookname']  = "大数据架构详解从数据获取到深度学习"
-        # testline['press']     = "中国工信出版集团"
-        # testline['lendCount'] = 3
-        # testline['amount']    = 2
-        # testline['author']    = "朱洁 罗华霖"
-        # testline["importTime"]    = "2017/12/29"
-        # testline["status"]    = "busy"
-        # testline["class"]     = "IT" 
-
-        # items.append(testline.copy())
-
-        # testline['bookname']  = "大数据架构详解从数据获取到深度学习"
-        # testline['press']     = "中国工信出版集团"
-        # testline['lendCount'] = 3
-        # testline['amount']    = 2
-        # testline['author']    = "朱洁 罗华霖"
-        # testline["importTime"]    = "2017/12/29"
-        # testline["status"]    = "busy"
-        # testline["class"]     = "IT" 
-
-        # items.append(testline.copy())
-
-        # testline['bookname']  = "大数据架构详解从数据获取到深度学习"
-        # testline['press']     = "中国工信出版集团"
-        # testline['lendCount'] = 3
-        # testline['amount']    = 2
-        # testline['author']    = "朱洁 罗华霖"
-        # testline["importTime"]    = "2017/12/29"
-        # testline["status"]    = "busy"
-        # testline["class"]     = "IT" 
-
-        # items.append(testline.copy())
-
-        # testline['bookname']  = "大数据架构详解从数据获取到深度学习"
-        # testline['press']     = "中国工信出版集团"
-        # testline['lendCount'] = 3
-        # testline['amount']    = 2
-        # testline['author']    = "朱洁 罗华霖"
-        # testline["importTime"]    = "2017/12/29"
-        # testline["status"]    = "busy"
-        # testline["class"]     = "IT" 
-
-        # items.append(testline.copy())
-
-
-        return render(request, 'p_books.html', {'items': items})
+    #        return render(request, 'p_books.html', {'items': books})
 
     def post(self, request):
         pass
@@ -111,25 +50,93 @@ def dumpRequest(request):
             print value
 
 
+def filter_books(objects, request):
+    filter_author = request.POST['author']
+    filter_press = request.POST['press']
+    filter_isbn = request.POST['isbn']
+    filter_name = request.POST['name']
+    filter_status = request.POST['status']
+
+    if (filter_status):
+        objects = objects.filter(status__exact=filter_status)
+
+    return objects
+
 class books(generic.View):
     def post(self, request):
         if request.method == "POST":
             dumpRequest(request)
 
-            form = bookQueryForm(request.POST)
+            objects = Book.objects.all()
 
-            if form.is_valid():
-                print "form is valid"
-                author = form.cleaned_data["author"]
-                if author:
-                    print "author is not emptye " + author
-                else:
-                    print "author is empty" + author
+            recordsTotal = objects.count()
+            recordsFiltered = recordsTotal
+
+            start = int(request.POST['start'])
+            length = int(request.POST['length'])
+            draw = int(request.POST['draw'])
+
+            filter_author = request.POST['author']
+            filter_press = request.POST['press']
+            filter_isbn = request.POST['isbn']
+            filter_name = request.POST['name']
+            filter_status = request.POST['status']
+
+            if (filter_author):
+                print filter_author
             else:
-                print "form is not valid "
-                print form.error_detail()
+                print "author empty"
 
-            return render(request, 'p_test.html', {'form': form})
+            if (filter_press):
+                print filter_press
+            else:
+                print "press empty"
+            if (filter_isbn):
+                print filter_isbn
+            else:
+                print "isbn empty"
+
+            if (filter_name):
+                print filter_name
+            else:
+                print "name empty"
+            if (filter_status):
+                print filter_status
+            else:
+                print "status empty"
+            # filter objects according to user inputs
+            objects = filter_books(objects, request)
+            recordsFiltered = objects.count()
+
+            objects = objects[start:(start + length)]
+
+            dic = [obj.as_dict() for obj in objects]
+
+            resp = {
+                'draw': draw,
+                'recordsTotal': recordsTotal,
+                'recordsFiltered': recordsFiltered,
+                'data': dic,
+            }
+
+            return HttpResponse(json.dumps(resp), content_type="application/json")
+
+            # dumpRequest(request)
+
+            # form = bookQueryForm(request.POST)
+
+            # if form.is_valid():
+            #     print "form is valid"
+            #     author = form.cleaned_data["author"]
+            #     if author:
+            #         print "author is not emptye " + author
+            #     else:
+            #         print "author is empty" + author
+            # else:
+            #     print "form is not valid "
+            #     print form.error_detail()
+
+            # return render(request, 'p_test.html', {'form': form})
 
             # return HttpResponse("ok")
 

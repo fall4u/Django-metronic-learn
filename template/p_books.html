@@ -586,8 +586,8 @@ License: You must have a valid license purchased only from themeforest(the above
                                             <div class="col-md-2">
                                                 <select class="bs-select form-control" id="status">
                                                     <option value="busy">借阅</option>
-                                                    <option value="free">空闲</option>
-                                                    <option value="booked">预约</option>
+                                                    <option value="idle">空闲</option>
+                                                    <option value="ordered">预约</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -773,7 +773,9 @@ License: You must have a valid license purchased only from themeforest(the above
     
             $("form").submit(function(e){
                 e.preventDefault();
-                queryBookData();
+ //               queryBookData();
+                table = $("#sample_1").DataTable();
+                table.ajax.reload();
             });
 
             function onreadystatechangeHandler(evt) {
@@ -908,8 +910,12 @@ License: You must have a valid license purchased only from themeforest(the above
                             "type": "POST",
                             "data": function(d){
                                 return $.extend( {}, d, {
-                                    "author":document.getElementById('id_author').value                             
-                                });
+                                    "author"  : document.getElementById('id_author').value,
+                                    "press"   : document.getElementById('press').value,
+                                    "isbn"    : document.getElementById('isbn').value,
+                                    "name"    : document.getElementById('book').value,
+                                    "status"  : document.getElementById('status').value
+                                    });
                             }
                             //  data: function(){
                             //     return {
