@@ -21,22 +21,23 @@ class SkuView(generic.View):
         items = []
         testline = {}
 
-        # for i in range(100):
-        #     testline['bookname'] = "Python Web开发测试驱动方法"
-        #     testline['press'] = "人民邮电出版社"
-        #     testline['lendCount'] = 4
-        #     testline['amount'] = 5
-        #     testline['author'] = "Harry J.W. Percival"
-        #     testline["importTime"] = "2017/12/29"
-        #     testline["status"] = "busy"
-        #     testline["class"] = "IT"
-        #     items.append(testline.copy())
 
         books = Book.objects.all()
+        recordsTotal = books.count()
+        recordsFiltered = recordsTotal
+        dic = [obj.as_dict() for obj in books]
+        # draw = int(request.GET['draw'])
 
+        resp = {
+            'recordsTotal': recordsTotal,
+            'recordsFiltered': recordsFiltered,
+            'data': dic,
+        }
+
+        #    return HttpResponse(json.dumps(resp), content_type="application/json")
         return render(request, 'p_books.html')
 
-    #        return render(request, 'p_books.html', {'items': books})
+    #    return render(request, 'p_books.html', {'items': books})
 
     def post(self, request):
         pass
@@ -55,14 +56,45 @@ def filter_books(objects, request):
     filter_press = request.POST['press']
     filter_isbn = request.POST['isbn']
     filter_name = request.POST['name']
-    filter_status = request.POST['status']
 
-    if (filter_status):
-        objects = objects.filter(status__exact=filter_status)
+    if (filter_author):
+        objects = objects.filter(author__contains=filter_author)
+
+    if (filter_press):
+        objects = objects.filter(press__contains=filter_press)
+
+    if (filter_isbn):
+        objects = objects.filter(isbn__contains=filter_isbn)
+
+    if (filter_name):
+        objects = objects.filter(name__contains=filter_name)                
+
 
     return objects
 
+
+class addBook(generic.View):
+    def get(self, request):
+        if request.method == "GET":
+            return render(request, 'p_bookAdd.html');
+
 class books(generic.View):
+    def get(self, request):
+        if request.method == "GET":
+            dumpRequest(request)
+            # filter objects according to user inputs
+            objects = Book.objects.all()
+
+            dic = [obj.as_dict() for obj in objects]
+
+            resp = {
+
+                'data': dic,
+            }
+            print resp
+
+            return HttpResponse(json.dumps(dic), content_type="application/json")
+
     def post(self, request):
         if request.method == "POST":
             dumpRequest(request)
@@ -80,30 +112,7 @@ class books(generic.View):
             filter_press = request.POST['press']
             filter_isbn = request.POST['isbn']
             filter_name = request.POST['name']
-            filter_status = request.POST['status']
 
-            if (filter_author):
-                print filter_author
-            else:
-                print "author empty"
-
-            if (filter_press):
-                print filter_press
-            else:
-                print "press empty"
-            if (filter_isbn):
-                print filter_isbn
-            else:
-                print "isbn empty"
-
-            if (filter_name):
-                print filter_name
-            else:
-                print "name empty"
-            if (filter_status):
-                print filter_status
-            else:
-                print "status empty"
             # filter objects according to user inputs
             objects = filter_books(objects, request)
             recordsFiltered = objects.count()

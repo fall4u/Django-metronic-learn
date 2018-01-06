@@ -12,20 +12,24 @@ class Document(models.Model):
 
 class Book(models.Model):
     name = models.CharField(max_length=48)
-    author = models.CharField(max_length=24)
     isbn = models.IntegerField()
-    status = models.CharField(max_length=12)
+    author = models.CharField(max_length=24)
     press = models.CharField(max_length=48)
-    acount = models.IntegerField()
-    lendCount = models.IntegerField()
+    price = models.PositiveIntegerField(default=0)
+    totalAmount = models.PositiveIntegerField(default=0)
+    outAmount = models.PositiveIntegerField(default=0)
+    totalOutAmount = models.PositiveIntegerField(default=0)
+    totalBrokenAmount = models.PositiveIntegerField(default=0)
 
     def as_dict(self):
     	return {
     		"name": self.name,
-    		"author": self.author,
-    		"isbn" : self.isbn,
-    		"status" : self.status,
+            "isbn": self.isbn,
+            "author": self.author,
     		"press" : self.press,
-    		"acount" : self.acount,
-    		"lendCount" : self.lendCount
+            "price": self.price,
+            "totalAmount": self.totalAmount,
+            "outAmount": self.outAmount,
+            "totalOutAmount": self.totalOutAmount,
+            "totalBrokenAmount": self.totalBrokenAmount,
     	}
