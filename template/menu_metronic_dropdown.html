@@ -4,8 +4,8 @@
 
 <ul class="sub-menu">
     {% for item in sitetree_items %}
-    <li class="nav-item">
-        <a href="{% sitetree_url for item % }" class="nav-link">
+    <li  {% if item.is_current or item.in_current_branch %}class="nav-item active open"{% else %} class="nav-item"{% endif %}>
+        <a href="{% sitetree_url for item %}" class="nav-link">
             <span class="title">{{ item.title_resolved }}</span>
         </a>
     </li>

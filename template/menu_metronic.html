@@ -5,7 +5,7 @@
     <div class="page-sidebar navbar-collapse collapse">
         <ul class="page-sidebar-menu   " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
             {% for item in sitetree_items %}
-            <li class="nav-item">
+            <li {% if item.is_current or item.in_current_branch %}class="nav-item open active"{% else %}class="nav-item"{% endif %}>
                 <a href="javascript:;" class="nav-link nav-toggle">
                     <span class="title">{{ item.title_resolved }}</span>
                     {% if item.has_children %}
