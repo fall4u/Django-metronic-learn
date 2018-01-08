@@ -17,6 +17,8 @@ from django.conf.urls import include
 from django.conf.urls import url
 from django.contrib import admin
 
+from sku import urls as sku_urls
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
@@ -24,5 +26,5 @@ urlpatterns = [
     url(r'^login/', include('users.urls')),
 
     # sku
-    url(r'^sku/', include('sku.urls', namespace="sku"))
+    url(r'^sku/', include(sku_urls))
 ]

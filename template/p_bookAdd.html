@@ -569,7 +569,8 @@ License: You must have a valid license purchased only from themeforest(the above
                                             <span class="required"> * </span>
                                         </label>
                                         <div class="col-md-4">
-                                            <input type="text" name="name" data-required="1" class="form-control"
+                                            <input type="text" name="name" id="id_name" data-required="1"
+                                                   class="form-control"
                                                    placeholder="请输入书名"/></div>
                                     </div>
                                     <div class="form-group">
@@ -577,7 +578,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                             <span class="required"> * </span>
                                         </label>
                                         <div class="col-md-4">
-                                            <input type="text" name="press" id="1press" data-required="1"
+                                            <input type="text" name="press" id="id_press" data-required="1"
                                                    class="form-control" placeholder="请输入出版社"/></div>
                                     </div>
                                     <div class="form-group">
@@ -585,7 +586,8 @@ License: You must have a valid license purchased only from themeforest(the above
                                             <span class="required"> * </span>
                                         </label>
                                         <div class="col-md-4">
-                                            <input type="text" name="author" data-required="1" class="form-control"
+                                            <input type="text" name="author" id="id_author" data-required="1"
+                                                   class="form-control"
                                                    placeholder="请输入作者"/></div>
                                     </div>
                                     <div class="form-group">
@@ -593,7 +595,8 @@ License: You must have a valid license purchased only from themeforest(the above
                                             <span class="required"> * </span>
                                         </label>
                                         <div class="col-md-4">
-                                            <input type="text" name="isbn" data-required="13" class="form-control"
+                                            <input type="text" name="isbn" id="id_isbn" data-required="13"
+                                                   class="form-control"
                                                    placeholder="请输入ISBN"/></div>
                                     </div>
                                     <div class="form-group">
@@ -601,7 +604,8 @@ License: You must have a valid license purchased only from themeforest(the above
                                             <span class="required"> * </span>
                                         </label>
                                         <div class="col-md-4">
-                                            <input type="text" name="price" data-required="1" class="form-control"
+                                            <input type="text" name="price" id="id_price" data-required="1"
+                                                   class="form-control"
                                                    placeholder="请输入价格"/></div>
                                         <span class="help-block">单位（分）</span>
 
@@ -618,6 +622,13 @@ License: You must have a valid license purchased only from themeforest(the above
                                     </div>
                                 </div>
                             </form>
+                            <!--                             {% if messages %}
+                                                        <ul class="messages">
+                                                            {% for message in messages %}
+                                                            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                        {% endif %} -->
                             <!-- END FORM-->
                         </div>
                     </div>
@@ -694,6 +705,20 @@ License: You must have a valid license purchased only from themeforest(the above
     <!-- END THEME LAYOUT SCRIPTS -->
 
     <script>
+        var csrftoken = Cookies.get('csrftoken');
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
         $.validator.setDefaults( {
             submitHandler: function (form) {
                 alert( "submitted!" );
@@ -710,6 +735,8 @@ License: You must have a valid license purchased only from themeforest(the above
         $("#btn_cancel").click(function(){
                 window.location.href=document.referrer;            
         });
+
+
         $( document ).ready( function () {
             $("#form_1").validate({
                 rules:{
@@ -750,26 +777,31 @@ License: You must have a valid license purchased only from themeforest(the above
                 },
                 unhighlight: function (element, errorClass, validClass) {
                     $( element ).parents( ".col-md-4" ).addClass( "has-success" ).removeClass( "has-error" );
+                },
+                submitHandler: function (form) {
+                    $.ajax({
+                        type: 'post',
+                        url: "",
+                        dataType:"json",
+                        data:{
+                            name:$('#id_name').val(),
+                            press:$('#id_press').val(), 
+                            author:$('#id_author').val(),
+                            isbn: $('#id_isbn').val(),
+                            price:$('#id_price').val()
+                        },
+                        success:function(data){
+                            console.log(data)
+                              if (data.success){
+                                    alert("信息添加成功")
+                                  return true;
+                              }
+                              else{
+                                  alert(data.error);
+                              }
+                        }
+                     });
                 }
- // submitHandler: function (form) {                    
- //                    $.ajax({  
- //                        type: 'post',  
- //                        url: "/plan/preplan/preplan_person_login.action", 
- //                        data:{
- //                            username:$('#username').val(),
- //                            password:$('#password').val()
- //                        },
- //                        success:function(data){
- //                            //console.log(data=="\"ok\"");
- //                            if(data=="\"ok\""){
- //                                location.href ="/plan/preplan/plan_index.action";  //成功执行 
- //                            }else{
- //                                alert('出错');//出错执行
- //                            }
- //                        }   
- //                    }); 
- //                    return false; // 阻止表单自动提交事件
- //                }                
             });
         } );
 

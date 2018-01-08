@@ -21,6 +21,17 @@ class Book(models.Model):
     totalOutAmount = models.PositiveIntegerField(default=0)
     totalBrokenAmount = models.PositiveIntegerField(default=0)
 
+    # def __init__(self, name, author, press, price, isbn):
+    #     self.name = name
+    #     self.author = author
+    #     self.press = press
+    #     self.price = price
+    #     self.isbn = isbn
+    #     self.totalAmount = 0
+    #     self.outAmount = 0
+    #     self.totalOutAmount = 0
+    #     self.totalBrokenAmount = 0
+        
     def as_dict(self):
     	return {
     		"name": self.name,

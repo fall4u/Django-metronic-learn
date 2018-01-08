@@ -24,3 +24,11 @@ class bookQueryForm(forms.Form):
         error_response = {}
         error_response['data'] = self.errors
         return error_response
+
+
+class bookAddForm(forms.Form):
+    name = forms.CharField(required=True)
+    author = forms.CharField(required=True)
+    press = forms.CharField(required=True)
+    isbn = forms.IntegerField(required=True)
+    price = forms.IntegerField(required=True)

@@ -9,7 +9,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import generic
 
-from .form import UploadFileForm
+from .form import UploadFileForm, bookAddForm
 from .models import Book
 
 
@@ -76,7 +76,38 @@ def filter_books(objects, request):
 class addBook(generic.View):
     def get(self, request):
         if request.method == "GET":
+            print "addBook get GET reqeuest"
+            dumpRequest(request)
             return render(request, 'p_bookAdd.html');
+
+    def post(self, request):
+        if request.method == "POST":
+            error = ''
+            print "addBook form enter +++"
+            dumpRequest(request)
+
+            form = bookAddForm(request.POST)
+
+            if form.is_valid():
+                name = form.cleaned_data['name']
+                press = form.cleaned_data['press']
+                author = form.cleaned_data['author']
+                isbn = form.cleaned_data['isbn']
+                price = form.cleaned_data['price']
+
+                # book_inst = Book(**form.cleaned_data)
+                # book_inst.save(commit = True)
+
+                resp = {
+                    'success': "True",
+                    'error': error
+                }
+                return HttpResponse(json.dumps(resp), content_type="application/json")
+
+                # return redirect('addBook')
+                # return HttpResponse(json.dumps(resp), content_type="application/json")
+                # return HttpResponseRedirect(reverse(addBook.as_view()))
+                #   return redirect('sku:addBook')
 
 class books(generic.View):
     def get(self, request):
