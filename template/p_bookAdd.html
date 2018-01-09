@@ -524,20 +524,19 @@ License: You must have a valid license purchased only from themeforest(the above
 <!-- END HEADER & CONTENT DIVIDER -->
 <!-- BEGIN CONTAINER -->
 <div class="page-container">
-
     {% sitetree_menu from "maintree" include "trunk" template "menu_metronic.html" %}
-    <!-- END CONTAINER -->
+        <!-- END CONTAINER -->
     <!-- BEGIN CONTENT -->
     <div class="page-content-wrapper">
         <!-- BEGIN CONTENT BODY -->
         <div class="page-content">
             <!-- BEGIN PAGE HEAD-->
-            <div class="page-head">
-            </div>
+            <!--<div class="page-head">-->
+            <!--</div>-->
             <!-- END PAGE HEAD-->
             <div class="row">
                 <div class="col-md-12">
-                    <div class="portlet light portlet-fit portlet-datatable bordered">
+                    <div class="portlet light  portlet-fit portlet-datatable bordered">
                         <div class="portlet-title">
                             <div class="caption">
                                 <i class="icon-settings font-green"></i>
@@ -791,14 +790,14 @@ License: You must have a valid license purchased only from themeforest(the above
                             price:$('#id_price').val()
                         },
                         success:function(data){
-                            console.log(data)
-                              if (data.success){
-                                    alert("信息添加成功")
-                                  return true;
-                              }
-                              else{
-                                  alert(data.error);
-                              }
+                            console.log(data);
+                             if (data.success){
+                                alert("信息添加成功")
+                             }else{
+                                alert(data.error);
+                             }
+                             // reset form with default value
+                             $("#form_1")[0].reset();
                         }
                      });
                 }

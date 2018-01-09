@@ -12,7 +12,7 @@ class Document(models.Model):
 
 class Book(models.Model):
     name = models.CharField(max_length=48)
-    isbn = models.IntegerField()
+    isbn = models.IntegerField(primary_key = True)
     author = models.CharField(max_length=24)
     press = models.CharField(max_length=48)
     price = models.PositiveIntegerField(default=0)
@@ -32,15 +32,8 @@ class Book(models.Model):
     #     self.totalOutAmount = 0
     #     self.totalBrokenAmount = 0
         
+    @property
     def as_dict(self):
-    	return {
-    		"name": self.name,
-            "isbn": self.isbn,
-            "author": self.author,
-    		"press" : self.press,
-            "price": self.price,
-            "totalAmount": self.totalAmount,
-            "outAmount": self.outAmount,
-            "totalOutAmount": self.totalOutAmount,
-            "totalBrokenAmount": self.totalBrokenAmount,
-    	}
+    	return dict(name=self.name, isbn=self.isbn, author=self.author, press=self.press, price=self.price,
+                    totalAmount=self.totalAmount, outAmount=self.outAmount, totalOutAmount=self.totalOutAmount,
+                    totalBrokenAmount=self.totalBrokenAmount)

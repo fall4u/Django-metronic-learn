@@ -6,11 +6,12 @@ import json
 import os.path
 
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.views import generic
 
+from sku.models import Book
+
 from .form import UploadFileForm, bookAddForm
-from .models import Book
 
 
 # Create your views here.
@@ -21,18 +22,18 @@ class SkuView(generic.View):
         items = []
         testline = {}
 
-
         books = Book.objects.all()
-        recordsTotal = books.count()
-        recordsFiltered = recordsTotal
-        dic = [obj.as_dict() for obj in books]
-        # draw = int(request.GET['draw'])
+        if (books):
+            recordsTotal = books.count()
+            recordsFiltered = recordsTotal
+            dic = [obj.as_dict for obj in books]
+            # draw = int(request.GET['draw'])
 
-        resp = {
-            'recordsTotal': recordsTotal,
-            'recordsFiltered': recordsFiltered,
-            'data': dic,
-        }
+            resp = {
+                'recordsTotal': recordsTotal,
+                'recordsFiltered': recordsFiltered,
+                'data': dic,
+            }
 
         #    return HttpResponse(json.dumps(resp), content_type="application/json")
         return render(request, 'p_books.html')
@@ -67,8 +68,7 @@ def filter_books(objects, request):
         objects = objects.filter(isbn__contains=filter_isbn)
 
     if (filter_name):
-        objects = objects.filter(name__contains=filter_name)                
-
+        objects = objects.filter(name__contains=filter_name)
 
     return objects
 
@@ -83,31 +83,33 @@ class addBook(generic.View):
     def post(self, request):
         if request.method == "POST":
             error = ''
-            print "addBook form enter +++"
+            success = ''
             dumpRequest(request)
 
             form = bookAddForm(request.POST)
 
             if form.is_valid():
-                name = form.cleaned_data['name']
-                press = form.cleaned_data['press']
-                author = form.cleaned_data['author']
+                # name = form.cleaned_data['name']
+                # press = form.cleaned_data['press']
+                # author = form.cleaned_data['author']
+                # price = form.cleaned_data['price']
                 isbn = form.cleaned_data['isbn']
-                price = form.cleaned_data['price']
 
-                # book_inst = Book(**form.cleaned_data)
-                # book_inst.save(commit = True)
+                if Book.objects.filter(isbn = isbn).exists():
+                    error = "ISBN %d book exist !" %(isbn)
+                else:
+                    success = "True"
+                    b = Book(**form.cleaned_data)
+                    b.save()
+
 
                 resp = {
-                    'success': "True",
+                    'success': success,
                     'error': error
                 }
                 return HttpResponse(json.dumps(resp), content_type="application/json")
 
-                # return redirect('addBook')
-                # return HttpResponse(json.dumps(resp), content_type="application/json")
-                # return HttpResponseRedirect(reverse(addBook.as_view()))
-                #   return redirect('sku:addBook')
+
 
 class books(generic.View):
     def get(self, request):
@@ -116,7 +118,7 @@ class books(generic.View):
             # filter objects according to user inputs
             objects = Book.objects.all()
 
-            dic = [obj.as_dict() for obj in objects]
+            dic = [obj.as_dict for obj in objects]
 
             resp = {
 
@@ -150,7 +152,7 @@ class books(generic.View):
 
             objects = objects[start:(start + length)]
 
-            dic = [obj.as_dict() for obj in objects]
+            dic = [obj.as_dict for obj in objects]
 
             resp = {
                 'draw': draw,
@@ -179,7 +181,6 @@ class books(generic.View):
             # return render(request, 'p_test.html', {'form': form})
 
             # return HttpResponse("ok")
-
 
 
 class skuimport(generic.View):
@@ -222,6 +223,7 @@ def handle_uploaded_file(file, filename):
         for chunk in file.chunks():
             destination.write(chunk)
     print (" --- handle_uploaded_file ---")
+
 
 def somevie(request):
     # Create the HttpResponse object with the appropriate CSV header.
