@@ -15,6 +15,12 @@ urlpatterns = [
     url(r'^book/query/$', views.books.as_view(), name='books'),
 
     # add book 
-    url(r'^add/$', views.addBook.as_view(), name='addBook')
+    url(r'^add/$', views.addBook.as_view(), name='addBook'),
+
+    # Update book
+    url(r'^book/update/(?P<pk>\d+)/$', views.bookUpdate.as_view(), name='bookUpdate'),
+
+    # Delete book
+    url(r'^book/delete/(?P<pk>\d+)/$', views.bookDeleteView.as_view(), name='bookDelete')
 
 ]

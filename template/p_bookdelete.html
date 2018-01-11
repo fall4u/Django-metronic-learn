@@ -70,6 +70,13 @@ License: You must have a valid license purchased only from themeforest(the above
     <link href="{% static '/layouts/layout4/css/custom.min.css' %}" rel="stylesheet" type="text/css"/>
     <!-- END THEME LAYOUT STYLES -->
     <link rel="shortcut icon" href="favicon.ico"/>
+
+    <style>
+        h4{
+            display:block;
+            font-weight:bold;
+        }
+    </style>
 </head>
 <!-- END HEAD -->
 
@@ -536,7 +543,7 @@ License: You must have a valid license purchased only from themeforest(the above
                             <div class="portlet-title">
                                 <div class="caption">
                                     <i class="icon-settings font-green"></i>
-                                    <span class="caption-subject font-green sblod uppercase">Books／{{ form.isbn.value }}</span>
+                                    <span class="caption-subject font-green sblod uppercase">Books／{{ view.get_isbn }}/Delete</span>
                                 </div>
                                 <div class="actions">
                                     <div class="btn-group btn-group-devided" data-toggle="buttons">
@@ -547,68 +554,14 @@ License: You must have a valid license purchased only from themeforest(the above
                                 </div>
                             </div>
                             <div class="portlet-body">
+                                {% for key,value in view.get_book.items %}
+                                    <div class="well">
+                                        <h4>{{ key }}</h4>{{ value }}
+                                    </div>
+                                {% endfor %}
                                 <form action="" id="form_1" class="form-horizontal" method="post">{% csrf_token %}
-                                    <div class="form-body">
-                                        <div class="form-group">
-                                            <label class="control-label col-md-3">书名
-                                                <span class="required"> * </span>
-                                            </label>
-                                            <div class="col-md-4">
-                                                <input type="text" name="name" id="id_name" required
-                                                       class="form-control"
-                                                       value={{ form.name.value }}></div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="control-label col-md-3" id="press">出版社
-                                                <span class="required"> * </span>
-                                            </label>
-                                            <div class="col-md-4">
-                                                <input type="text" name="press" id="id_press" required
-                                                       class="form-control" value={{ form.press.value }}></div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="control-label col-md-3">作者
-                                                <span class="required"> * </span>
-                                            </label>
-                                            <div class="col-md-4">
-                                                <input type="text" name="author" id="id_author" required
-                                                       class="form-control"
-                                                       value={{ form.author.value }}></div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="control-label col-md-3">价格
-                                                <span class="required"> * </span>
-                                            </label>
-                                            <div class="col-md-4">
-                                                <input type="text" name="price" id="id_price" required
-                                                       class="form-control"
-                                                       value={{ form.price.value }}></div>
-                                            <span class="help-block">单位（分）</span>
-
-                                        </div>
-                                        <div class="form-group" style="visibility: hidden">
-                                            <label class="control-label col-md-3">isbn
-                                                <span class="required"> * </span>
-                                            </label>
-                                            <div class="col-md-4">
-                                                <input type="text" name="isbn" id="id_isbn" required
-                                                       class="form-control"
-                                                       value={{ form.isbn.value }}></div>
-                                            <span class="help-block">单位（分）</span>
-
-                                        </div>
-                                    </div>
-                                    <div class="form-actions">
-                                        <div class="row">
-                                            <div class="col-md-offset-3 col-md-9">
-                                                <a class="btn btn-danger" href="{% url 'sku:bookDelete' object.pk %}">删除</a>
-                                                <button type="submit" class="btn green" value="Update">Submit</button>
-                                                <button type="button" class="btn grey-salsa btn-outline" id="btn_cancel">
-                                                    Cancel
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <p>Are you sure you want to delete?</p>
+                                    <input type="submit" class="btn btn-danger" value="Confirm" />
                                 </form>
 
 
@@ -694,9 +647,6 @@ License: You must have a valid license purchased only from themeforest(the above
                 window.location.href=document.referrer;
         });
 
-        $("#btn_cancel").click(function(){
-                window.location.href=document.referrer;
-        });
 
 </script>
 

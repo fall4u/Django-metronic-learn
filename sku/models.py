@@ -2,8 +2,10 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.urls import reverse
 
-
+from django.core.exceptions import ValidationError
+from django.utils.translation import ugettext as _
 # Create your models here.
 
 class Document(models.Model):
@@ -12,7 +14,7 @@ class Document(models.Model):
 
 class Book(models.Model):
     name = models.CharField(max_length=48)
-    isbn = models.IntegerField(primary_key = True)
+    isbn = models.IntegerField(primary_key=True, unique=True)
     author = models.CharField(max_length=24)
     press = models.CharField(max_length=48)
     price = models.PositiveIntegerField(default=0)
@@ -37,3 +39,5 @@ class Book(models.Model):
     	return dict(name=self.name, isbn=self.isbn, author=self.author, press=self.press, price=self.price,
                     totalAmount=self.totalAmount, outAmount=self.outAmount, totalOutAmount=self.totalOutAmount,
                     totalBrokenAmount=self.totalBrokenAmount)
+
+

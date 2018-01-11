@@ -525,6 +525,23 @@ License: You must have a valid license purchased only from themeforest(the above
             <div class="page-head">
             </div>
             <!-- END PAGE HEAD-->
+            {% if messages %}
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="messages mt-3">
+                            {% for message in messages %}
+                                <div class="alert alert-dismissable alert-{{ message.tags }}" data-alert="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                {{ message }}
+                                </div>
+                            {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
             <div class="row">
                 <div class="col-md-12">
                     <div class="portlet light portlet-fit portlet-datatable bordered">
@@ -650,6 +667,7 @@ License: You must have a valid license purchased only from themeforest(the above
             <i class="icon-arrow-up"></i>
         </div>
     </div>
+</div>
     <!-- END FOOTER -->
     <!--[if lt IE 9]>
     <script src="{% static '/global/plugins/respond.min.js' %}"></script>
@@ -971,7 +989,7 @@ License: You must have a valid license purchased only from themeforest(the above
                             {
                                 'targets':2,
                                 'render': function(data,type,full,meta){
-                                    data = '<a href="' + 'book/' + data + '">' + data + '</a>';
+                                    data = '<a href="' + 'book/update/' + data + '/' + '">' + data + '</a>';
                                     return data;
                                 }
                             },
