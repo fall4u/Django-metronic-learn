@@ -218,6 +218,39 @@ class books(generic.View):
 
             # return HttpResponse("ok")
 
+class libaddBook(generic.View):
+    def get(self, request):
+            return render(request, 'p_libbookadd.html')
+
+    def post(self, request):
+        if request.method == "POST":
+            error = ''
+            success = ''
+            dumpRequest(request)
+
+            form = bookAddForm(request.POST)
+
+            if form.is_valid():
+                # name = form.cleaned_data['name']
+                # press = form.cleaned_data['press']
+                # author = form.cleaned_data['author']
+                # price = form.cleaned_data['price']
+                isbn = form.cleaned_data['isbn']
+
+                if Book.objects.filter(isbn = isbn).exists():
+                    error = "ISBN %d book exist !" %(isbn)
+                else:
+                    success = "True"
+                    b = Book(**form.cleaned_data)
+                    b.save()
+
+
+                resp = {
+                    'success': success,
+                    'error': error
+                }
+                return HttpResponse(json.dumps(resp), content_type="application/json")
+
 class libBook(generic.View):
     def get(self, request):
 

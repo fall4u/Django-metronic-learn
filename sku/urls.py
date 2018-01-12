@@ -23,7 +23,9 @@ urlpatterns = [
     # Delete book
     url(r'^book/delete/(?P<pk>\d+)/$', views.bookDeleteView.as_view(), name='bookDelete'),
 
-    #library book query
+    # library book query
     url(r'^libraryBook/$', views.libBook.as_view(), name='libBook'),
+
+    url(r'^libraryBook/add/$', views.libaddBook.as_view(), name='libaddBook'),
 
 ]

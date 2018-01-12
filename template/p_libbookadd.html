@@ -548,17 +548,13 @@ License: You must have a valid license purchased only from themeforest(the above
                         <div class="portlet-title">
                             <div class="caption">
                                 <i class="icon-settings font-green"></i>
-                                <span class="caption-subject font-green sblod ">LibraryBook</span>
+                                <span class="caption-subject font-green sblod ">LibraryBook/Add</span>
                             </div>
                             <div class="actions">
                                 <div class="btn-group btn-group-devided" data-toggle="buttons">
                                     <label class="btn btn-transparent blue btn-outline btn-circle btn-sm"
-                                           for="id_libbookadd">
-                                        <input type="radio" name="bookadd" class="toggle" id="id_libbookadd" oncheck="msg">Import</label>
-                                    <label class="btn btn-transparent blue btn-outline btn-circle btn-sm"
-                                           for="libbookbatchadd">
-                                        <input type="radio" name="bookbatchadd" class="toggle"
-                                               id="libbookbatchadd">batchImoprt</label>
+                                           for="id_back">
+                                        <input type="radio"  class="toggle" id="id_back" oncheck="msg">Back</label>
                                 </div>
                             </div>
                         </div>
@@ -567,15 +563,10 @@ License: You must have a valid license purchased only from themeforest(the above
                             <form class="horizontal-form" role="form" id="id_querylibbookForm">
                                 <div class="form-body">
                                     <div class="row">
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label class="control-label">书名</label>
-                                                <input type="text" class="form-control" id="book" name="bookname"
-                                                           placeholder="请输入书名">
+                                        <div class="col-md-2">
 
-                                            </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="control-label">ISBN</label>
                                                 <input type="text" class="form-control" id="isbn" name="ISBN"
@@ -583,34 +574,24 @@ License: You must have a valid license purchased only from themeforest(the above
 
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-4">
                                             <div class="form-group">
-                                                <label class="control-label">ISBN</label>
+                                                <label class="control-label">UID</label>
                                                 <input type="text" class="form-control" id="id_uid" name="UID"
                                                            placeholder="请输入UID">
 
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label class="control-label">状态</label>
-                                                 <select class="bs-select form-control" id="status">
-                                                     <option value="busy">online</option>
-                                                     <option value="idle">offline</option>
-                                                     <option value="ordered">idle</option>
-                                                     <option value="busy">out</option>
-                                                     <option value="idle">booked</option>
-                                                     <option value="ordered">broken</option>
-                                                     <option value="idle">overdue</option>
-                                                 </select>
-                                            </div>
-                                        </div>
+
                                     </div>
                                 </div>
                                 <div class="form-actions">
                                     <div class="row">
                                         <div class="col-md-offset-5 col-md-9">
-                                            <button type="submit" class="btn green">查询</button>
+                                            <button type="submit" class="btn green">OK</button>
+                                            <button type="button" class="btn grey-salsa btn-outline" id="btn_cancel" onclick="window.location.href=document.referrer;">
+                                                Cancel
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -781,10 +762,8 @@ License: You must have a valid license purchased only from themeforest(the above
             var labelID;
             $('label').click(function(){
                 labelID = $(this).attr('for');
-                if(labelID == "id_libbookadd")
-                    window.location.href = "add/";
-                if(labelID == "libbookbatchadd")
-                    alert("libbookbatchadd");
+                if(labelID == "id_back")
+                    window.location.href=document.referrer;
             });
             function onreadystatechangeHandler(evt) {
               var status, text, readyState;
@@ -913,9 +892,9 @@ License: You must have a valid license purchased only from themeforest(the above
                         "processing" : true,
                         "serverSide" : true,
                         "autoWidth" : false,
-
+                        "bLengthChange" : false,
                         "ajax": {
-                            "url": "#",
+                            "url": "/sku/libraryBook/",
                             "type": "POST",
                         },
                         columns: [
