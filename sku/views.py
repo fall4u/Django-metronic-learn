@@ -11,7 +11,7 @@ from django.views import generic
 from django.views.generic.edit import UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.forms.models import model_to_dict
-from sku.models import Book
+from sku.models import Book, LibBook
 
 from .form import UploadFileForm, bookAddForm
 from django.contrib import messages
@@ -217,6 +217,37 @@ class books(generic.View):
             # return render(request, 'p_test.html', {'form': form})
 
             # return HttpResponse("ok")
+
+class libBook(generic.View):
+    def get(self, request):
+
+        return render(request, 'p_libbooks.html')
+
+    def post(self, request):
+        dumpRequest(request)
+
+        objects = LibBook.objects.all()
+
+        recordsTotal = objects.count()
+        recordsFiltered = recordsTotal
+
+        start = int(request.POST['start'])
+        length = int(request.POST['length'])
+        draw = int(request.POST['draw'])
+
+
+        objects = objects[start:(start + length)]
+
+        dic = [obj.as_dict for obj in objects]
+
+        resp = {
+            'draw': draw,
+            'recordsTotal': recordsTotal,
+            'recordsFiltered': recordsFiltered,
+            'data': dic,
+        }
+
+        return HttpResponse(json.dumps(resp), content_type="application/json")
 
 
 class skuimport(generic.View):
