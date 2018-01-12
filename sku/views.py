@@ -259,6 +259,35 @@ class libBook(generic.View):
     def post(self, request):
         dumpRequest(request)
 
+        isIsbnOnly = request.POST.get('isISBN', 'False')
+
+        if isIsbnOnly == 'False':
+            print "isIsbnOnly == False"
+        else:
+            print "isIsbnOnly == True"
+            objects = LibBook.objects.all()
+            isbn = request.POST['isbn']
+
+            recordsTotal = 0
+            recordsFiltered = 0
+            dict = {}
+
+            if isbn != 'undefined':
+                book = objects.filter(isbn__exact=filter_isbn)
+                if book:
+                    recordsTotal = 1
+                    recordsFiltered = 1
+                    dict = book.as_dict()
+
+
+
+            resp = {
+                'recordsTotal': recordsTotal,
+                'recordsFiltered': recordsFiltered,
+                'data': dict,
+            }
+            return HttpResponse(json.dumps(resp), content_type="application/json")
+
         objects = LibBook.objects.all()
 
         recordsTotal = objects.count()
