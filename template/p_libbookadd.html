@@ -610,17 +610,15 @@ License: You must have a valid license purchased only from themeforest(the above
                                         <span></span>
                                     </label> 
                                 </th>
-                                <th> UID</th>
                                 <th> 书名</th>
                                 <th> ISBN</th>
                                 <th> 作者</th>
                                 <th> 出版社</th>
                                 <th> 价格</th>
-                                <th> Import Date</th>
-                                <th> Status</th>
-                                <th> Due Date</th>
-                                <th> Over days</th>
-                                <th> Lends Counts</th>
+                                <th> 总数</th>
+                                <th> 借出</th>
+                                <th> 流行</th>
+                                <th> 毁坏</th>
                             </tr>
                         </thead> 
                         <tbody>
@@ -754,7 +752,7 @@ License: You must have a valid license purchased only from themeforest(the above
     
             $("form").submit(function(e){
                 e.preventDefault();
- //               queryBookData();
+                alert("OK form submit");
                 table = $("#sample_1").DataTable();
                 table.ajax.reload();
             });
@@ -885,17 +883,28 @@ License: You must have a valid license purchased only from themeforest(the above
             // }
      
             $(document).ready(function() {
+                var isbn = $('#isbn').val;
+                param = {
+                    "isISBN": "True",
+                    "isbn" : isbn
+                };
+
                 $("#sample_1").dataTable(
                     { 
                         searching : false,
                         destroy : true,
                         "processing" : true,
-                        "serverSide" : true,
+//                        "serverSide" : true,
                         "autoWidth" : false,
                         "bLengthChange" : false,
                         "ajax": {
-                            "url": "/sku/libraryBook/",
-                            "type": "POST",
+                             "url": "book/query/",
+                             "type": "get",
+                             "dataSrc":"",
+                             "data": param,
+                            //"data": function ( d ) {
+                            //        d.isbn = $('#isbn').val();
+                            //    }
                         },
                         columns: [
                             { },

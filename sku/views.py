@@ -149,20 +149,19 @@ class addBook(generic.View):
 
 class books(generic.View):
     def get(self, request):
-        if request.method == "GET":
-            dumpRequest(request)
-            # filter objects according to user inputs
-            objects = Book.objects.all()
+        dumpRequest(request)
+        # filter objects according to user inputs
+        objects = Book.objects.all()
 
-            dic = [obj.as_dict for obj in objects]
+        dic = [obj.as_dict for obj in objects]
 
-            resp = {
+        resp = {
 
-                'data': dic,
-            }
-            print resp
+            'data': dic,
+        }
+        print resp
 
-            return HttpResponse(json.dumps(dic), content_type="application/json")
+        return HttpResponse(json.dumps(dic), content_type="application/json")
 
     def post(self, request):
         if request.method == "POST":
