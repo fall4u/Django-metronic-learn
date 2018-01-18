@@ -14,6 +14,9 @@ urlpatterns = [
     #  book query 
     url(r'^book/query/$', views.books.as_view(), name='books'),
 
+    # get book information from douban v2.api
+    url(r'^book/getinfo/$', views.getBookInfo.as_view(),name='getBookinfo_douban'),
+
     # add book 
     url(r'^add/$', views.addBook.as_view(), name='addBook'),
 

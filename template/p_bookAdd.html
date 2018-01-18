@@ -542,12 +542,18 @@ License: You must have a valid license purchased only from themeforest(the above
                                 <i class="icon-settings font-green"></i>
                                 <span class="caption-subject font-green sblod uppercase">Books／Add</span>
                             </div>
+
                             <div class="actions">
-                                <div class="btn-group btn-group-devided" data-toggle="buttons">
-                                    <label class="btn btn-transparent blue btn-outline btn-circle btn-sm"
-                                           for="id_return">
-                                        <input type="radio" name="return" class="toggle" id="id_return">返回</label>
-                                </div>
+                                    <input type="text" name="titleisbn" id="id_titleisbn" data-required="13"  placeholder="请输入ISBN"/>
+                                    <div class="btn-group btn-group-devided" data-toggle="buttons">
+                                        <label class="btn btn-transparent blue btn-outline btn-circle btn-sm"
+                                               for="id_getbookinfo">
+                                            <input type="radio" name="getbookinfo" class="toggle"
+                                                   id="id_getbookinfo">Get Info</label>
+                                        <label class="btn btn-transparent blue btn-outline btn-circle btn-sm"
+                                               for="id_return">
+                                            <input type="radio" name="return" class="toggle" id="id_return">返回</label>
+                                    </div>
                             </div>
                         </div>
 
@@ -709,6 +715,29 @@ License: You must have a valid license purchased only from themeforest(the above
             }
         });
 
+        function getBookInfo()
+        {
+            $.ajax({
+                type: 'get',
+                url: "/sku/book/getinfo/",
+                dataType:"json",
+                data:{
+                    isbn:$('#id_titleisbn').val(),
+                },
+                success:function(data){
+                    console.log(data);
+                     if (data.success == "True"){
+                        document.getElementById("id_name").value  = data.data.name;
+                        document.getElementById("id_press").value = data.data.press;
+                        document.getElementById("id_author").value = data.data.author;
+                        document.getElementById("id_isbn").value = data.data.isbn;
+                        document.getElementById("id_price").value = data.data.price;
+                     }else{
+                        alert(data.error);
+                     }
+                }
+            });
+        }
         $.validator.setDefaults( {
             submitHandler: function (form) {
                 alert( "submitted!" );
@@ -721,6 +750,10 @@ License: You must have a valid license purchased only from themeforest(the above
             labelID = $(this).attr('for');
             if(labelID == "id_return")
                 window.location.href=document.referrer;
+
+            if(labelID == 'id_getbookinfo')
+                getBookInfo();
+
         });
         $("#btn_cancel").click(function(){
                 window.location.href=document.referrer;            

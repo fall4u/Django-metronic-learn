@@ -32,3 +32,8 @@ class bookAddForm(forms.Form):
     press = forms.CharField(required=True)
     isbn = forms.IntegerField(required=True)
     price = forms.IntegerField(required=True)
+
+
+class libBookAddForm(forms.Form):
+    isbn = forms.IntegerField(required=True)
+    uuid = forms.UUIDField(required=True)

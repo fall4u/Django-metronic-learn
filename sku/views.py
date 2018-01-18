@@ -13,8 +13,10 @@ from django.urls import reverse_lazy
 from django.forms.models import model_to_dict
 from sku.models import Book, LibBook
 
-from .form import UploadFileForm, bookAddForm
+from .form import UploadFileForm, bookAddForm, libBookAddForm
 from django.contrib import messages
+
+import requests
 
 # Create your views here.
 
@@ -40,7 +42,6 @@ class SkuView(generic.View):
         #    return HttpResponse(json.dumps(resp), content_type="application/json")
         return render(request, 'p_books.html')
 
-    #    return render(request, 'p_books.html', {'items': books})
 
     def post(self, request):
         pass
@@ -52,7 +53,11 @@ def dumpRequest(request):
             print key
             value = request.POST.getlist(key)
             print value
-
+    else:
+        for key in request.GET:
+            print key
+            value = request.GET.getlist(key)
+            print value
 
 def filter_books(objects, request):
     filter_author = request.POST['author']
@@ -145,6 +150,79 @@ class addBook(generic.View):
                 }
                 return HttpResponse(json.dumps(resp), content_type="application/json")
 
+def isPrice(c):
+    r = False
+    if (c.isdigit()) or c == '.':
+        r = True
+    return r
+
+def getPrice(unicodeStr):
+    s = unicodeStr.encode('utf-8')
+    s = filter(isPrice, s)
+    fp = float(s)
+    fp = int(fp * 100)
+    return str(fp)
+
+def getBookInfo_douban(url):
+    isbn = ''
+    press = ''
+    price = ''
+    author = ''
+    name = ''
+    rst = {}
+
+    r = requests.get(url)
+    print r
+    if r.status_code == 200:
+        r = r.json()
+        print r
+        isbn = r['isbn13']
+        press = r['publisher']
+        price = r['price']
+        price = getPrice(price)
+        author = r['author'][0]
+        name = r['title'] + '--' + r['subtitle']
+        rst = {
+            'name': name ,
+            'press' : press,
+            'author' : author,
+            'isbn': isbn,
+            'price': price
+        }
+    return rst
+
+class getBookInfo(generic.View):
+    def get(selfself,request):
+        '''
+        get book information using douban v2.api
+        :param request: isbn
+        :return: json value
+        '''
+        _url = "https://api.douban.com/v2/book/isbn/"
+        success = ''
+        error = ''
+        data = ''
+        isbn = request.GET.get('isbn',None)
+        print isbn
+        r = {}
+
+        if isbn and isbn.isdigit() and len(isbn) == 13:
+            success = "True"
+            url = _url + isbn
+            r = getBookInfo_douban(url)
+            if not r:
+                success = ''
+                error = "Book not existed in douban"
+
+        else:
+            error = "ISBN not invalid"
+
+        resp = {
+            'success': success,
+            'error': error,
+            'data': r,
+        }
+        return HttpResponse(json.dumps(resp), content_type="application/json")
 
 
 class books(generic.View):
@@ -152,16 +230,22 @@ class books(generic.View):
         dumpRequest(request)
         # filter objects according to user inputs
         objects = Book.objects.all()
+        isbn = request.GET.get('isbn', None)
 
-        dic = [obj.as_dict for obj in objects]
+
+
+        if isbn:
+            objects = objects.filter(isbn__contains=isbn)
+            dic = [obj.as_dict for obj in objects]
+        else:
+            dic = []
 
         resp = {
-
-            'data': dic,
+            "bindbook": dic,
         }
-        print resp
 
-        return HttpResponse(json.dumps(dic), content_type="application/json")
+        print dic
+        return HttpResponse(json.dumps(resp), content_type="application/json")
 
     def post(self, request):
         if request.method == "POST":
@@ -225,30 +309,41 @@ class libaddBook(generic.View):
         if request.method == "POST":
             error = ''
             success = ''
+            r = []
             dumpRequest(request)
-
-            form = bookAddForm(request.POST)
+            print ("+++libaddBook +++")
+            form = libBookAddForm(request.POST)
 
             if form.is_valid():
-                # name = form.cleaned_data['name']
-                # press = form.cleaned_data['press']
-                # author = form.cleaned_data['author']
-                # price = form.cleaned_data['price']
                 isbn = form.cleaned_data['isbn']
+                uid  = form.cleaned_data['uuid']
 
-                if Book.objects.filter(isbn = isbn).exists():
-                    error = "ISBN %d book exist !" %(isbn)
+                success = 'True'
+                print "isbn : %s"%(isbn)
+                print "uid: %s"%(uid)
+
+                if LibBook.objects.filter(uid = uid).exists():
+                    error = "uid %d book exist !" %(uid)
                 else:
                     success = "True"
-                    b = Book(**form.cleaned_data)
+                    b = LibBook(**form.cleaned_data)
                     b.save()
 
-
                 resp = {
-                    'success': success,
-                    'error': error
+                    'status': "OK",
+                    'msg': "",
+                    'bindbook':r
                 }
-                return HttpResponse(json.dumps(resp), content_type="application/json")
+            else:
+                resp = {
+                    'status': "Fail",
+                    'msg': "form data is not valid",
+                    'bindbook':r
+                }
+
+            print form.errors
+            
+            return HttpResponse(json.dumps(resp), content_type="application/json")
 
 class libBook(generic.View):
     def get(self, request):
