@@ -5,18 +5,18 @@ import csv
 import json
 import os.path
 
+import requests
+from django.contrib import messages
+from django.forms.models import model_to_dict
 from django.http import HttpResponse
-from django.shortcuts import render,redirect
+from django.shortcuts import render
+from django.urls import reverse_lazy
 from django.views import generic
 from django.views.generic.edit import UpdateView, DeleteView
-from django.urls import reverse_lazy
-from django.forms.models import model_to_dict
+
 from sku.models import Book, LibBook
-
 from .form import UploadFileForm, bookAddForm, libBookAddForm
-from django.contrib import messages
 
-import requests
 
 # Create your views here.
 
@@ -301,6 +301,16 @@ class books(generic.View):
 
             # return HttpResponse("ok")
 
+
+def libraryBookImport(isbn, uuid):
+    b = LibBook(isbn=isbn, uuid=uuid)
+    b.save()
+
+    r = Book.objects.get(isbn=isbn)
+    r.totalAmount = r.totalAmount + 1
+    r.save()
+    return r
+
 class libaddBook(generic.View):
     def get(self, request):
             return render(request, 'p_libbookadd.html')
@@ -322,18 +332,22 @@ class libaddBook(generic.View):
                 print "isbn : %s"%(isbn)
                 print "uid: %s"%(uid)
 
-                if LibBook.objects.filter(uid = uid).exists():
+                if LibBook.objects.filter(uuid=uid).exists():
+                    print "if"
                     error = "uid %d book exist !" %(uid)
+                elif not Book.objects.filter(isbn=isbn).exists():
+                    print "elif not"
+                    error = "isbn %d book does not exist !" % (isbn)
                 else:
+                    print "else true"
                     success = "True"
-                    b = LibBook(**form.cleaned_data)
-                    b.save()
+                    r = libraryBookImport(isbn, uid)
 
-                resp = {
-                    'status': "OK",
-                    'msg': "",
-                    'bindbook':r
-                }
+                    resp = {
+                        'status': "OK",
+                        'msg': "",
+                        'bindbook': [r.as_dict]
+                    }
             else:
                 resp = {
                     'status': "Fail",
@@ -341,7 +355,7 @@ class libaddBook(generic.View):
                     'bindbook':r
                 }
 
-            print form.errors
+            print resp 
             
             return HttpResponse(json.dumps(resp), content_type="application/json")
 
@@ -367,7 +381,7 @@ class libBook(generic.View):
             dict = {}
 
             if isbn != 'undefined':
-                book = objects.filter(isbn__exact=filter_isbn)
+                book = objects.filter(isbn__exact=isbn)
                 if book:
                     recordsTotal = 1
                     recordsFiltered = 1

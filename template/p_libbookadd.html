@@ -17,7 +17,7 @@ License: You must have a valid license purchased only from themeforest(the above
 <!--[if IE 9]>
 <html lang="en" class="ie9 no-js"> <![endif]-->
 <!--[if !IE]><!-->
-<html lang="en" xmlns:padding-left="http://www.w3.org/1999/xhtml">
+<html lang="en">
 <!--<![endif]-->
 <!-- BEGIN HEAD -->
 {% load static %}
@@ -577,10 +577,8 @@ License: You must have a valid license purchased only from themeforest(the above
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="control-label">UID</label>
-                                                <span class="required">
                                                 <input type="text" class="form-control" id="id_uid" name="UID"
                                                            placeholder="请输入UID">
-
                                             </div>
                                         </div>
 
@@ -895,6 +893,17 @@ License: You must have a valid license purchased only from themeforest(the above
                                     d.isbn=document.getElementById('id_isbn').value;
                                     d.uuid=document.getElementById('id_uid').value
                                 },
+                                dataFilter:function(data,json){
+                                     r = JSON.parse(data)
+                                     if (r.status == "OK"){
+                                        console.log("信息添加成功");
+                                     }else{
+                                        console.log(r.msg);
+                                     }
+                                     $("#id_querylibbookForm")[0].reset();
+                  
+                                     return data;
+                                }                                
 
                         },
                         "columns": [
@@ -908,7 +917,7 @@ License: You must have a valid license purchased only from themeforest(the above
                             { "data": "totalOutAmount" },
                             { "data": "totalBrokenAmount" }
                         ]                        
-                        });
+                    });
                 });
 
     </script>

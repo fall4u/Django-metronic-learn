@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.db import models
-from django.urls import reverse
+import uuid
 
-from django.core.exceptions import ValidationError
-from django.utils.translation import ugettext as _
+from django.db import models
 
 
 # Create your models here.
@@ -60,16 +58,17 @@ class LibBook(models.Model):
         (STATUS_BROKEN, 'broken'),
         (STATUS_DUEDATE, 'overdue'),
     }
+    # 3F2504E0-4F89-11D3-9A0C-0305E82C3301
 
-    uid = models.IntegerField(unique=True)
+    uuid = models.UUIDField(default=uuid.uuid4, null=False)
     isbn = models.IntegerField()
     inDate = models.DateField(auto_now_add=True)
     status = models.CharField(choices=STATUS_CHOICES, default=STATUS_OFFLINE, max_length=2)
-    dueDate = models.DateField()
+    dueDate = models.DateField(blank=True, null=True)
     overDays = models.PositiveIntegerField(default=0)
     LendAmount = models.PositiveIntegerField(default=0)
 
     @property
     def as_dict(self):
-        return dict(uid=self.uid, isbn=self.isbn, inDate=self.inDate, status=self.status, dueDate=self.dueDate,
+        return dict(uid=self.uuid, isbn=self.isbn, inDate=self.inDate, status=self.status, dueDate=self.dueDate,
                     overDays=self.overDays, LendAmount=self.LendAmount)
