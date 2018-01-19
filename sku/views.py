@@ -181,7 +181,10 @@ def getBookInfo_douban(url):
         price = r['price']
         price = getPrice(price)
         author = r['author'][0]
-        name = r['title'] + '--' + r['subtitle']
+        if r['subtitle']:
+            name = r['title'] + '--' + r['subtitle']
+        else:
+            name = r['title']
         rst = {
             'name': name ,
             'press' : press,
