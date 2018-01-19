@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import uuid
 import datetime
-
+import uuid
 
 from django.db import models
 
@@ -25,35 +24,24 @@ class Book(models.Model):
     totalOutAmount = models.PositiveIntegerField(default=0)
     totalBrokenAmount = models.PositiveIntegerField(default=0)
 
-    # def __init__(self, name, author, press, price, isbn):
-    #     self.name = name
-    #     self.author = author
-    #     self.press = press
-    #     self.price = price
-    #     self.isbn = isbn
-    #     self.totalAmount = 0
-    #     self.outAmount = 0
-    #     self.totalOutAmount = 0
-    #     self.totalBrokenAmount = 0
-
     @property
     def as_dict(self):
         return dict(name=self.name, isbn=self.isbn, author=self.author, press=self.press, price=self.price,
                     totalAmount=self.totalAmount, outAmount=self.outAmount, totalOutAmount=self.totalOutAmount,
                     totalBrokenAmount=self.totalBrokenAmount)
 
-    def __unicode__(self):
-        return "%s %d" %(self.name , self.isbn)
+        # def __unicode__(self):
+        #     return "%s %d" %(self.name , self.isbn)
 
 class LibBook(models.Model):
-    STATUS_ONLINE = 1
-    STATUS_OFFLINE = 2
-    STATUS_IDLE = 3
-    STATUS_OUT = 4
-    STATUS_BOOKED = 5
-    STATUS_BROKEN = 6
-    STATUS_DUEDATE = 7
-    STATUS_CHOICES = {
+    STATUS_ONLINE = '1'
+    STATUS_OFFLINE = '2'
+    STATUS_IDLE = '3'
+    STATUS_OUT = '4'
+    STATUS_BOOKED = '5'
+    STATUS_BROKEN = '6'
+    STATUS_DUEDATE = '7'
+    STATUS_CHOICES = (
         (STATUS_ONLINE, 'online'),
         (STATUS_OFFLINE, 'offline'),
         (STATUS_IDLE, 'idle'),
@@ -61,7 +49,7 @@ class LibBook(models.Model):
         (STATUS_BOOKED, 'booked'),
         (STATUS_BROKEN, 'broken'),
         (STATUS_DUEDATE, 'overdue'),
-    }
+    )
     # Relations
     book = models.ForeignKey(Book, on_delete=models.PROTECT,null=False)
     # Attributes
@@ -83,12 +71,10 @@ class LibBook(models.Model):
         if isinstance(self.dueDate, datetime.date):
             dueD = self.dueDate.strftime('%Y-%m-%d')  
 
-        s = self.get_status_display()
-        print s
 
         return dict(uid=u, name =self.book.name, isbn=self.book.isbn, author = self.book.author, press = self.book.press,
-                    price = self.book.price, inDate = inD, Status=s, Due=dueD,
+                    price=self.book.price, inDate=inD, Status=self.get_status_display(), Due=dueD,
                     OverDate=self.overDays, Counts = self.LendAmount)
 
-    def __unicode__(self):
-        return "%s %s %s" %(self.book.name , self.inDate.strftime('%Y-%m-%d'), str(self.uuid))
+        # def __unicode__(self):
+        #     return "%s %s %s" %(self.book.name , self.inDate.strftime('%Y-%m-%d'), str(self.uuid))
