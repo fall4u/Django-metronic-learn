@@ -306,13 +306,13 @@ class books(generic.View):
 
 
 def libraryBookImport(isbn, uuid):
-    b = LibBook(isbn=isbn, uuid=uuid)
-    b.save()
+    book = Book.objects.get(isbn=isbn)
 
-    r = Book.objects.get(isbn=isbn)
-    r.totalAmount = r.totalAmount + 1
-    r.save()
-    return r
+    book.libbook_set.create(uuid=uuid)
+
+    book.totalAmount = book.libbook_set.count()
+    book.save()
+    return book
 
 class libaddBook(generic.View):
     def get(self, request):
@@ -320,8 +320,8 @@ class libaddBook(generic.View):
 
     def post(self, request):
         if request.method == "POST":
-            error = ''
-            success = ''
+            status = ''
+            msg = ''
             r = []
             dumpRequest(request)
             print ("+++libaddBook +++")
@@ -336,27 +336,22 @@ class libaddBook(generic.View):
                 print "uid: %s"%(uid)
 
                 if LibBook.objects.filter(uuid=uid).exists():
-                    print "if"
-                    error = "uid %d book exist !" %(uid)
+                    msg = "uid %d book exist !" %(uid)
+                    status = "Fail"
                 elif not Book.objects.filter(isbn=isbn).exists():
-                    print "elif not"
-                    error = "isbn %d book does not exist !" % (isbn)
+                    msg = "isbn %d book does not exist !" % (isbn)
+                    status = "Fail"                    
                 else:
-                    print "else true"
-                    success = "True"
-                    r = libraryBookImport(isbn, uid)
+                    status = "OK"
+                    msg = "Bind book success !!"
+                    book = libraryBookImport(isbn, uid)
+                    r = [book.as_dict]
 
-                    resp = {
-                        'status': "OK",
-                        'msg': "",
-                        'bindbook': [r.as_dict]
-                    }
-            else:
-                resp = {
-                    'status': "Fail",
-                    'msg': "form data is not valid",
-                    'bindbook':r
-                }
+            resp = {
+                'status': status,
+                'msg': msg,
+                'bindbook':r
+            }
 
             print resp 
             

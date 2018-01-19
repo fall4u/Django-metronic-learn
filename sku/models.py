@@ -40,6 +40,8 @@ class Book(models.Model):
                     totalAmount=self.totalAmount, outAmount=self.outAmount, totalOutAmount=self.totalOutAmount,
                     totalBrokenAmount=self.totalBrokenAmount)
 
+    def __unicode__(self):
+        return "%s %d" %(self.name , self.isbn)
 
 class LibBook(models.Model):
     STATUS_ONLINE = 1
@@ -61,7 +63,7 @@ class LibBook(models.Model):
     # 3F2504E0-4F89-11D3-9A0C-0305E82C3301
 
     uuid = models.UUIDField(default=uuid.uuid4, null=False)
-    isbn = models.IntegerField()
+    book = models.ForeignKey(Book, on_delete=models.PROTECT,null=True)
     inDate = models.DateField(auto_now_add=True)
     status = models.CharField(choices=STATUS_CHOICES, default=STATUS_OFFLINE, max_length=2)
     dueDate = models.DateField(blank=True, null=True)
@@ -72,3 +74,6 @@ class LibBook(models.Model):
     def as_dict(self):
         return dict(uid=self.uuid, isbn=self.isbn, inDate=self.inDate, status=self.status, dueDate=self.dueDate,
                     overDays=self.overDays, LendAmount=self.LendAmount)
+
+    def __unicode__(self):
+        return "%s %s %s" %(self.book.name , self.inDate, self.uuid)
