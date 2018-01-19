@@ -622,13 +622,6 @@ License: You must have a valid license purchased only from themeforest(the above
                     <table class="table table-striped table-bordered table-hover table-checkable order-column" id="sample_1">
                           <thead>
                             <tr>
-                                <th>
-                                     <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                         <input type="checkbox" class="group-checkable"
-                                                data-set="#sample_1 .checkboxes"/>
-                                        <span></span>
-                                    </label> 
-                                </th>
                                 <th> UID</th>
                                 <th> 书名</th>
                                 <th> ISBN</th>
@@ -912,21 +905,20 @@ License: You must have a valid license purchased only from themeforest(the above
                         destroy : true,
                         "processing" : true,
                         "serverSide" : true,
-                        "autoWidth" : false,
+                        "autoWidth" : true,
 
                         "ajax": {
                             "url": "#",
                             "type": "POST",
                         },
                         columns: [
-                            { },
                             { data: 'uid' },
                             { data: 'name' },
                             { data: 'isbn' },
                             { data: 'author' },         
                             { data: 'press' },
                             { data: 'price' },
-                            { data: 'import'},
+                            { data: 'inDate'},
                             { data: 'Status'},
                             { data: 'Due' },
                             { data: 'OverDate' },

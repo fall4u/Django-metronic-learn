@@ -2,6 +2,8 @@
 from __future__ import unicode_literals
 
 import uuid
+import datetime
+
 
 from django.db import models
 
@@ -60,20 +62,33 @@ class LibBook(models.Model):
         (STATUS_BROKEN, 'broken'),
         (STATUS_DUEDATE, 'overdue'),
     }
+    # Relations
+    book = models.ForeignKey(Book, on_delete=models.PROTECT,null=False)
+    # Attributes
     # 3F2504E0-4F89-11D3-9A0C-0305E82C3301
 
     uuid = models.UUIDField(default=uuid.uuid4, null=False)
-    book = models.ForeignKey(Book, on_delete=models.PROTECT,null=True)
     inDate = models.DateField(auto_now_add=True)
     status = models.CharField(choices=STATUS_CHOICES, default=STATUS_OFFLINE, max_length=2)
     dueDate = models.DateField(blank=True, null=True)
     overDays = models.PositiveIntegerField(default=0)
     LendAmount = models.PositiveIntegerField(default=0)
 
-    @property
     def as_dict(self):
-        return dict(uid=self.uuid, isbn=self.isbn, inDate=self.inDate, status=self.status, dueDate=self.dueDate,
-                    overDays=self.overDays, LendAmount=self.LendAmount)
+        u=dueD=inD = ''
+        if isinstance(self.uuid, uuid.UUID):
+            u = str(self.uuid)
+        if isinstance(self.inDate, datetime.date):
+            inD = self.inDate.strftime('%Y-%m-%d')
+        if isinstance(self.dueDate, datetime.date):
+            dueD = self.dueDate.strftime('%Y-%m-%d')  
+
+        s = self.get_status_display()
+        print s
+
+        return dict(uid=u, name =self.book.name, isbn=self.book.isbn, author = self.book.author, press = self.book.press,
+                    price = self.book.price, inDate = inD, Status=s, Due=dueD,
+                    OverDate=self.overDays, Counts = self.LendAmount)
 
     def __unicode__(self):
-        return "%s %s %s" %(self.book.name , self.inDate, self.uuid)
+        return "%s %s %s" %(self.book.name , self.inDate.strftime('%Y-%m-%d'), str(self.uuid))
