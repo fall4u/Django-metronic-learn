@@ -23,21 +23,21 @@ from .form import UploadFileForm, bookAddForm, libBookAddForm
 class SkuView(generic.View):
 
     def get(self, request):
-        items = []
-        testline = {}
-
-        books = Book.objects.all()
-        if (books):
-            recordsTotal = books.count()
-            recordsFiltered = recordsTotal
-            dic = [obj.as_dict for obj in books]
-            # draw = int(request.GET['draw'])
-
-            resp = {
-                'recordsTotal': recordsTotal,
-                'recordsFiltered': recordsFiltered,
-                'data': dic,
-            }
+        # items = []
+        # testline = {}
+        #
+        # books = Book.objects.all()
+        # if (books):
+        #     recordsTotal = books.count()
+        #     recordsFiltered = recordsTotal
+        #     dic = [obj.as_dict for obj in books]
+        #     # draw = int(request.GET['draw'])
+        #
+        #     resp = {
+        #         'recordsTotal': recordsTotal,
+        #         'recordsFiltered': recordsFiltered,
+        #         'data': dic,
+        #     }
 
         #    return HttpResponse(json.dumps(resp), content_type="application/json")
         return render(request, 'p_books.html')
