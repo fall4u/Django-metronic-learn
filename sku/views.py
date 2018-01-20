@@ -15,6 +15,7 @@ from django.views import generic
 from django.views.generic.edit import UpdateView, DeleteView
 
 from sku.models import Book, LibBook
+from .filter import BookFilter
 from .form import UploadFileForm, bookAddForm, libBookAddForm
 
 
@@ -277,7 +278,7 @@ class books(generic.View):
 
     def post(self, request):
         if request.method == "POST":
-            dumpRequest(request)
+            #            dumpRequest(request)
 
             objects = Book.objects.all()
 
@@ -288,12 +289,12 @@ class books(generic.View):
             length = int(request.POST['length'])
             draw = int(request.POST['draw'])
 
-
             # filter objects according to user inputs
-            objects = filter_books(objects, request)
-            recordsFiltered = objects.count()
+            # objects = filter_books(objects, request)
+            objects = BookFilter(request.POST, queryset=objects)
 
-            objects = objects[start:(start + length)]
+            recordsFiltered = objects.qs.count()
+            objects = objects.qs[start:(start + length)]
 
             dic = [obj.as_dict for obj in objects]
 
