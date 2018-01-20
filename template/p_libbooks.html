@@ -585,7 +585,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label class="control-label">ISBN</label>
+                                                <label class="control-label">UID</label>
                                                 <input type="text" class="form-control" id="id_uid" name="UID"
                                                            placeholder="请输入UID">
 
@@ -595,13 +595,13 @@ License: You must have a valid license purchased only from themeforest(the above
                                             <div class="form-group">
                                                 <label class="control-label">状态</label>
                                                  <select class="bs-select form-control" id="status">
-                                                     <option value="busy">online</option>
-                                                     <option value="idle">offline</option>
-                                                     <option value="ordered">idle</option>
-                                                     <option value="busy">out</option>
-                                                     <option value="idle">booked</option>
-                                                     <option value="ordered">broken</option>
-                                                     <option value="idle">overdue</option>
+                                                     <option value="1">online</option>
+                                                     <option value="2">offline</option>
+                                                     <option value="3">idle</option>
+                                                     <option value="4">out</option>
+                                                     <option value="5">booked</option>
+                                                     <option value="6">broken</option>
+                                                     <option value="7">overdue</option>
                                                  </select>
                                             </div>
                                         </div>
@@ -912,6 +912,14 @@ License: You must have a valid license purchased only from themeforest(the above
                         "ajax": {
                             "url": "#",
                             "type": "POST",
+                            "data": function(d){
+                                return $.extend( {}, d, {
+                                    "status"  : document.getElementById('status').value,
+                                    "uuid"    : document.getElementById('id_uid').value,
+                                    "isbn"    : document.getElementById('isbn').value,
+                                    "name"    : document.getElementById('book').value,
+                                    });
+                            }
                         },
                         "columns": [
                             { data: 'uid' },

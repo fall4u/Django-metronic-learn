@@ -59,6 +59,31 @@ def dumpRequest(request):
             value = request.GET.getlist(key)
             print value
 
+def filter_libooks(objects, request):
+    filter_status = request.POST['status']
+    filter_uuid = request.POST['uuid']
+    filter_isbn = request.POST['isbn']
+    filter_name = request.POST['name']
+
+    print "status : %s" %(filter_status)
+    print "uuid : %s" %(filter_uuid)
+    print "isbn : %s" %(filter_isbn)
+    print "name : %s" %(filter_name)
+
+    if (filter_status):
+        objects = objects.filter(status=filter_status)
+
+    if (filter_isbn):
+        objects = objects.filter(book__isbn__contains=filter_isbn)
+
+    if (filter_name):
+        objects = objects.filter(book__name__contains=filter_name)
+
+    if (filter_uuid):
+        objects = objects.filter(uuid_contains=filter_uuid)        
+
+    return objects
+
 def filter_books(objects, request):
     filter_author = request.POST['author']
     filter_press = request.POST['press']
@@ -263,10 +288,6 @@ class books(generic.View):
             length = int(request.POST['length'])
             draw = int(request.POST['draw'])
 
-            filter_author = request.POST['author']
-            filter_press = request.POST['press']
-            filter_isbn = request.POST['isbn']
-            filter_name = request.POST['name']
 
             # filter objects according to user inputs
             objects = filter_books(objects, request)
@@ -324,7 +345,6 @@ class libaddBook(generic.View):
             msg = ''
             r = []
             dumpRequest(request)
-            print ("+++libaddBook +++")
             form = libBookAddForm(request.POST)
 
             if form.is_valid():
@@ -368,19 +388,20 @@ class libBook(generic.View):
         objects = LibBook.objects.all()
 
         recordsTotal = objects.count()
-        print("libBook count %d",recordsTotal)
         recordsFiltered = recordsTotal
 
         start = int(request.POST['start'])
         length = int(request.POST['length'])
         draw = int(request.POST['draw'])
 
+        # filter objects according to user inputs
+        objects = filter_libooks(objects, request)
+        recordsFiltered = objects.count()
 
         objects = objects[start:(start + length)]
 
         dic = [obj.as_dict() for obj in objects]
 
-        print dic
 
         resp = {
             'draw': draw,
