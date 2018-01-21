@@ -914,10 +914,10 @@ License: You must have a valid license purchased only from themeforest(the above
                             "type": "POST",
                             "data": function(d){
                                 return $.extend( {}, d, {
-                                    "status"  : document.getElementById('status').value,
-                                    "uuid"    : document.getElementById('id_uid').value,
-                                    "isbn"    : document.getElementById('isbn').value,
-                                    "name"    : document.getElementById('book').value,
+                                    "status"      : document.getElementById('status').value,
+                                    "uuid"        : document.getElementById('id_uid').value,
+                                    "book__isbn"  : document.getElementById('isbn').value,
+                                    "book__name"  : document.getElementById('book').value,
                                     });
                             }
                         },
