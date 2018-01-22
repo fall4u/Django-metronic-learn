@@ -539,10 +539,6 @@ License: You must have a valid license purchased only from themeforest(the above
                                            for="id_refresh">
                                         <input type="radio" name="refresh" class="toggle"
                                                id="id_refresh">Refresh</label>
-                                    <label class="btn btn-transparent blue btn-outline btn-circle btn-sm"
-                                           for="id_back">
-                                        <input type="radio" name="back" class="toggle"
-                                               id="id_back">batchImoprt</label>
                                 </div>
                             </div>
                         </div>
@@ -550,87 +546,18 @@ License: You must have a valid license purchased only from themeforest(the above
                         <div class="portlet-body">
                             <div class="mt-element-card mt-element-overlay">
                                 <div class="row">
-                                    <div class="col-md-2">
-                                        <div class="mt-card-item">
-                                            <div class="mt-card-avatar mt-overlay-1">
-                                                <img src="{% static '/pages/img/avatars/team1.jpg' %}"/>
-                                            </div>
-                                            <div class="mt-card-content">
-                                                <p class="mt-card-desc font-grey-mint">Managing Director</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="mt-card-item">
-                                            <div class="mt-card-avatar mt-overlay-1">
-                                                <img src="{% static '/pages/img/avatars/team1.jpg' %}"/>
-                                            </div>
-                                            <div class="mt-card-content">
-                                                <p class="mt-card-desc font-grey-mint">Managing Director</p>
+                                    {% for item in uuidinfo %}
+                                        <div class="col-md-2">
+                                            <div class="mt-card-item">
+                                                <div class="mt-card-avatar mt-overlay-1">
+                                                    <img src="{% static '/media/uuid/' %}{{ item.imagesrc }}"/>
+                                                </div>
+                                                <div class="mt-card-content">
+                                                    <p class="mt-card-desc font-grey-mint">{{ item.desc }}</p>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="mt-card-item">
-                                            <div class="mt-card-avatar mt-overlay-1">
-                                                <img src="{% static '/pages/img/avatars/team1.jpg' %}"/>
-                                            </div>
-                                            <div class="mt-card-content">
-                                                <p class="mt-card-desc font-grey-mint">Managing Director</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="mt-card-item">
-                                            <div class="mt-card-avatar mt-overlay-1">
-                                                <img src="{% static '/pages/img/avatars/team1.jpg' %}"/>
-                                            </div>
-                                            <div class="mt-card-content">
-                                                <p class="mt-card-desc font-grey-mint">Managing Director</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="mt-card-item">
-                                            <div class="mt-card-avatar mt-overlay-1">
-                                                <img src="{% static '/pages/img/avatars/team1.jpg' %}"/>
-                                            </div>
-                                            <div class="mt-card-content">
-                                                <p class="mt-card-desc font-grey-mint">Managing Director</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="mt-card-item">
-                                            <div class="mt-card-avatar mt-overlay-1">
-                                                <img src="{% static '/pages/img/avatars/team1.jpg' %}"/>
-                                            </div>
-                                            <div class="mt-card-content">
-                                                <p class="mt-card-desc font-grey-mint">Managing Director</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="mt-card-item">
-                                            <div class="mt-card-avatar mt-overlay-1">
-                                                <img src="{% static '/pages/img/avatars/team1.jpg' %}"/>
-                                            </div>
-                                            <div class="mt-card-content">
-                                                <p class="mt-card-desc font-grey-mint">Managing Director</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="mt-card-item">
-                                            <div class="mt-card-avatar mt-overlay-1">
-                                                <img src="{% static '/pages/img/avatars/team1.jpg' %}"/>
-                                            </div>
-                                            <div class="mt-card-content">
-                                                <p class="mt-card-desc font-grey-mint">Managing Director</p>
-                                            </div>
-                                        </div>
-                                    </div>
-
+                                    {% endfor %}
 
                                 </div>
                             </div>
@@ -772,10 +699,8 @@ License: You must have a valid license purchased only from themeforest(the above
             var labelID;
             $('label').click(function(){
                 labelID = $(this).attr('for');
-                if(labelID == "id_libbookadd")
-                    window.location.href = "add/";
-                if(labelID == "libbookbatchadd")
-                    alert("libbookbatchadd");
+                if(labelID == "id_refresh")
+                    location.reload();
             });
             function onreadystatechangeHandler(evt) {
               var status, text, readyState;

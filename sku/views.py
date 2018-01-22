@@ -297,12 +297,15 @@ def libraryBookImport(isbn, uuid):
 def makeqrcode():
     uid = uuid.uuid1()
     strUid = str(uuid.uuid1())
-    print strUid
-    print type(strUid)
-    img = qrcode.make(strUid)
+
+    qr = qrcode.QRCode(version=1,
+                       error_correction=qrcode.constants.ERROR_CORRECT_M,
+                       box_size=10,
+                       border=4)
+    qr.add_data(strUid)
+    img = qr.make_image()
     Name = strUid + ".png"
     fullname = os.path.join(settings.MEDIA_ROOT, Name)
-    print fullname
     img.save(fullname)
     return Name
 
@@ -315,7 +318,7 @@ def get_qrimageset(num):
         name = makeqrcode()
         print "name = %s" % (name)
         record['imagesrc'] = name
-        record['desc'] = name
+        record['desc'] = name.split('.')[0]
         qs.append(record.copy())
 
     return qs
@@ -323,8 +326,8 @@ def get_qrimageset(num):
 
 class bookuuidview(generic.View):
     def get(self, request):
-        get_qrimageset(1)
-        return render(request, 'p_uuid.html')
+        uuidinfo = get_qrimageset(24)
+        return render(request, 'p_uuid.html',  {'uuidinfo': uuidinfo})
 
 class libaddBook(generic.View):
     def get(self, request):
