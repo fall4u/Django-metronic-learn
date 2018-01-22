@@ -4,8 +4,11 @@ from __future__ import unicode_literals
 import csv
 import json
 import os.path
+import uuid
 
+import qrcode
 import requests
+from django.conf import settings
 from django.contrib import messages
 from django.forms.models import model_to_dict
 from django.http import HttpResponse
@@ -59,51 +62,6 @@ def dumpRequest(request):
             print key
             value = request.GET.getlist(key)
             print value
-
-def filter_libooks(objects, request):
-    filter_status = request.POST['status']
-    filter_uuid = request.POST['uuid']
-    filter_isbn = request.POST['isbn']
-    filter_name = request.POST['name']
-
-    print "status : %s" %(filter_status)
-    print "uuid : %s" %(filter_uuid)
-    print "isbn : %s" %(filter_isbn)
-    print "name : %s" %(filter_name)
-
-    if (filter_status):
-        objects = objects.filter(status=filter_status)
-
-    if (filter_isbn):
-        objects = objects.filter(book__isbn__contains=filter_isbn)
-
-    if (filter_name):
-        objects = objects.filter(book__name__contains=filter_name)
-
-    if (filter_uuid):
-        objects = objects.filter(uuid_contains=filter_uuid)        
-
-    return objects
-
-def filter_books(objects, request):
-    filter_author = request.POST['author']
-    filter_press = request.POST['press']
-    filter_isbn = request.POST['isbn']
-    filter_name = request.POST['name']
-
-    if (filter_author):
-        objects = objects.filter(author__contains=filter_author)
-
-    if (filter_press):
-        objects = objects.filter(press__contains=filter_press)
-
-    if (filter_isbn):
-        objects = objects.filter(isbn__contains=filter_isbn)
-
-    if (filter_name):
-        objects = objects.filter(name__contains=filter_name)
-
-    return objects
 
 
 class bookUpdate(UpdateView):
@@ -290,7 +248,6 @@ class books(generic.View):
             draw = int(request.POST['draw'])
 
             # filter objects according to user inputs
-            # objects = filter_books(objects, request)
             objects = BookFilter(request.POST, queryset=objects)
 
             recordsFiltered = objects.qs.count()
@@ -335,6 +292,39 @@ def libraryBookImport(isbn, uuid):
     book.totalAmount = book.libbook_set.count()
     book.save()
     return book
+
+
+def makeqrcode():
+    uid = uuid.uuid1()
+    strUid = str(uuid.uuid1())
+    print strUid
+    print type(strUid)
+    img = qrcode.make(strUid)
+    Name = strUid + ".png"
+    fullname = os.path.join(settings.MEDIA_ROOT, Name)
+    print fullname
+    img.save(fullname)
+    return Name
+
+
+def get_qrimageset(num):
+    qs = []
+    record = {}
+
+    for i in range(num):
+        name = makeqrcode()
+        print "name = %s" % (name)
+        record['imagesrc'] = name
+        record['desc'] = name
+        qs.append(record.copy())
+
+    return qs
+
+
+class bookuuidview(generic.View):
+    def get(self, request):
+        get_qrimageset(1)
+        return render(request, 'p_uuid.html')
 
 class libaddBook(generic.View):
     def get(self, request):
@@ -396,7 +386,6 @@ class libBook(generic.View):
         draw = int(request.POST['draw'])
 
         # filter objects according to user inputs
-        # objects = filter_libooks(objects, request)
         objects = LibBookFilter(request.POST, queryset=objects)
 
         recordsFiltered = objects.qs.count()

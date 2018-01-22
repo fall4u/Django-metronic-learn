@@ -31,4 +31,5 @@ urlpatterns = [
 
     url(r'^libraryBook/add/$', views.libaddBook.as_view(), name='libaddBook'),
 
+    url(r'^libraryBook/uuid/$', views.bookuuidview.as_view(), name='bookuuid'),
 ]
