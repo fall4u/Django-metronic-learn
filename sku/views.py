@@ -10,6 +10,7 @@ import qrcode
 import requests
 from django.conf import settings
 from django.contrib import messages
+from django.db.models import ProtectedError
 from django.forms.models import model_to_dict
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -20,7 +21,8 @@ from django.views.generic.edit import UpdateView, DeleteView
 from sku.models import Book, LibBook, Banner
 from .filter import BookFilter, LibBookFilter
 from .form import UploadFileForm, bookAddForm, libBookAddForm
-from .serialize import BannerSerializer
+from .serialize import BannerSerializer, BooklistSerializer
+from .tools import download_photo
 
 
 # Create your views here.
@@ -90,9 +92,12 @@ class bookDeleteView(DeleteView):
     template_name = "p_bookdelete.html"
 
     def delete(self, request, *args, **kwargs):
-        result = super(bookDeleteView, self).delete(request, *args, **kwargs)
-        messages.success(
-            self.request, '[书籍 删除成功] !')
+        try:
+            result = super(bookDeleteView, self).delete(request, *args, **kwargs)
+            messages.success(self.request, '[书籍 删除成功] !')
+        except ProtectedError as exception:
+            raise Exception('This book is related.')
+
         return result
 
     def get_book(self):
@@ -115,17 +120,21 @@ class addBook(generic.View):
             form = bookAddForm(request.POST)
 
             if form.is_valid():
-                # name = form.cleaned_data['name']
-                # press = form.cleaned_data['press']
-                # author = form.cleaned_data['author']
-                # price = form.cleaned_data['price']
+                name = form.cleaned_data['name']
+                press = form.cleaned_data['press']
+                author = form.cleaned_data['author']
+                price = form.cleaned_data['price']
                 isbn = form.cleaned_data['isbn']
+
+                imageurl = form.cleaned_data['imageurl']
+                filename = str(isbn) + ".jpg"
+                ret = download_photo(imageurl, filename)
 
                 if Book.objects.filter(isbn = isbn).exists():
                     error = "ISBN %d book exist !" %(isbn)
                 else:
                     success = "True"
-                    b = Book(**form.cleaned_data)
+                    b = Book(name=name, press=press, author=author, price=price, isbn=isbn, cover="lpic/" + filename)
                     b.save()
 
 
@@ -165,7 +174,9 @@ def getBookInfo_douban(url):
         press = r['publisher']
         price = r['price']
         price = getPrice(price)
+        print r['author']
         author = r['author'][0]
+        image = r['images']['large']
         if r['subtitle']:
             name = r['title'] + '--' + r['subtitle']
         else:
@@ -175,7 +186,8 @@ def getBookInfo_douban(url):
             'press' : press,
             'author' : author,
             'isbn': isbn,
-            'price': price
+            'price': price,
+            'image': image
         }
     return rst
 
@@ -254,13 +266,13 @@ class books(generic.View):
             recordsFiltered = objects.qs.count()
             objects = objects.qs[start:(start + length)]
 
-            dic = [obj.as_dict for obj in objects]
+            serialize = BooklistSerializer(objects, many=True)
 
             resp = {
                 'draw': draw,
                 'recordsTotal': recordsTotal,
                 'recordsFiltered': recordsFiltered,
-                'data': dic,
+                'data': serialize.data,
             }
 
             return HttpResponse(json.dumps(resp), content_type="application/json")
@@ -342,7 +354,7 @@ class libaddBook(generic.View):
                     status = "OK"
                     msg = "Bind book success !!"
                     book = libraryBookImport(isbn, uid)
-                    r = [book.as_dict]
+                    r = BooklistSerializer(book)
 
             resp = {
                 'status': status,
@@ -380,6 +392,7 @@ class libBook(generic.View):
 
         dic = [obj.as_dict() for obj in objects]
 
+        print dic
 
         resp = {
             'draw': draw,

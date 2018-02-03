@@ -634,6 +634,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                         <span></span>
                                     </label> 
                                 </th>
+                                <th> 封面</th>
                                 <th> 书名</th>
                                 <th> ISBN</th>
                                 <th> 作者</th>
@@ -965,6 +966,7 @@ License: You must have a valid license purchased only from themeforest(the above
                         },
                         columns: [
                             { },
+                            { data: 'cover'},
                             { data: 'name' },
                             { data: 'isbn' },
                             { data: 'author' },         
@@ -987,7 +989,16 @@ License: You must have a valid license purchased only from themeforest(the above
                                 },
                             },
                             {
-                                'targets':2,
+                                'targets':1,
+                                'render': function(data,type,full,meta){
+                                    console.log(data);
+                                    data = '<img src="' + data+'" height = "100" />';
+                                    console.log(data);
+                                    return data;
+                                }
+                            },
+                            {
+                                'targets':3,
                                 'render': function(data,type,full,meta){
                                     data = '<a href="' + 'book/update/' + data + '/' + '">' + data + '</a>';
                                     return data;

@@ -125,8 +125,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = "/Users/zhuxufeng/Dev/www/shangqu"
-MEDIA_ROOT = STATIC_URL + 'images/'
+STATIC_ROOT = "/Users/zhuxufeng/Dev/www/static/"
+MEDIA_ROOT = "/Users/zhuxufeng/Dev/www/media/"
+MEDIA_URL = '/media/'
 
 # Secure configiuratioins
 # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO','https')

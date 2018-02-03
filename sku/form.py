@@ -32,7 +32,7 @@ class bookAddForm(forms.Form):
     press = forms.CharField(required=True)
     isbn = forms.IntegerField(required=True)
     price = forms.IntegerField(required=True)
-
+    imageurl = forms.CharField(required=False)
 
 class libBookAddForm(forms.Form):
     isbn = forms.IntegerField(required=True)

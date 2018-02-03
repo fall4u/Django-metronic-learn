@@ -12,6 +12,13 @@ class BookSerializer(serializers.ModelSerializer):
         fields = ('name', 'isbn', 'author')
 
 
+class BooklistSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Book
+        fields = (
+        'name', 'isbn', 'author', 'press', 'price', 'totalAmount', 'outAmount', 'totalOutAmount', 'totalBrokenAmount',
+        'cover')
+
 class BannerSerializer(serializers.ModelSerializer):
     book = BookSerializer(required=True)
 

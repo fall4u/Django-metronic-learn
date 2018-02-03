@@ -35,13 +35,10 @@ class Book(models.Model):
     outAmount = models.PositiveIntegerField(default=0)
     totalOutAmount = models.PositiveIntegerField(default=0)
     totalBrokenAmount = models.PositiveIntegerField(default=0)
+    cover = models.ImageField(default="lpic/default_cover.jp"
+                                      "g")
     objects = GetOrNoneManager()
 
-    @property
-    def as_dict(self):
-        return dict(name=self.name, isbn=self.isbn, author=self.author, press=self.press, price=self.price,
-                    totalAmount=self.totalAmount, outAmount=self.outAmount, totalOutAmount=self.totalOutAmount,
-                    totalBrokenAmount=self.totalBrokenAmount)
 
     def __unicode__(self):
         return "%s %d" % (self.name, self.isbn)
