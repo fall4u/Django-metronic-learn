@@ -25,7 +25,7 @@ SECRET_KEY = '%^8+3+(n06_0l1jukpzw(6=bl(450(wdm-b8h4ub&f6+%m=vc('
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['.fall4u.com', '127.0.0.1']
 
 
 # Application definition
@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'sitetree',
     'django_filters',
     'users',
@@ -124,7 +125,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = "/Users/zhuxufeng/Dev/www/shangqu"
+MEDIA_ROOT = STATIC_URL + 'images/'
+
+# Secure configiuratioins
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO','https')
+# SECURE_SSL_REDIRECT = True
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR,'assets'),
+    os.path.join(BASE_DIR, 'static'),
 ]

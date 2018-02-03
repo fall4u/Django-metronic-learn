@@ -12,14 +12,15 @@ from django.conf import settings
 from django.contrib import messages
 from django.forms.models import model_to_dict
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import generic
 from django.views.generic.edit import UpdateView, DeleteView
 
-from sku.models import Book, LibBook
+from sku.models import Book, LibBook, Banner
 from .filter import BookFilter, LibBookFilter
 from .form import UploadFileForm, bookAddForm, libBookAddForm
+from .serialize import BannerSerializer
 
 
 # Create your views here.
@@ -264,24 +265,6 @@ class books(generic.View):
 
             return HttpResponse(json.dumps(resp), content_type="application/json")
 
-            # dumpRequest(request)
-
-            # form = bookQueryForm(request.POST)
-
-            # if form.is_valid():
-            #     print "form is valid"
-            #     author = form.cleaned_data["author"]
-            #     if author:
-            #         print "author is not emptye " + author
-            #     else:
-            #         print "author is empty" + author
-            # else:
-            #     print "form is not valid "
-            #     print form.error_detail()
-
-            # return render(request, 'p_test.html', {'form': form})
-
-            # return HttpResponse("ok")
 
 
 def libraryBookImport(isbn, uuid):
@@ -407,6 +390,49 @@ class libBook(generic.View):
 
         return HttpResponse(json.dumps(resp), content_type="application/json")
 
+
+class bannerList(generic.View):
+    def get(self, request):
+        objects = Banner.objects.all()
+        for item in objects:
+            print "book name :%s" % (item.book.name)
+            print "book order : %s" % (item.s)
+
+        serialize = BannerSerializer(objects, many=True)
+        print "BannerSerialize finish"
+        print serialize.data
+        return HttpResponse(json.dumps(serialize.data), content_type="application/json")
+
+    def post(self, request):
+        pass
+
+
+class banner(generic.View):
+    def get(self, request):
+        return render(request, 'p_banners.html')
+
+    def post(self, request):
+        '''
+        add banner item
+        :param request : book isbn
+        :return: redirect to the banner list page
+        '''
+        dumpRequest(request)
+        isbn = request.POST['ISBN']
+        print "isbn = %s" % isbn
+
+        if isbn:
+            book = Book.objects.filter(isbn=int(isbn))
+            if book.exists():
+                banner = Banner(book=book[0])
+                banner.save()
+            else:
+                messages.error(self.request, '[书籍: %s] 不存在!' % (isbn))
+        else:
+            messages.error(self.request, '请输入ISBN')
+
+        dic = []
+        return redirect('sku:banner')
 
 class skuimport(generic.View):
     def get(self, request):

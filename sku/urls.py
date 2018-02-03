@@ -1,5 +1,6 @@
 from django.conf.urls import url
 
+from . import api
 from . import views
 
 app_name = 'sku'
@@ -32,4 +33,11 @@ urlpatterns = [
     url(r'^libraryBook/add/$', views.libaddBook.as_view(), name='libaddBook'),
 
     url(r'^libraryBook/uuid/$', views.bookuuidview.as_view(), name='bookuuid'),
+
+    url(r'^banner/$', views.banner.as_view(), name='banner'),
+    url(r'^banner/list/$', views.bannerList.as_view(), name='bannerList'),
+    url(r'^banner/api/delete/$', api.bannerDelete, name='bannerDelete'),
+    url(r'^banner/api/move_up/$', api.bannerMoveUp, name='bannerUp'),
+    url(r'^banner/api/move_down/$', api.bannerMoveDown, name='bannerDown'),
+
 ]

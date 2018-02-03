@@ -5,12 +5,24 @@ import datetime
 import uuid
 
 from django.db import models
+from django.db.models import Max
 
 
 # Create your models here.
 
 class Document(models.Model):
     docfile = models.FileField(upload_to='documents/%Y/%m/%d')
+
+
+class GetOrNoneManager(models.Manager):
+    """Adds get_or_none method to objects
+    """
+
+    def get_or_none(self, **kwargs):
+        try:
+            return self.get(**kwargs)
+        except self.model.DoesNotExist:
+            return None
 
 
 class Book(models.Model):
@@ -23,6 +35,7 @@ class Book(models.Model):
     outAmount = models.PositiveIntegerField(default=0)
     totalOutAmount = models.PositiveIntegerField(default=0)
     totalBrokenAmount = models.PositiveIntegerField(default=0)
+    objects = GetOrNoneManager()
 
     @property
     def as_dict(self):
@@ -30,8 +43,8 @@ class Book(models.Model):
                     totalAmount=self.totalAmount, outAmount=self.outAmount, totalOutAmount=self.totalOutAmount,
                     totalBrokenAmount=self.totalBrokenAmount)
 
-        # def __unicode__(self):
-        #     return "%s %d" %(self.name , self.isbn)
+    def __unicode__(self):
+        return "%s %d" % (self.name, self.isbn)
 
 class LibBook(models.Model):
     STATUS_ONLINE = '1'
@@ -78,3 +91,60 @@ class LibBook(models.Model):
 
         # def __unicode__(self):
         #     return "%s %s %s" %(self.book.name , self.inDate.strftime('%Y-%m-%d'), str(self.uuid))
+
+
+class Banner(models.Model):
+    # Relations
+    s = models.PositiveIntegerField(editable=False, db_index=True)
+    book = models.OneToOneField(Book, on_delete=models.PROTECT, null=False)
+    clickCount = models.PositiveIntegerField(default=0)
+
+    objects = GetOrNoneManager()
+
+    class Meta:
+        ordering = ('s',)
+
+    def _swap_qs0(self, qs):
+        """
+        Swap the positions of this object with first result, if any, from the provided queryset.
+        """
+        try:
+            replacement = qs[0]
+            print "_swap_qs"
+            print replacement.book.name
+            print replacement.s
+
+            print replacement
+        except IndexError:
+            # already first/last
+            return
+        self.swap(replacement)
+
+    def swap(self, replacement):
+        """
+        Swap the position of this object with a replacement object.
+        """
+
+        order, replacement_order = getattr(self, 's'), getattr(replacement, 's')
+        print order, replacement_order
+        setattr(self, 's', replacement_order)
+        setattr(replacement, 's', order)
+        self.save()
+        replacement.save()
+
+    def down(self):
+        self._swap_qs0(Banner.objects.all().filter(**{'s' + '__gt': getattr(self, 's')}))
+
+    def up(self):
+        self._swap_qs0(Banner.objects.all().filter(**{'s' + '__lt': getattr(self, 's')}))
+
+    def save(self, *args, **kwargs):
+        if getattr(self, 's') is None:
+            qs = Banner.objects.all()
+            dic = qs.aggregate(Max('s'))
+            c = dic.get('s__max')
+            if c is None:
+                setattr(self, 's', 0)
+            else:
+                setattr(self, 's', c + 1)
+        super(Banner, self).save(*args, **kwargs)
