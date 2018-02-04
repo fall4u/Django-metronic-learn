@@ -21,7 +21,7 @@ from django.views.generic.edit import UpdateView, DeleteView
 from sku.models import Book, LibBook, Banner
 from .filter import BookFilter, LibBookFilter
 from .form import UploadFileForm, bookAddForm, libBookAddForm
-from .serialize import BannerSerializer, BooklistSerializer
+from .serialize import BannerSerializer, BooklistSerializer, LibbookSerializer
 from .tools import download_photo
 
 
@@ -390,15 +390,16 @@ class libBook(generic.View):
 
         objects = objects.qs[start:(start + length)]
 
-        dic = [obj.as_dict() for obj in objects]
+        serializer = LibbookSerializer(objects, many=True)
+        # dic = [obj.as_dict() for obj in objects]
 
-        print dic
+        print serializer.data
 
         resp = {
             'draw': draw,
             'recordsTotal': recordsTotal,
             'recordsFiltered': recordsFiltered,
-            'data': dic,
+            'data': serializer.data,
         }
 
         return HttpResponse(json.dumps(resp), content_type="application/json")

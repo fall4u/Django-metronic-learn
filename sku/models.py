@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import datetime
 import uuid
 
 from django.db import models
@@ -72,19 +71,6 @@ class LibBook(models.Model):
     overDays = models.PositiveIntegerField(default=0)
     LendAmount = models.PositiveIntegerField(default=0)
 
-    def as_dict(self):
-        u=dueD=inD = ''
-        if isinstance(self.uuid, uuid.UUID):
-            u = str(self.uuid)
-        if isinstance(self.inDate, datetime.date):
-            inD = self.inDate.strftime('%Y-%m-%d')
-        if isinstance(self.dueDate, datetime.date):
-            dueD = self.dueDate.strftime('%Y-%m-%d')  
-
-
-        return dict(uid=u, name =self.book.name, isbn=self.book.isbn, author = self.book.author, press = self.book.press,
-                    price=self.book.price, inDate=inD, Status=self.get_status_display(), Due=dueD,
-                    OverDate=self.overDays, Counts = self.LendAmount)
 
         # def __unicode__(self):
         #     return "%s %s %s" %(self.book.name , self.inDate.strftime('%Y-%m-%d'), str(self.uuid))
