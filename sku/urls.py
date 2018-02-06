@@ -29,11 +29,11 @@ urlpatterns = [
 
     # library book query
     url(r'^libraryBook/$', views.libBook.as_view(), name='libBook'),
-
     url(r'^libraryBook/add/$', views.libaddBook.as_view(), name='libaddBook'),
-
     url(r'^libraryBook/uuid/$', views.bookuuidview.as_view(), name='bookuuid'),
-
+    url(r'^libraryBook/update/(?P<uuid>[a-f\d]{8}(-[a-f\d]{4}){3}-[a-f\d]{12}?)/$', views.libbookUpdate.as_view(),
+        name='libbookUpdate'),
+    # banner related
     url(r'^banner/$', views.banner.as_view(), name='banner'),
     url(r'^banner/list/$', views.bannerList.as_view(), name='bannerList'),
     url(r'^banner/api/delete/$', api.bannerDelete, name='bannerDelete'),

@@ -128,7 +128,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = "/Users/zhuxufeng/Dev/www/static/"
 MEDIA_ROOT = "/Users/zhuxufeng/Dev/www/media/"
 MEDIA_URL = '/media/'
-
+# MEDIA_URL = 'https://www.fall4u.com/media/'
 # Secure configiuratioins
 # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO','https')
 # SECURE_SSL_REDIRECT = True

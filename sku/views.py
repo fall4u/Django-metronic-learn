@@ -13,7 +13,7 @@ from django.contrib import messages
 from django.db.models import ProtectedError
 from django.forms.models import model_to_dict
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import generic
 from django.views.generic.edit import UpdateView, DeleteView
@@ -23,8 +23,10 @@ from .filter import BookFilter, LibBookFilter
 from .form import UploadFileForm, bookAddForm, libBookAddForm
 from .serialize import BannerSerializer, BooklistSerializer, LibbookSerializer
 from .tools import download_photo
+from rest_framework import generics, renderers, status
+from rest_framework.response import Response
 
-
+from django.template import loader
 # Create your views here.
 
 class SkuView(generic.View):
@@ -405,16 +407,58 @@ class libBook(generic.View):
         return HttpResponse(json.dumps(resp), content_type="application/json")
 
 
+class libbookUpdate(generics.RetrieveUpdateDestroyAPIView):
+    # Get /Update /Delete a libbook
+    queryset = LibBook.objects.all()
+    renderer_classes = [renderers.TemplateHTMLRenderer]
+    template_name = 'p_libbookdetail.html'
+    serializer_class = LibbookSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        uuid = kwargs.pop('uuid')
+        libbook = get_object_or_404(LibBook, uuid=uuid)
+        serializer = LibbookSerializer(libbook)
+        return Response({'libbook': serializer.data})
+
+    def update(self, request, *args, **kwargs):
+        uuid = kwargs['uuid']
+        libbook = get_object_or_404(LibBook, uuid=uuid)
+
+        serializer = LibbookSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        libbook.status = serializer.data['status']
+        libbook.uuid = serializer.data['uuid']
+
+        libbook.save()
+
+        resp = {
+            'code': 0,
+            'msg': "OK",
+            "data": []
+        }
+        return HttpResponse(json.dumps(resp), content_type="application/json")
+
+    def delete(self, request, *args, **kwargs):
+        uuid = kwargs['uuid']
+        libbook = get_object_or_404(LibBook, uuid=uuid)
+
+        serializer = LibbookSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        libbook.delete()
+
+        resp = {
+            'code': 0,
+            'msg': "OK",
+            "data": []
+        }
+        return HttpResponse(json.dumps(resp), content_type="application/json")        
+
 class bannerList(generic.View):
     def get(self, request):
         objects = Banner.objects.all()
-        for item in objects:
-            print "book name :%s" % (item.book.name)
-            print "book order : %s" % (item.s)
-
         serialize = BannerSerializer(objects, many=True)
-        print "BannerSerialize finish"
-        print serialize.data
         return HttpResponse(json.dumps(serialize.data), content_type="application/json")
 
     def post(self, request):

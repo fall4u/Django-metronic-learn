@@ -627,11 +627,11 @@ License: You must have a valid license purchased only from themeforest(the above
                     <table class="table table-striped table-bordered table-hover table-checkable order-column" id="sample_1">
                           <thead>
                           <tr role="row" class="heading">
-                                <th> UID</th>
-                                <th> 书名</th>
-                                <th> ISBN</th>
-                                <th> 作者</th>
-                                <th> 出版社</th>
+                              <th width="15%"> UID</th>
+                              <th width="15%"> 书名</th>
+                              <th width="10%"> ISBN</th>
+                              <th width="8%"> 作者</th>
+                              <th width="8%"> 出版社</th>
                                 <th> 价格</th>
                                 <th> Import Date</th>
                                 <th> Status</th>
@@ -941,9 +941,17 @@ License: You must have a valid license purchased only from themeforest(the above
                             { data: 'overDays'},
                             { data: 'LendAmount'}
                         ],
-                        aoColumnDefs :[
-                            { "aTargets": [0], "sWidth" : "15%" }
+                       
+                        columnDefs:[
+                            {
+                                'targets':0,
+                                'render': function(data,type,full,meta){
+                                    data = '<a href="' + 'update/' + data + '/' + '">' + data + '</a>';
+                                    return data;
+                                }
+                            },                        
                         ]
+                        
                      }
 
                 );

@@ -9,7 +9,7 @@ from .models import Book, Banner, LibBook
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
-        fields = ('name', 'isbn', 'author', 'press', 'price')
+        fields = ('name', 'isbn', 'author', 'press', 'price', 'cover')
 
 
 class BooklistSerializer(serializers.ModelSerializer):
@@ -28,11 +28,7 @@ class BannerSerializer(serializers.ModelSerializer):
 
 
 class LibbookSerializer(serializers.ModelSerializer):
-    book = BookSerializer(required=True)
-    status = serializers.SerializerMethodField()
-
-    def get_status(self, obj):
-        return obj.get_status_display()
+    book = BookSerializer(required=False)
 
     class Meta:
         model = LibBook
