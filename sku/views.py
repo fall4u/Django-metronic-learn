@@ -17,16 +17,16 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import generic
 from django.views.generic.edit import UpdateView, DeleteView
+from rest_framework import generics, renderers
+from rest_framework.response import Response
 
 from sku.models import Book, LibBook, Banner
 from .filter import BookFilter, LibBookFilter
 from .form import UploadFileForm, bookAddForm, libBookAddForm
 from .serialize import BannerSerializer, BooklistSerializer, LibbookSerializer
 from .tools import download_photo
-from rest_framework import generics, renderers, status
-from rest_framework.response import Response
 
-from django.template import loader
+
 # Create your views here.
 
 class SkuView(generic.View):
@@ -283,10 +283,7 @@ class books(generic.View):
 
 def libraryBookImport(isbn, uuid):
     book = Book.objects.get(isbn=isbn)
-
     book.libbook_set.create(uuid=uuid)
-
-    book.totalAmount = book.libbook_set.count()
     book.save()
     return book
 

@@ -544,8 +544,7 @@ License: You must have a valid license purchased only from themeforest(the above
                             </div>
                             <div class="portlet-body">
                                 <form id="id_form" class="form-horizontal" role="form"
-                                      action="{% url 'sku:libbookUpdate' uuid=libbook.uuid %}" data-method="PUT"> {%
-                                    csrf_token %}
+                                      action="{% url 'sku:libbookUpdate' uuid=libbook.uuid %}" data-method="PUT"> {%csrf_token %}
 
                                     <div class="form-group">
                                         <label for="id_UUID" class="col-md-2 control-label">UUID</label>
@@ -583,20 +582,13 @@ License: You must have a valid license purchased only from themeforest(the above
                                         <label for="id_status" class="col-md-2 control-label">Status</label>
                                         <div class="col-md-4">
                                             <select class="bs-select form-control" id="id_status">
-                                                <option value="1" {% if libbook.status==
-                                                "1" %}selected{% endif %}>Online</option>
-                                                <option value="2" {% if libbook.status==
-                                                "2" %}selected{% endif %}>Offline</option>
-                                                <option value="6" {% if libbook.status==
-                                                "6" %}selected{% endif %}>Broken</option>
-                                                <option disabled value="3" {% if libbook.status==
-                                                "3" %}selected{% endif %}>idle</option>
-                                                <option disabled value="4" {% if libbook.status==
-                                                "4" %}selected{% endif %}>out</option>
-                                                <option disabled value="5" {% if libbook.status==
-                                                "5" %}selected{% endif %}>预定</option>
-                                                <option disabled value="7" {% if libbook.status==
-                                                "7" %}selected{% endif %}>超期</option>
+                                                <option value="1" {% if libbook.status == "1" %}selected{% endif %}>Online</option>
+                                                <option value="2" {% if libbook.status == "2" %}selected{% endif %}>Offline</option>
+                                                <option value="6" {% if libbook.status == "6" %}selected{% endif %}>Broken</option>
+                                                <option disabled value="3" {% if libbook.status == "3" %}selected{% endif %}>idle</option>
+                                                <option disabled value="4" {% if libbook.status == "4" %}selected{% endif %}>out</option>
+                                                <option disabled value="5" {% if libbook.status == "5" %}selected{% endif %}>预定</option>
+                                                <option disabled value="7" {% if libbook.status == "7" %}selected{% endif %}>超期</option>
                                             </select>
                                         </div>
                                     </div>
@@ -788,7 +780,10 @@ License: You must have a valid license purchased only from themeforest(the above
                 data: {
                     uuid: document.getElementById('id_UUID').value,
                 },                
-                success: function() { alert('删除成功'); }
+                success: function() {
+                    alert('删除成功');
+                    window.location.href=document.referrer;
+                }
             });               
         });
 

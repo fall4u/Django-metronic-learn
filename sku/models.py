@@ -30,12 +30,10 @@ class Book(models.Model):
     author = models.CharField(max_length=24)
     press = models.CharField(max_length=48)
     price = models.PositiveIntegerField(default=0)
-    totalAmount = models.PositiveIntegerField(default=0)
     outAmount = models.PositiveIntegerField(default=0)
     totalOutAmount = models.PositiveIntegerField(default=0)
     totalBrokenAmount = models.PositiveIntegerField(default=0)
-    cover = models.ImageField(default="lpic/default_cover.jp"
-                                      "g")
+    cover = models.ImageField(default="lpic/default_cover.jpg")
     objects = GetOrNoneManager()
 
 

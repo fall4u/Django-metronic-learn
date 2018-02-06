@@ -13,11 +13,17 @@ class BookSerializer(serializers.ModelSerializer):
 
 
 class BooklistSerializer(serializers.ModelSerializer):
+    totalAmount = serializers.SerializerMethodField()
+
     class Meta:
         model = Book
         fields = (
         'name', 'isbn', 'author', 'press', 'price', 'totalAmount', 'outAmount', 'totalOutAmount', 'totalBrokenAmount',
         'cover')
+
+    def get_totalAmount(self, obj):
+        return obj.libbook_set.count()
+
 
 class BannerSerializer(serializers.ModelSerializer):
     book = BookSerializer(required=True)
