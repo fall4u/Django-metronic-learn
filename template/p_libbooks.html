@@ -600,7 +600,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                             <div class="form-group">
                                                 <label class="control-label">状态</label>
                                                  <select class="bs-select form-control" id="status">
-                                                     <option value=''>全部</option>
+                                                     <option value=''>all</option>
                                                      <option value="1">online</option>
                                                      <option value="2">offline</option>
                                                      <option value="3">idle</option>
@@ -905,7 +905,11 @@ License: You must have a valid license purchased only from themeforest(the above
 
             //   }
             // }
-     
+            function getSelectText(data){
+                var row = ['all','online','offline','idle','out','booked','broken','overdue'];
+                data = row[data];
+                return data;
+            }
             $(document).ready(function() {
                 $("#sample_1").dataTable(
                     {
@@ -950,7 +954,14 @@ License: You must have a valid license purchased only from themeforest(the above
                                     data = '<a href="' + 'update/' + data + '/' + '">' + data + '</a>';
                                     return data;
                                 }
-                            },                        
+                            },
+                            {
+                                'targets': 7,
+                                'render': function(data, type, full, meta){
+                                    data = getSelectText(data);
+                                    return data;
+                                }
+                            }
                         ]
                         
                      }
