@@ -371,7 +371,6 @@ class libBook(generic.View):
         return render(request, 'p_libbooks.html')
 
     def post(self, request):
-        dumpRequest(request)
 
         objects = LibBook.objects.all()
 
@@ -383,6 +382,8 @@ class libBook(generic.View):
         draw = int(request.POST['draw'])
 
         # filter objects according to user inputs
+        serializer = LibbookSerializer(objects, many=True)
+
         objects = LibBookFilter(request.POST, queryset=objects)
 
         recordsFiltered = objects.qs.count()

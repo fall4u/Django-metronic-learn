@@ -17,6 +17,7 @@ class BookFilter(django_filters.FilterSet):
 class LibBookFilter(django_filters.FilterSet):
     book__name = django_filters.CharFilter(lookup_expr='icontains')
     book__isbn = django_filters.NumberFilter(lookup_expr='icontains')
+    status     = django_filters.ChoiceFilter(choices=LibBook.STATUS_CHOICES)
 
     class Meta:
         model = LibBook

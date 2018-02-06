@@ -41,6 +41,7 @@ class Book(models.Model):
         return "%s %d" % (self.name, self.isbn)
 
 class LibBook(models.Model):
+    STATUS_ALL = ''
     STATUS_ONLINE = '1'
     STATUS_OFFLINE = '2'
     STATUS_IDLE = '3'
@@ -49,6 +50,7 @@ class LibBook(models.Model):
     STATUS_BROKEN = '6'
     STATUS_DUEDATE = '7'
     STATUS_CHOICES = (
+        (STATUS_ALL, 'all'),
         (STATUS_ONLINE, 'online'),
         (STATUS_OFFLINE, 'offline'),
         (STATUS_IDLE, 'idle'),
