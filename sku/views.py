@@ -353,12 +353,13 @@ class libaddBook(generic.View):
                     status = "OK"
                     msg = "Bind book success !!"
                     book = libraryBookImport(isbn, uid)
-                    r = BooklistSerializer(book)
+                    serializer = BooklistSerializer(book)
+                    r.append(serializer.data)
 
             resp = {
                 'status': status,
                 'msg': msg,
-                'bindbook':r
+                'bindbook': r,
             }
 
             print resp 

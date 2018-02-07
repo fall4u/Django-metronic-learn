@@ -704,43 +704,6 @@ License: You must have a valid license purchased only from themeforest(the above
                 }
             });
 
-            function sendXHRequest(formData, uri) {
-                console.info("+++ sendXHRequest +++");
-                // Get an XMLHttpRequest instance
-                var xhr = new XMLHttpRequest();
-
-                //  xhr.upload.addEventListener('loadstart', onloadstartHandler, false);
-                //  xhr.upload.addEventListener('load', onloadHandler, false);
-                //  xhr.addEventListener('readystatechange', onreadystatechangeHandler, false);
-                // Set up request
-                xhr.addEventListener('readystatechange', onreadystatechangeHandler, false);
-
-                xhr.open('POST', uri, true);
-
-                for(var value of formData.values()){
-                    console.log(value);
-                }
-                xhr.setRequestHeader("X-CSRFToken",csrftoken);
-                // xhr.setRequestHeader("Content-Type", "multipart/form-data");
-
-                // xhr.setRequestHeader("Content-Type", "multipart/form-data; boundary=AaB03x");
-                // Fire!
-                xhr.send(formData);
-                console.info(" --- sendXHRequest ---");
-            };
-            
-            function queryBookData(){
-                var form = document.getElementById('id_querybookForm');
-                var formData =  new FormData();
-
-                // formData.append('ISBN',    document.getElementById("isbn").value);
-                // formData.append('author',  document.getElementById("author").value);
-                // formData.append('press',   document.getElementById("press").value);
-                // formData.append('status',$('form #status').val());
-                
-                formData.append('author',document.getElementById("id_author").value);
-                sendXHRequest(formData, 'book/query/');
-            };
     
             $("form").submit(function(e){
                 e.preventDefault();
@@ -769,109 +732,7 @@ License: You must have a valid license purchased only from themeforest(the above
 
               }
             }            
-            // var csrftoken = Cookies.get('csrftoken');
 
-            // function csrfSafeMethod(method) {
-            //     // these HTTP methods do not require CSRF protection
-            //     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-            // }
-            // $.ajaxSetup({
-            //     beforeSend: function(xhr, settings) {
-            //     if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-            //             xhr.setRequestHeader("X-CSRFToken", csrftoken);
-            //         }
-            //     }
-            // });
-
-
-            // function sendXHRequest(formData, uri) {
-            //     console.info("+++ sendXHRequest +++");
-            //     // Get an XMLHttpRequest instance
-            //     var xhr = new XMLHttpRequest();
-
-            //       xhr.upload.addEventListener('loadstart', onloadstartHandler, false);
-            //       xhr.upload.addEventListener('load', onloadHandler, false);
-            //       xhr.addEventListener('readystatechange', onreadystatechangeHandler, false);
-            //     // Set up request
-            //     xhr.open('POST', uri, true);
-
-            //     for(var value of formData.values()){
-            //         console.log(value);
-            //     }
-            //     xhr.setRequestHeader("X-CSRFToken",csrftoken);
-            //     //xhr.setRequestHeader("Content-Type", "multipart/form-data");
-
-            //     // xhr.setRequestHeader("Content-Type", "multipart/form-data; boundary=AaB03x");
-            //     // Fire!
-            //     xhr.send(formData);
-            //     console.info(" --- sendXHRequest ---");
-            // };
-
-            // function initFullFormAjaxUpload() {
-            //     var form = document.getElementById('testform');
-
-            //     // FormData receives the whole form
-            //     console.info("+++ initFullFormAjaxUpload +++");
-            //     var formData = new FormData();
-
-
-            //     //FormData only has the file
-            //     var fileInput = document.getElementById('skuimport');
-            //     var file = fileInput.files[0];
-            //     formData.append('skufile', file);
-            //     formData.append('store',$('#import #storesel').val());
-            //     //Code common to both variants
-            //     sendXHRequest(formData, 'skuimport/');
-            //     console.info("--- initFullFormAjaxUpload ---");
-
-            // };
-
-            // $('#id_querybookForm').submit(function(event)）
-            // {
-            //     event.preventDefault();
-            //     alert("on id_querybookForm submit");
-            // };
-
-            // $('#import #btn-confirm').click(function(event)）
-            // {
-
-            //     event.preventDefault();
-            //     initFullFormAjaxUpload();
-
-            //     // $('#import').modal('hide');
-            // };
-
-            // // Handle the start of the transmission
-            // function onloadstartHandler(evt) {
-            //     alert("onloadstartHandler");
-            // };
-            // // Handle the end of the transmission
-            // function onloadHandler(evt) {
-            //     alert("onloadHandler");
-            // };
-            // // Handle the progress
-            // function onprogressHandler(evt) {
-            //   var div = document.getElementById('progress');
-            //   var percent = evt.loaded/evt.total*100;
-            //   div.innerHTML = 'Progress: ' + percent + '%';
-            // };
-            // // Handle the response from the server
-            // function onreadystatechangeHandler(evt) {
-            //   var status, text, readyState;
-            //   try {
-            //     readyState = evt.target.readyState;
-            //     text = evt.target.responseText;
-            //     status = evt.target.status;
-            //   }
-            //   catch(e) {
-            //     return;
-            //   }
-            //   if (readyState == 4 && status == '200' && evt.target.responseText) {
-            //     alert(evt.target.responseText);
-            //     $('#import').modal('hide');
-
-            //   }
-            // }
      
             $(document).ready(function() {
 
@@ -886,7 +747,6 @@ License: You must have a valid license purchased only from themeforest(the above
                         "bLengthChange" : false,
                         "ajax": {
                                 "url": "#",
-                                //"url":"/sku/book/query/",
                                 "dataSrc": "bindbook",
                                 "type": "POST",
                                 "data": function (d) {
@@ -907,15 +767,15 @@ License: You must have a valid license purchased only from themeforest(the above
 
                         },
                         "columns": [
-                            { "data": "name" },
-                            { "data": "isbn" },
-                            { "data": "author" },
-                            { "data": "press" },
-                            { "data": "price" },
-                            { "data": "totalAmount" },
-                            { "data": "outAmount" },
-                            { "data": "totalOutAmount" },
-                            { "data": "totalBrokenAmount" }
+                            { data: 'name' },
+                            { data: 'isbn' },
+                            { data: 'author' },
+                            { data: 'press' },
+                            { data: 'price' },
+                            { data: 'totalAmount' },
+                            { data: 'outAmount' },
+                            { data: 'totalOutAmount' },
+                            { data: 'totalBrokenAmount' }
                         ],                                               
                     });
                 });
