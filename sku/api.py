@@ -21,6 +21,15 @@ class libraryBookList(generics.ListAPIView):
 
     serializer_class = BooklistSerializer
 
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        print "customize list"
+        r = {
+            "code" : 0,
+            "msg"  : "OK",
+            "data" : self.get_serializer(queryset,many=True).data
+        }
+        return Response(r)
 
 
 # Create your views here.
