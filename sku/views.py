@@ -155,9 +155,8 @@ def isPrice(c):
 def getPrice(unicodeStr):
     s = unicodeStr.encode('utf-8')
     s = filter(isPrice, s)
-    fp = float(s)
-    fp = int(fp * 100)
-    return str(fp)
+
+    return str(int(float(s)*100)) if s else ""
 
 def getBookInfo_douban(url):
     isbn = ''
@@ -176,8 +175,8 @@ def getBookInfo_douban(url):
         press = r['publisher']
         price = r['price']
         price = getPrice(price)
-        print r['author']
-        author = r['author'][0]
+        author = r['author']
+        author = author[0] if author else ""
         image = r['images']['large']
         if r['subtitle']:
             name = r['title'] + '--' + r['subtitle']
