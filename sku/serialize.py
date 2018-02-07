@@ -6,27 +6,41 @@ from rest_framework import serializers
 from .models import Book, Banner, LibBook
 
 
-class BookSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Book
-        fields = ('name', 'isbn', 'author', 'press', 'price', 'cover')
+class DynamicFieldsModelSerializer(serializers.ModelSerializer):
+    """
+    A ModelSerializer that takes an additional `fields` argument that
+    controls which fields should be displayed.
+    """
+
+    def __init__(self, *args, **kwargs):
+        # Don't pass the 'fields' arg up to the superclass
+        fields = kwargs.pop('fields', None)
+
+        # Instantiate the superclass normally
+        super(DynamicFieldsModelSerializer, self).__init__(*args, **kwargs)
+
+        if fields is not None:
+            # Drop any fields that are not specified in the `fields` argument.
+            allowed = set(fields)
+            existing = set(self.fields)
+            for field_name in existing - allowed:
+                self.fields.pop(field_name)
 
 
-class BooklistSerializer(serializers.ModelSerializer):
+
+class BooklistSerializer(DynamicFieldsModelSerializer):
     totalAmount = serializers.SerializerMethodField()
 
     class Meta:
         model = Book
-        fields = (
-        'name', 'isbn', 'author', 'press', 'price', 'totalAmount', 'outAmount', 'totalOutAmount', 'totalBrokenAmount',
-        'cover')
+        fields = ('name', 'isbn', 'author', 'press', 'price', 'totalAmount', 'outAmount', 'totalOutAmount', 'totalBrokenAmount','cover')
 
     def get_totalAmount(self, obj):
         return obj.libbook_set.count()
 
 
 class BannerSerializer(serializers.ModelSerializer):
-    book = BookSerializer(required=True)
+    book = BooklistSerializer(required=True,fields={'name','isbn','author','press','price','cover'})
 
     class Meta:
         model = Banner
@@ -34,7 +48,7 @@ class BannerSerializer(serializers.ModelSerializer):
 
 
 class LibbookSerializer(serializers.ModelSerializer):
-    book = BookSerializer(required=False)
+    book = BooklistSerializer(required=False,fields={'name','isbn','author','press','price','cover'})
 
     class Meta:
         model = LibBook
