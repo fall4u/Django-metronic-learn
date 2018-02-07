@@ -33,6 +33,10 @@ urlpatterns = [
     url(r'^libraryBook/uuid/$', views.bookuuidview.as_view(), name='bookuuid'),
     url(r'^libraryBook/update/(?P<uuid>[a-f\d]{8}(-[a-f\d]{4}){3}-[a-f\d]{12}?)/$', views.libbookUpdate.as_view(),
         name='libbookUpdate'),
+
+    # wx library book related
+    url(r'^libraryBook/list/$', api.libraryBookList.as_view(), name="librarybooklist"),
+
     # banner related
     url(r'^banner/$', views.banner.as_view(), name='banner'),
     url(r'^banner/list/$', views.bannerList.as_view(), name='bannerList'),
