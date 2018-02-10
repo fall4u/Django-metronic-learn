@@ -20,6 +20,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 
 from sku import urls as sku_urls
+from ueditor import urls as ueditor_urls
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -28,7 +29,11 @@ urlpatterns = [
     url(r'^login/', include('users.urls')),
 
     # sku
-    url(r'^sku/', include(sku_urls))
+    url(r'^sku/', include(sku_urls)),
+
+    # ueditor
+    url(r'^controller/', include(ueditor_urls))
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

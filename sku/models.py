@@ -34,6 +34,8 @@ class Book(models.Model):
     totalOutAmount = models.PositiveIntegerField(default=0)
     totalBrokenAmount = models.PositiveIntegerField(default=0)
     cover = models.ImageField(default="lpic/default_cover.jpg")
+    desc = models.TextField(null=True)
+
     objects = GetOrNoneManager()
 
 

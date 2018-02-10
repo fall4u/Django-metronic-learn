@@ -16,7 +16,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import generic
-from django.views.generic.edit import UpdateView, DeleteView
+from django.views.generic.edit import DeleteView
 from rest_framework import generics, renderers
 from rest_framework.response import Response
 
@@ -69,18 +69,6 @@ def dumpRequest(request):
             print value
 
 
-class bookUpdate(UpdateView):
-    model = Book
-    fields = ['name', 'author', 'price', 'isbn', 'press']
-    template_name = "p_bookdetail.html"
-    success_url = reverse_lazy('sku:sku')
-
-    def form_valid(self, form):
-        result = super(bookUpdate, self).form_valid(form)
-
-        if form.has_changed():
-            messages.success(self.request, '[书籍: %s] 信息修改成功!'%(form.cleaned_data['isbn']))
-        return result
 
 class bookDeleteView(DeleteView):
     '''
@@ -170,7 +158,6 @@ def getBookInfo_douban(url):
     print r
     if r.status_code == 200:
         r = r.json()
-        print r
         isbn = r['isbn13']
         press = r['publisher']
         price = r['price']
@@ -360,8 +347,6 @@ class libaddBook(generic.View):
                 'msg': msg,
                 'bindbook': r,
             }
-
-            print resp 
             
             return HttpResponse(json.dumps(resp), content_type="application/json")
 
@@ -576,3 +561,75 @@ def readFile(filename, chunk_size=512):
             else:
                 print "break"
                 break
+
+
+
+#####Test only
+class batchaddBook(generic.View):
+    def get(self, request):
+        if request.method == "GET":
+
+            return render(request, 'p_bookbatchadd.html')
+
+    def post(self, request):
+        if request.method == "POST":
+            print(" +++ batchaddBook +++")
+            error = ''
+            success = ''
+            dumpRequest(request)
+
+            books = Book.objects.get(isbn=9787111579489)
+            print books.desc
+            print request.POST['content']
+            books.desc = request.POST['content']
+            books.save()
+
+            resp = {
+                'code': 0,
+                'msg': "OK",
+                "data": []
+            }
+            return HttpResponse(json.dumps(resp), content_type="application/json")       
+
+
+
+
+class restbookUpdate(generics.RetrieveUpdateDestroyAPIView):
+    # Get /Update /Delete a libbook
+    queryset = Book.objects.all()
+    serializer_class = BooklistSerializer
+    lookup_field = 'isbn'
+    
+    renderer_classes = [renderers.TemplateHTMLRenderer]
+    template_name = 'p_bookdetail.html'
+
+    def retrieve(self, request, *args, **kwargs):
+        isbn = kwargs.pop('isbn')
+        book = get_object_or_404(Book, isbn=isbn)
+        serializer = BooklistSerializer(book, fields={'name','isbn','author','press','price','desc'})
+
+        return Response({'book': serializer.data})
+
+
+    def partial_update(self, request, *args, **kwargs):
+        partial = True
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            # If 'prefetch_related' has been applied to a queryset, we need to
+            # forcibly invalidate the prefetch cache on the instance.
+            instance._prefetched_objects_cache = {}     
+
+        resp = {
+                'code': 0,
+                'msg': "OK",
+                "data": []
+        }
+        return  HttpResponse(json.dumps(resp), content_type="application/json")       
+
+
+
+

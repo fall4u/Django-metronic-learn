@@ -555,10 +555,11 @@ License: You must have a valid license purchased only from themeforest(the above
                                     <label class="btn btn-transparent blue btn-outline btn-circle btn-sm"
                                            for="id_bookadd">
                                         <input type="radio" name="bookadd" class="toggle" id="id_bookadd" oncheck="msg">新增</label>
+
                                     <label class="btn btn-transparent blue btn-outline btn-circle btn-sm"
-                                           for="bookbatchadd">
+                                           for="id_bookbatchadd">
                                         <input type="radio" name="bookbatchadd" class="toggle"
-                                               id="bookbatchadd">批量导入</label>
+                                               id="id_bookbatchadd">批量导入</label>
                                 </div>
                             </div>
                         </div>
@@ -785,10 +786,15 @@ License: You must have a valid license purchased only from themeforest(the above
             var labelID;
             $('label').click(function(){
                 labelID = $(this).attr('for');
+                console.log(labelID);
+
                 if(labelID == "id_bookadd")
                     window.location.href = "add/";
-                if(labelID == "id_bookbatchadd")
+
+                if(labelID == "id_bookbatchadd"){
+                    window.location.href = "batchadd/";
                     alert("bookbatchadd");
+                }
             });
             function onreadystatechangeHandler(evt) {
               var status, text, readyState;

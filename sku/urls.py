@@ -21,8 +21,10 @@ urlpatterns = [
     # add book 
     url(r'^add/$', views.addBook.as_view(), name='addBook'),
 
+    # batchadd test only
+    # url(r'^batchadd/$', views.batchaddBook.as_view(),name='batchaddBook'),
     # Update book
-    url(r'^book/update/(?P<pk>\d+)/$', views.bookUpdate.as_view(), name='bookUpdate'),
+    url(r'^book/update/(?P<isbn>\d+)/$', views.restbookUpdate.as_view(), name='bookUpdate'),
 
     # Delete book
     url(r'^book/delete/(?P<pk>\d+)/$', views.bookDeleteView.as_view(), name='bookDelete'),
