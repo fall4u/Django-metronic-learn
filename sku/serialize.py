@@ -45,8 +45,7 @@ class BooklistSerializer(DynamicFieldsModelSerializer):
     def get_pics(self, obj):
         qs = UploadedImage.objects.all()
         qs = qs.filter(isbn=obj.isbn)
-        print obj.isbn
-        print qs
+
         serialize = UploadedImageSerializer(qs, fields={'image'}, many=True)
         return serialize.data
 
@@ -65,19 +64,25 @@ class BannerSerializer(serializers.ModelSerializer):
     def get_pics(self, obj):
         qs = UploadedImage.objects.all()
         qs = qs.filter(isbn=obj.book.isbn)
-        print obj.book.isbn
-        print qs
+
         serialize = UploadedImageSerializer(qs, fields={'image'}, many=True)
         return serialize.data
 
 
 class LibbookSerializer(serializers.ModelSerializer):
     book = BooklistSerializer(required=False, fields={'name', 'isbn', 'author', 'press', 'price'})
+    pics = serializers.SerializerMethodField()
 
     class Meta:
         model = LibBook
-        fields = ('uuid', 'book', 'inDate', 'status', 'dueDate', 'overDays', 'LendAmount')
+        fields = ('uuid', 'book', 'inDate', 'status', 'dueDate', 'overDays', 'LendAmount','pics')
 
+    def get_pics(self,obj):
+        qs = UploadedImage.objects.all()
+        qs = qs.filter(isbn=obj.book.isbn)
+
+        serialize = UploadedImageSerializer(qs, fields={'image'}, many=True)
+        return serialize.data
 
 class JsonResponseSerializer(serializers.Serializer):
     code = serializers.IntegerField()
