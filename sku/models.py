@@ -33,7 +33,7 @@ class Book(models.Model):
     outAmount = models.PositiveIntegerField(default=0)
     totalOutAmount = models.PositiveIntegerField(default=0)
     totalBrokenAmount = models.PositiveIntegerField(default=0)
-    cover = models.ImageField(default="lpic/default_cover.jpg")
+    # cover = models.ImageField(default="lpic/default_cover.jpg")
     desc = models.TextField(null=True)
 
     objects = GetOrNoneManager()
@@ -96,10 +96,7 @@ class Banner(models.Model):
         try:
             replacement = qs[0]
             print "_swap_qs"
-            print replacement.book.name
-            print replacement.s
 
-            print replacement
         except IndexError:
             # already first/last
             return

@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 
 from rest_framework import serializers
 
+from uploadimages.models import UploadedImage
+from uploadimages.serialize import UploadedImageSerializer
 from .models import Book, Banner, LibBook
 
 
@@ -27,31 +29,50 @@ class DynamicFieldsModelSerializer(serializers.ModelSerializer):
                 self.fields.pop(field_name)
 
 
-
 class BooklistSerializer(DynamicFieldsModelSerializer):
     totalAmount = serializers.SerializerMethodField(read_only=True)
     isbn = serializers.IntegerField(required=False)
+    pics = serializers.SerializerMethodField()
 
     class Meta:
         model = Book
-        fields = ('name', 'isbn', 'author', 'press', 'price', 'totalAmount', 'outAmount', 'totalOutAmount', 'totalBrokenAmount','cover','desc')
+        fields = ('pics', 'name', 'isbn', 'author', 'press', 'price', 'totalAmount', 'outAmount', 'totalOutAmount',
+                  'totalBrokenAmount', 'desc')
 
     def get_totalAmount(self, obj):
         return obj.libbook_set.count()
 
-    # def to_representation(self,obj):
-    # 	return "book(%d, %s,%s, %f)"%(obj.isbn, obj.name,obj.author,obj.price/100)
+    def get_pics(self, obj):
+        qs = UploadedImage.objects.all()
+        qs = qs.filter(isbn=obj.isbn)
+        print obj.isbn
+        print qs
+        serialize = UploadedImageSerializer(qs, fields={'image'}, many=True)
+        return serialize.data
+
+        # def to_representation(self,obj):
+        # 	return "book(%d, %s,%s, %f)"%(obj.isbn, obj.name,obj.author,obj.price/100)
+
 
 class BannerSerializer(serializers.ModelSerializer):
-    book = BooklistSerializer(required=True,fields={'name','isbn','author','press','price','cover'})
+    book = BooklistSerializer(required=True, fields={'name', 'isbn', 'author', 'press', 'price'})
+    pics = serializers.SerializerMethodField()
 
     class Meta:
         model = Banner
-        fields = ('book',)
+        fields = ('book', 'pics')
+
+    def get_pics(self, obj):
+        qs = UploadedImage.objects.all()
+        qs = qs.filter(isbn=obj.book.isbn)
+        print obj.book.isbn
+        print qs
+        serialize = UploadedImageSerializer(qs, fields={'image'}, many=True)
+        return serialize.data
 
 
 class LibbookSerializer(serializers.ModelSerializer):
-    book = BooklistSerializer(required=False,fields={'name','isbn','author','press','price','cover'})
+    book = BooklistSerializer(required=False, fields={'name', 'isbn', 'author', 'press', 'price'})
 
     class Meta:
         model = LibBook

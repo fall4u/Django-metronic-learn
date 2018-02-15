@@ -718,35 +718,7 @@ License: You must have a valid license purchased only from themeforest(the above
                 sendXHRequest(formData, 'book/query/');
             };
     
- //            $("form").submit(function(e){
- //                e.preventDefault();
- // //               queryBookData();
- //                table = $("#sample_1").DataTable();
- //                table.ajax.reload();
- //            });
 
-
-            // $('#id_bannerAdd').click(function(){
-            //     // $.ajax({
-            //     //         "url": "#",
-            //     //         "dataSrc": "bindbook",
-            //     //         "type": "POST",
-            //     //         "data": function (d) {
-            //     //             d.isbn=document.getElementById('id_ISBN').value;
-            //     //         },
-            //     //         // dataFilter:function(data,json){
-            //     //         //      r = JSON.parse(data);
-            //     //         //      if (r.status == "OK"){
-            //     //         //         console.log("信息添加成功");
-            //     //         //      }else{
-            //     //         //         console.log(r.msg);
-            //     //         //      }
-
-            //     //         //      return data;
-            //     //         // }
-
-            //     // });
-            // });
 
             function onreadystatechangeHandler(evt) {
               var status, text, readyState;
@@ -763,109 +735,7 @@ License: You must have a valid license purchased only from themeforest(the above
 
               }
             }            
-            // var csrftoken = Cookies.get('csrftoken');
-
-            // function csrfSafeMethod(method) {
-            //     // these HTTP methods do not require CSRF protection
-            //     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-            // }
-            // $.ajaxSetup({
-            //     beforeSend: function(xhr, settings) {
-            //     if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-            //             xhr.setRequestHeader("X-CSRFToken", csrftoken);
-            //         }
-            //     }
-            // });
-
-
-            // function sendXHRequest(formData, uri) {
-            //     console.info("+++ sendXHRequest +++");
-            //     // Get an XMLHttpRequest instance
-            //     var xhr = new XMLHttpRequest();
-
-            //       xhr.upload.addEventListener('loadstart', onloadstartHandler, false);
-            //       xhr.upload.addEventListener('load', onloadHandler, false);
-            //       xhr.addEventListener('readystatechange', onreadystatechangeHandler, false);
-            //     // Set up request
-            //     xhr.open('POST', uri, true);
-
-            //     for(var value of formData.values()){
-            //         console.log(value);
-            //     }
-            //     xhr.setRequestHeader("X-CSRFToken",csrftoken);
-            //     //xhr.setRequestHeader("Content-Type", "multipart/form-data");
-
-            //     // xhr.setRequestHeader("Content-Type", "multipart/form-data; boundary=AaB03x");
-            //     // Fire!
-            //     xhr.send(formData);
-            //     console.info(" --- sendXHRequest ---");
-            // };
-
-            // function initFullFormAjaxUpload() {
-            //     var form = document.getElementById('testform');
-
-            //     // FormData receives the whole form
-            //     console.info("+++ initFullFormAjaxUpload +++");
-            //     var formData = new FormData();
-
-
-            //     //FormData only has the file
-            //     var fileInput = document.getElementById('skuimport');
-            //     var file = fileInput.files[0];
-            //     formData.append('skufile', file);
-            //     formData.append('store',$('#import #storesel').val());
-            //     //Code common to both variants
-            //     sendXHRequest(formData, 'skuimport/');
-            //     console.info("--- initFullFormAjaxUpload ---");
-
-            // };
-
-            // $('#id_querybookForm').submit(function(event)）
-            // {
-            //     event.preventDefault();
-            //     alert("on id_querybookForm submit");
-            // };
-
-            // $('#import #btn-confirm').click(function(event)）
-            // {
-
-            //     event.preventDefault();
-            //     initFullFormAjaxUpload();
-
-            //     // $('#import').modal('hide');
-            // };
-
-            // // Handle the start of the transmission
-            // function onloadstartHandler(evt) {
-            //     alert("onloadstartHandler");
-            // };
-            // // Handle the end of the transmission
-            // function onloadHandler(evt) {
-            //     alert("onloadHandler");
-            // };
-            // // Handle the progress
-            // function onprogressHandler(evt) {
-            //   var div = document.getElementById('progress');
-            //   var percent = evt.loaded/evt.total*100;
-            //   div.innerHTML = 'Progress: ' + percent + '%';
-            // };
-            // // Handle the response from the server
-            // function onreadystatechangeHandler(evt) {
-            //   var status, text, readyState;
-            //   try {
-            //     readyState = evt.target.readyState;
-            //     text = evt.target.responseText;
-            //     status = evt.target.status;
-            //   }
-            //   catch(e) {
-            //     return;
-            //   }
-            //   if (readyState == 4 && status == '200' && evt.target.responseText) {
-            //     alert(evt.target.responseText);
-            //     $('#import').modal('hide');
-
-            //   }
-            // }
+            
             function swapDataTableRows(selector, row1Index, row2Index)
             {
                 var datatable = selector.DataTable();
@@ -970,7 +840,7 @@ License: You must have a valid license purchased only from themeforest(the above
                         },
                         columns: [
                             { },
-                            { "data": "book.cover" },
+                            { "data": "pics.0.image" },
                             { "data": "book.name" },
                             { "data": "book.isbn" },
                             { "data": "book.author" },

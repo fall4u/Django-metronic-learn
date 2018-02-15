@@ -19,10 +19,10 @@ urlpatterns = [
     url(r'^book/getinfo/$', views.getBookInfo.as_view(),name='getBookinfo_douban'),
 
     # add book 
-    url(r'^add/$', views.addBook.as_view(), name='addBook'),
+    url(r'^add/$', views.restaddBook.as_view(), name='addBook'),
 
     # batchadd test only
-    # url(r'^batchadd/$', views.batchaddBook.as_view(),name='batchaddBook'),
+    url(r'^batchadd/$', views.batchaddBook.as_view(),name='batchaddBook'),
     # Update book
     url(r'^book/update/(?P<isbn>\d+)/$', views.restbookUpdate.as_view(), name='bookUpdate'),
 
@@ -39,11 +39,15 @@ urlpatterns = [
     # wx library book related
     url(r'^libraryBook/list/$', api.libraryBookList.as_view(), name="librarybooklist"),
 
+    # wx book detail 
+    url(r'^book/(?P<isbn>\d+)/$', api.bookDetail.as_view(), name="librarybooklist"),
+
     # banner related
     url(r'^banner/$', views.banner.as_view(), name='banner'),
     url(r'^banner/list/$', views.bannerList.as_view(), name='bannerList'),
     url(r'^banner/api/delete/$', api.bannerDelete, name='bannerDelete'),
     url(r'^banner/api/move_up/$', api.bannerMoveUp, name='bannerUp'),
     url(r'^banner/api/move_down/$', api.bannerMoveDown, name='bannerDown'),
+
 
 ]

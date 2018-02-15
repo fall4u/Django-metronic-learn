@@ -21,6 +21,7 @@ from django.contrib import admin
 
 from sku import urls as sku_urls
 from ueditor import urls as ueditor_urls
+from uploadimages import urls as uploadimage_urls
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -32,7 +33,10 @@ urlpatterns = [
     url(r'^sku/', include(sku_urls)),
 
     # ueditor
-    url(r'^controller/', include(ueditor_urls))
+    url(r'^controller/', include(ueditor_urls)),
+
+    # uploadimage 
+    url(r'^uploadimage/', include(uploadimage_urls)),
 
 ]
 

@@ -10,17 +10,21 @@ import qrcode
 import requests
 from django.conf import settings
 from django.contrib import messages
+from django.db import IntegrityError
 from django.db.models import ProtectedError
 from django.forms.models import model_to_dict
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import generic
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.edit import DeleteView
-from rest_framework import generics, renderers
+from rest_framework import generics, renderers, status
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from sku.models import Book, LibBook, Banner
+from uploadimages.models import UploadedImage
 from .filter import BookFilter, LibBookFilter
 from .form import UploadFileForm, bookAddForm, libBookAddForm
 from .serialize import BannerSerializer, BooklistSerializer, LibbookSerializer
@@ -255,6 +259,7 @@ class books(generic.View):
             objects = objects.qs[start:(start + length)]
 
             serialize = BooklistSerializer(objects, many=True)
+
 
             resp = {
                 'draw': draw,
@@ -591,6 +596,16 @@ class batchaddBook(generic.View):
             }
             return HttpResponse(json.dumps(resp), content_type="application/json")       
 
+@csrf_exempt
+def uploadimages(request):
+    dumpRequest(request)
+    resp = {
+        'jsonrpc' : '2.0',
+        'result' : [],
+        'id' : "id"
+    }
+    return HttpResponse(json.dumps(resp), content_type="application/json")       
+
 
 
 
@@ -630,6 +645,28 @@ class restbookUpdate(generics.RetrieveUpdateDestroyAPIView):
         }
         return  HttpResponse(json.dumps(resp), content_type="application/json")       
 
+
+class restaddBook(APIView):
+    # add boook
+    def get(self, request, format=None):
+        return render(request, 'p_bookAdd.html')
+    def post(self, request, format=None):
+        serializer = BooklistSerializer(data=request.data, fields={'name','author','press','price','isbn','desc'})
+        isbn = request.POST['isbn']
+        # make sure the users commit SKU pictures 
+        pics = UploadedImage.objects.filter(isbn=isbn)
+        print pics.count()
+        if not pics.count():
+            return Response("请先上传图片", status=status.HTTP_400_BAD_REQUEST)
+
+        if serializer.is_valid():
+            try:
+                serializer.save()
+            except IntegrityError as exception:
+                return Response(exception.message, status=status.HTTP_400_BAD_REQUEST)
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 

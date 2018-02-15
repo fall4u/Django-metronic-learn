@@ -972,7 +972,7 @@ License: You must have a valid license purchased only from themeforest(the above
                         },
                         columns: [
                             { },
-                            { data: 'cover'},
+                            { data: 'pics.0.image'},
                             { data: 'name' },
                             { data: 'isbn' },
                             { data: 'author' },         
@@ -1006,8 +1006,6 @@ License: You must have a valid license purchased only from themeforest(the above
                             {
                                 'targets':3,
                                 'render': function(data,type,full,meta){
-                                    console.log(data);
-
                                     data = '<a href="' + 'book/update/' + data + '/' + '">' + data + '</a>';
                                     return data;
                                 }
