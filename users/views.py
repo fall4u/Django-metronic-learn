@@ -12,17 +12,12 @@ from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView, R
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+# Create your views here.
+from .cons import Constant
 from .form_user_login import UserForm
 from .models import Profile, Address
 from .serialize import UserProfileSerializer, AddressSerializer
 from .wxapp import WXAppData
-
-# Create your views here.
-
-
-APPID = 'YOURAPPID'
-APPSECRET = 'YOURAPPSECRET'
-
 
 
 class loginView(generic.View):
@@ -66,7 +61,7 @@ def wxlogin(request):
     print "code = %s"%code
     print "iv = %s"%iv
 
-    wxapp_data = WXAppData(appId = APPID , secret= APPSECRET)
+    wxapp_data = WXAppData(appId = Constant.APPID , secret= Constant.APPSECRET)
     token = wxapp_data.get_token(code=code, encrypt_data=encrypt_data,iv=iv)
 
     result = {
@@ -81,7 +76,7 @@ class UserList(ListAPIView):
     serializer_class = UserProfileSerializer
 
     def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset();
+        queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
         print serializer.data
         return Response(serializer.data)
@@ -118,11 +113,22 @@ class wxaddressList(ListAPIView):
 
 
 class webaddressList(ListAPIView):
+    '''
+    used in admin web interface
+    return the qs according to the user pk 
+    '''
     authentication_classes = (TokenAuthentication,BasicAuthentication,SessionAuthentication)
     queryset = Address.objects.all()
     serializer_class = AddressSerializer
     permission_classes = (IsAuthenticated,)
 
+
+    def list(self, request, *args, **kwargs):
+        pk = kwargs.pop('pk')
+        profile = Profile.objects.get(pk=pk)
+        queryset = self.get_queryset().filter(user=profile)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 
