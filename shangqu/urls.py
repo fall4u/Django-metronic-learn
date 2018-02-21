@@ -22,12 +22,17 @@ from django.contrib import admin
 from sku import urls as sku_urls
 from ueditor import urls as ueditor_urls
 from uploadimages import urls as uploadimage_urls
+from users import views as users_views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
     # homepage
-    url(r'^login/', include('users.urls')),
+#    url(r'^login/', include('users.urls')),
+    url(r'^$', users_views.loginView.as_view()),
+    url(r'index.html/', users_views.index),
+
+    url(r'user/',include('users.urls')),
 
     # sku
     url(r'^sku/', include(sku_urls)),

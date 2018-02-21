@@ -655,7 +655,6 @@ class restaddBook(APIView):
         isbn = request.POST['isbn']
         # make sure the users commit SKU pictures 
         pics = UploadedImage.objects.filter(isbn=isbn)
-        print pics.count()
         if not pics.count():
             return Response("请先上传图片", status=status.HTTP_400_BAD_REQUEST)
 

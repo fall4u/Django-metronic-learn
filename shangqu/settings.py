@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework.authtoken',
     'rest_framework',
     'sitetree',
     'django_filters',
@@ -128,13 +129,24 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = "/Users/zhuxufeng/Dev/www/static/"
 MEDIA_ROOT = "/Users/zhuxufeng/Dev/www/media/"
-MEDIA_URL = '/media/'
-#MEDIA_URL = 'https://www.fall4u.com/media/'
+#MEDIA_URL = '/media/'
+MEDIA_URL = 'https://www.fall4u.com/media/'
 # Secure configiuratioins
 # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO','https')
 # SECURE_SSL_REDIRECT = True
 # SESSION_COOKIE_SECURE = True
 # CSRF_COOKIE_SECURE = True
+
+CSRF_TRUSTED_ORIGINS = ['servicewechat.com','127.0.0.1']
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    )
+}
+
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),

@@ -33,11 +33,12 @@ class BooklistSerializer(DynamicFieldsModelSerializer):
     totalAmount = serializers.SerializerMethodField(read_only=True)
     isbn = serializers.IntegerField(required=False)
     pics = serializers.SerializerMethodField()
+    stores = serializers.SerializerMethodField()
 
     class Meta:
         model = Book
         fields = ('pics', 'name', 'isbn', 'author', 'press', 'price', 'totalAmount', 'outAmount', 'totalOutAmount',
-                  'totalBrokenAmount', 'desc')
+                  'totalBrokenAmount', 'desc', 'stores')
 
     def get_totalAmount(self, obj):
         return obj.libbook_set.count()
@@ -49,8 +50,10 @@ class BooklistSerializer(DynamicFieldsModelSerializer):
         serialize = UploadedImageSerializer(qs, fields={'image'}, many=True)
         return serialize.data
 
-        # def to_representation(self,obj):
-        # 	return "book(%d, %s,%s, %f)"%(obj.isbn, obj.name,obj.author,obj.price/100)
+    def get_stores(self,obj):
+        return self.get_totalAmount(obj) - obj.outAmount
+
+
 
 
 class BannerSerializer(serializers.ModelSerializer):
@@ -75,14 +78,15 @@ class LibbookSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LibBook
-        fields = ('uuid', 'book', 'inDate', 'status', 'dueDate', 'overDays', 'LendAmount','pics')
+        fields = ('uuid', 'book', 'inDate', 'status', 'dueDate', 'overDays', 'LendAmount', 'pics')
 
-    def get_pics(self,obj):
+    def get_pics(self, obj):
         qs = UploadedImage.objects.all()
         qs = qs.filter(isbn=obj.book.isbn)
 
         serialize = UploadedImageSerializer(qs, fields={'image'}, many=True)
         return serialize.data
+
 
 class JsonResponseSerializer(serializers.Serializer):
     code = serializers.IntegerField()

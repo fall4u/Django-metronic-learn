@@ -42,7 +42,7 @@ urlpatterns = [
     # wx book detail 
     url(r'^book/(?P<isbn>\d+)/$', api.bookDetail.as_view(), name="librarybooklist"),
 
-    # banner related
+    # wx banner related
     url(r'^banner/$', views.banner.as_view(), name='banner'),
     url(r'^banner/list/$', views.bannerList.as_view(), name='bannerList'),
     url(r'^banner/api/delete/$', api.bannerDelete, name='bannerDelete'),
