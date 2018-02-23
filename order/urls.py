@@ -10,5 +10,6 @@ urlpatterns = [
     url(r'^create/$', views.order.as_view(), name='create'),
     url(r'^list/$', views.orderList.as_view(),name='list'),
     url(r'^fee/$', views.orderFee.as_view(), name='getfee'),
+    url(r'^statistics/$', views.orderStatistics.as_view(), name='statstics')
 
 ]

@@ -36,12 +36,8 @@ class order(RetrieveUpdateDestroyAPIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
     def get_object(self):
-        return get_object_or_404(self.get_queryset(), pk=self.request.data.get('pk',''))
-
-
-
+        return get_object_or_404(self.get_queryset(), pk=self.request.data.get('pk', ''))
 
 
 class orderList(ListAPIView):
@@ -57,8 +53,9 @@ class orderList(ListAPIView):
 
     filter_backends = (filters.OrderingFilter, DjangoFilterBackend)
     ordering_fields = ('createTime')
-    ordering = ['-createTime',]
-    filter_fields = ('status', )
+    ordering = ['-createTime', ]
+    filter_fields = ('status',)
+
     # def list(self, request, *args, **kwargs):
     # 	status = request.GET.get('status', '')
     #     print status
@@ -94,7 +91,29 @@ class orderFee(RetrieveAPIView):
             "allGoodsPrice": 0,
             "deliveryFee": 0,
         }
-        return Response(ret)
+        return Response(ret, status=status.HTTP_200_OK)
 
 
+class orderStatistics(RetrieveAPIView):
+    '''
+    used in weixin
+    return the order statistics
+    '''
+    authentication_classes = (TokenAuthentication, BasicAuthentication, SessionAuthentication)
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    permission_classes = (IsAuthenticated,)
 
+    def get_queryset(self):
+        user = self.request.user.profile
+        return self.queryset.filter(user=user)
+
+    def retrieve(self, request, *args, **kwargs):
+        ret = {
+            "count_id_no_pay": self.get_queryset().filter(status='0').count(),
+            "count_id_no_transfer": self.get_queryset().filter(status='1').count(),
+            "count_id_no_confirm": self.get_queryset().filter(status='2').count(),
+            "count_id_no_reputation": self.get_queryset().filter(status='3').count(),
+            "count_id_success": self.get_queryset().filter(status='4').count(),
+        }
+        return Response(ret, status=status.HTTP_200_OK)

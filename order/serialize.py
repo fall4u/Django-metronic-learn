@@ -124,7 +124,7 @@ class OrderSerializer(DynamicFieldsModelSerializer):
         fields = ('stsidx', 'goods', 'status', 'pk', 'remark', 'createTime', 'updateTime', 'orderId', 'totalCharge')
 
     def create(self, validated_data):
-        status = Order.STATUS.C
+        status = '0'
         print  validated_data
         remark = validated_data.pop('remark')
         user = validated_data.pop('user')
@@ -133,9 +133,6 @@ class OrderSerializer(DynamicFieldsModelSerializer):
         for good in goods:
             sku = Book.objects.get(isbn=good['isbn'])
             OrderGoodsDetail.objects.create(order=instance, sku=sku, amount=good['amount'])
-
-
-
         return instance
 
     def get_stsidx(self, obj):

@@ -18,7 +18,6 @@ from .utils import unique_order_id_generator
 class Order(models.Model):
     # STATUS_ALL = ''
     # STATUS_USER_CREATE = '1' #订单创建  （已经下单，未付款，用户可以取消和付款） 对应小程序 待付款
-    # STATUS_CANCEL      = '2' #已取消     (用户主动取消或者超时取消）
     # STATUS_NEED_HANDLE = '3' #订单待处理 （用户已经付款， 等待后台处理）       对应小程序  待发货
     # STATUS_IN_DELIVER  = '4' #已发货 待确认                                对应小程序  待收货
     # STATUS_TO_COMMENT  = '5' #已收货 待评价                                对应小程序  待评价
@@ -36,22 +35,21 @@ class Order(models.Model):
     #     (STATUS_OVERDUE, 'overdue'),
     # )
     STATUS = Choices(
-            ('','All'),
-            ('C',u'待支付'),
-            ('K','Cancel'),
-            ('A','Accept'),
-            ('D','Delivery'),
-            ('M','Comment'),
-            ('S','Closed'),
-            ('O','OverDue'),
-        )
+        ('', 'All'),
+        ('0', u'待支付'),
+        ('1', u'待发货'),
+        ('2', u'待收货'),
+        ('3', u'待评价'),
+        ('4', u'已完成'),
+        ('5', u'已超期'),
+    )
     goods = models.ManyToManyField(Book, through='OrderGoodsDetail')
     user = models.ForeignKey(Profile, on_delete=models.PROTECT)
 
     remark = models.TextField(null=True, default='', blank=True)
     orderId = models.CharField(max_length=32, blank=True)
 
-    status = models.CharField(max_length=1, choices=STATUS, default=STATUS.S)
+    status = models.CharField(max_length=1, choices=STATUS, default='0')
     createTime = models.DateTimeField(auto_now_add=True)
     updateTime = models.DateTimeField(auto_now=True)
     dueDate = models.DateField(blank=True, null=True)
@@ -71,20 +69,15 @@ def pre_save_create(sender, instance, *args, **kwargs):
     if not instance.orderId:
         instance.orderId = unique_order_id_generator(instance)
     # create total charge fee
-    instance.totalCharge = get_totalCharge(instance);
+    instance.totalCharge = get_totalCharge(instance)
+
 
 def get_totalCharge(instance):
     goodsFee = 0
     deliveryFee = 0
-    serviceFee = 4.8 
+    serviceFee = 4.8
     return goodsFee + deliveryFee + serviceFee
-
 
 # @receiver(post_save, sender=Order)
 # def order_add_goods(sender,instance, **kwargs):
 #     pass
-
-
-
-
-
