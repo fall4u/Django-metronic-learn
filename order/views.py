@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication, BasicAuthentication, SessionAuthentication
 # Create your views here.
@@ -43,20 +45,28 @@ class orderList(ListAPIView):
     serializer_class = OrderSerializer
     permission_classes = (IsAuthenticated,)
 
-    def list(self, request, *args, **kwargs):
-    	status = request.GET.get('status', '')
-        print status
-        if status:
-            qs = self.get_queryset().filter(user=request.user.profile)
-            print qs
-            print qs.count()
-            print status
-            qs = qs.filter(status=status)
-            print qs
-            print qs.count()
-            serialize = self.get_serializer(qs, many=True)
-            return Response(serialize.data)
-        return Response("fail", status=status.HTTP_400_BAD_REQUEST)
+    filter_backends = (filters.OrderingFilter, DjangoFilterBackend)
+    ordering_fields = ('createTime')
+    ordering = ['-createTime',]
+    filter_fields = ('status', )
+    # def list(self, request, *args, **kwargs):
+    # 	status = request.GET.get('status', '')
+    #     print status
+    #     if status:
+    #         qs = self.get_queryset().filter(user=request.user.profile)
+    #         print qs
+    #         print qs.count()
+    #         print status
+    #         qs = qs.filter(status=status)
+    #         print qs
+    #         print qs.count()
+    #         serialize = self.get_serializer(qs, many=True)
+    #         return Response(serialize.data)
+    #     return Response("fail", status=status.HTTP_400_BAD_REQUEST)
+    def get_queryset(self):
+        qs = self.queryset.filter(user=self.request.user.profile)
+        return qs
+
 
 class orderFee(RetrieveAPIView):
     '''
