@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'uploadimages',
     'users',
     'sku',
+    'order',
 ]
 
 MIDDLEWARE = [

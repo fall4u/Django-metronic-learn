@@ -19,6 +19,7 @@ from django.conf.urls import url
 from django.conf.urls.static import static
 from django.contrib import admin
 
+from order import urls as order_urls
 from sku import urls as sku_urls
 from ueditor import urls as ueditor_urls
 from uploadimages import urls as uploadimage_urls
@@ -42,6 +43,9 @@ urlpatterns = [
 
     # uploadimage 
     url(r'^uploadimage/', include(uploadimage_urls)),
+
+    # order
+    url(r'^order/', include(order_urls)),
 
 ]
 
