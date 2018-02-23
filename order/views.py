@@ -1,17 +1,20 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication, BasicAuthentication, SessionAuthentication
-# Create your views here.
 from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .models import Order
 from .serialize import OrderSerializer
+
+
+# Create your views here.
 
 
 class order(RetrieveUpdateDestroyAPIView):
@@ -32,6 +35,13 @@ class order(RetrieveUpdateDestroyAPIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+    def get_object(self):
+        return get_object_or_404(self.get_queryset(), pk=self.request.data.get('pk',''))
+
+
+
 
 
 class orderList(ListAPIView):

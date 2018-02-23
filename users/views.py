@@ -183,15 +183,10 @@ class address(RetrieveUpdateDestroyAPIView):
 
     def destroy(self,request,*args, **kwargs):
         qs = self.get_queryset()
-        old = get_object_or_404(self.get_queryset(), isDefault=True)
-
-        print qs.count() 
-        print old.pk 
-        print self.request.data.get('pk', '')
+        old = get_object_or_404(qs, isDefault=True)
 
         if qs.count() != 1 and old.pk == self.request.data.get('pk',''):
             qs = qs.exclude(isDefault=True)
-            new = qs[0]
             newo = qs[0]
             newo.isDefault=True
             newo.save()   
@@ -200,24 +195,6 @@ class address(RetrieveUpdateDestroyAPIView):
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-        # if self.get_queryset().count() == 1 : 
-        #     instance = self.get_object()
-        #     self.perform_destroy(instance)
-        #     return Response(status=status.HTTP_204_NO_CONTENT)
-        # else:
-        #     o = get_object_or_404(self.get_queryset(), isDefault=True)
-        #     if o.pk == self.request.data.get('pk',''):
-        #         instance = self.get_object()
-        #         self.perform_destroy(instance)
-        #         return Response(status=status.HTTP_204_NO_CONTENT)
-        #     else:
-        #         qs = self.get_queryset().exclude(isDefault = True)   
-        #         newo = qs[0]
-        #         newo.isDefault=True
-        #         newo.save()            
-        #         instance = self.get_object()
-        #         self.perform_destroy(instance)
-        #         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 
