@@ -37,7 +37,10 @@ class order(RetrieveUpdateDestroyAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get_object(self):
-        pk = self.request.GET.get('pk', '')
+        if self.request.method == 'GET':
+            pk = self.request.GET.get('pk', '')
+        else:
+            pk = self.request.data.get('pk', '')
         return get_object_or_404(self.get_queryset(), pk=pk)
 
 

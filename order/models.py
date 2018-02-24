@@ -54,8 +54,9 @@ class Order(models.Model):
     updateTime = models.DateTimeField(auto_now=True)
     dueDate = models.DateField(blank=True, null=True)
 
-    totalCharge = models.DecimalField(default=0.00, max_digits=6, decimal_places=2)
-
+    goodsFee = models.DecimalField(default=0.00, max_digits=6, decimal_places=2)
+    deliveryFee = models.DecimalField(default=0.00, max_digits=4, decimal_places=2)
+    serviceFee  = models.DecimalField(default=0.00, max_digits=5, decimal_places=2)
 
 class OrderGoodsDetail(models.Model):
     sku = models.ForeignKey(Book, on_delete=models.CASCADE)
@@ -69,14 +70,10 @@ def pre_save_create(sender, instance, *args, **kwargs):
     if not instance.orderId:
         instance.orderId = unique_order_id_generator(instance)
     # create total charge fee
-    instance.totalCharge = get_totalCharge(instance)
+    instance.goodsFee = 0
+    instance.deliveryFee = 0
+    instance.serviceFee = 4.8
 
-
-def get_totalCharge(instance):
-    goodsFee = 0
-    deliveryFee = 0
-    serviceFee = 4.8
-    return goodsFee + deliveryFee + serviceFee
 
 # @receiver(post_save, sender=Order)
 # def order_add_goods(sender,instance, **kwargs):

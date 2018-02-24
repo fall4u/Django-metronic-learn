@@ -77,11 +77,13 @@ class DynamicFieldsModelSerializer(serializers.ModelSerializer):
 class OrderGoodsDetailSerializer(DynamicFieldsModelSerializer):
     isbn = serializers.ReadOnlyField(source='sku.isbn')
     name = serializers.ReadOnlyField(source='sku.name')
+    price = serializers.ReadOnlyField(source='sku.price')
+
     pics = serializers.SerializerMethodField()
 
     class Meta:
         model = OrderGoodsDetail
-        fields = ('isbn', 'name', 'amount','pics')
+        fields = ('isbn', 'name', 'price', 'amount', 'pics')
 
     def to_internal_value(self, data):
         ret = {
@@ -116,12 +118,15 @@ class OrderSerializer(DynamicFieldsModelSerializer):
 
     status = ChoicesField(required=False, choices=Order.STATUS)
     stsidx = serializers.SerializerMethodField()
+    totalCharge = serializers.SerializerMethodField()
     createTime = serializers.DateTimeField(read_only=True, format="%Y-%m-%d %H:%M:%S")
     updateTime = serializers.DateTimeField(read_only=True, format="%Y-%m-%d %H:%M:%S")
 
     class Meta:
         model = Order
-        fields = ('stsidx', 'goods', 'status', 'pk', 'remark', 'createTime', 'updateTime', 'orderId', 'totalCharge')
+        fields = (
+        'stsidx', 'goods', 'status', 'pk', 'remark', 'createTime', 'updateTime', 'orderId', 'totalCharge', 'goodsFee',
+        'deliveryFee', 'serviceFee')
 
     def create(self, validated_data):
         status = '0'
@@ -137,3 +142,6 @@ class OrderSerializer(DynamicFieldsModelSerializer):
 
     def get_stsidx(self, obj):
         return obj.status
+
+    def get_totalCharge(self, obj):
+        return obj.goodsFee + obj.deliveryFee + obj.serviceFee
