@@ -37,7 +37,8 @@ class order(RetrieveUpdateDestroyAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get_object(self):
-        return get_object_or_404(self.get_queryset(), pk=self.request.data.get('pk', ''))
+        pk = self.request.GET.get('pk', '')
+        return get_object_or_404(self.get_queryset(), pk=pk)
 
 
 class orderList(ListAPIView):
