@@ -20,14 +20,17 @@ from django.views import generic
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.edit import DeleteView
 from rest_framework import generics, renderers, status
+from rest_framework.authentication import BasicAuthentication, SessionAuthentication
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from sku.models import Book, LibBook, Banner
+from sku.models import Book, LibBook, Banner, Category
 from uploadimages.models import UploadedImage
 from .filter import BookFilter, LibBookFilter
 from .form import UploadFileForm, bookAddForm, libBookAddForm
-from .serialize import BannerSerializer, BooklistSerializer, LibbookSerializer
+from .serialize import BannerSerializer, BooklistSerializer, LibbookSerializer, CategorySerializer
 from .tools import download_photo
 
 
@@ -669,3 +672,32 @@ class restaddBook(APIView):
 
 
 
+
+@api_view(['GET', 'POST'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
+def category_view(request, format=None):
+    if request.method == "GET":
+        return render(request, 'p_category.html')
+
+    if request.method == "POST":
+        serializer = CategorySerializer(data=request.data)
+        if serializer.is_valid():
+            print "catery add +"
+            print serializer.validated_data
+            serializer.save()
+            return redirect('sku:category')
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class categoryList(generics.ListAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    authentication_classes = (BasicAuthentication, SessionAuthentication)
+    permission_classes = (IsAuthenticated,)
+
+class category(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    authentication_classes = (BasicAuthentication, SessionAuthentication)
+    permission_classes = (IsAuthenticated,)

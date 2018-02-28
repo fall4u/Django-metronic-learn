@@ -108,7 +108,6 @@ class Banner(models.Model):
         """
 
         order, replacement_order = getattr(self, 's'), getattr(replacement, 's')
-        print order, replacement_order
         setattr(self, 's', replacement_order)
         setattr(replacement, 's', order)
         self.save()
@@ -130,3 +129,54 @@ class Banner(models.Model):
             else:
                 setattr(self, 's', c + 1)
         super(Banner, self).save(*args, **kwargs)
+
+class Category(models.Model):
+    name  = models.CharField(max_length=48)
+    objects = GetOrNoneManager()
+
+    #ording
+    s = models.PositiveIntegerField(editable=False, db_index=True)
+
+    class Meta:
+        ordering = ('s',)
+
+    def _swap_qs0(self, qs):
+        """
+        Swap the positions of this object with first result, if any, from the provided queryset.
+        """
+        try:
+            replacement = qs[0]
+            print "_swap_qs"
+
+        except IndexError:
+            # already first/last
+            return
+        self.swap(replacement)
+
+    def swap(self, replacement):
+        """
+        Swap the position of this object with a replacement object.
+        """
+
+        order, replacement_order = getattr(self, 's'), getattr(replacement, 's')
+        setattr(self, 's', replacement_order)
+        setattr(replacement, 's', order)
+        self.save()
+        replacement.save()
+
+    def down(self):
+        self._swap_qs0(Banner.objects.all().filter(**{'s' + '__gt': getattr(self, 's')}))
+
+    def up(self):
+        self._swap_qs0(Banner.objects.all().filter(**{'s' + '__lt': getattr(self, 's')}))
+
+    def save(self, *args, **kwargs):
+        if getattr(self, 's') is None:
+            qs = Category.objects.all()
+            dic = qs.aggregate(Max('s'))
+            c = dic.get('s__max')
+            if c is None:
+                setattr(self, 's', 0)
+            else:
+                setattr(self, 's', c + 1)
+        super(Category, self).save(*args, **kwargs)

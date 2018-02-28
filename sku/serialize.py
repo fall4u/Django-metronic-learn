@@ -5,7 +5,7 @@ from rest_framework import serializers
 
 from uploadimages.models import UploadedImage
 from uploadimages.serialize import UploadedImageSerializer
-from .models import Book, Banner, LibBook
+from .models import Book, Banner, LibBook, Category
 
 
 class DynamicFieldsModelSerializer(serializers.ModelSerializer):
@@ -87,6 +87,10 @@ class LibbookSerializer(serializers.ModelSerializer):
         serialize = UploadedImageSerializer(qs, fields={'image'}, many=True)
         return serialize.data
 
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ('pk', 'name')
 
 class JsonResponseSerializer(serializers.Serializer):
     code = serializers.IntegerField()

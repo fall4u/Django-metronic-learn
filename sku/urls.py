@@ -49,5 +49,10 @@ urlpatterns = [
     url(r'^banner/api/move_up/$', api.bannerMoveUp, name='bannerUp'),
     url(r'^banner/api/move_down/$', api.bannerMoveDown, name='bannerDown'),
 
+    # Category related
+    url(r'^category/$', views.category_view, name='category'),
+    url(r'^category/list/$', views.categoryList.as_view(), name='categorylist'),
+
+    url('^category/(?P<pk>\d+)/$', views.category.as_view()),
 
 ]
