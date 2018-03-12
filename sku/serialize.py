@@ -29,19 +29,39 @@ class DynamicFieldsModelSerializer(serializers.ModelSerializer):
                 self.fields.pop(field_name)
 
 
+class ManyToManyField(serializers.PrimaryKeyRelatedField):
+
+    def to_representation(self, obj):
+        categorys = []
+        details = {}
+        details['id'] = obj.id
+        details['name'] = obj.name
+        categorys.append(details)
+
+        return  details
+
+
+
+
 class BooklistSerializer(DynamicFieldsModelSerializer):
     totalAmount = serializers.SerializerMethodField(read_only=True)
     isbn = serializers.IntegerField(required=False)
     pics = serializers.SerializerMethodField()
     stores = serializers.SerializerMethodField()
 
+    #cid = serializers.PrimaryKeyRelatedField(many=True, queryset=Category.objects.all())
+    cid = ManyToManyField(many=True, queryset=Category.objects.all())
+
     class Meta:
         model = Book
         fields = ('pics', 'name', 'isbn', 'author', 'press', 'price', 'totalAmount', 'outAmount', 'totalOutAmount',
-                  'totalBrokenAmount', 'desc', 'stores')
+                  'totalBrokenAmount', 'desc', 'stores', 'cid')
 
     def get_totalAmount(self, obj):
-        return obj.libbook_set.count()
+        store = obj.libbook_set.count()
+        if store < 3:
+            store = 3
+        return store
 
     def get_pics(self, obj):
         qs = UploadedImage.objects.all()
@@ -96,3 +116,4 @@ class JsonResponseSerializer(serializers.Serializer):
     code = serializers.IntegerField()
     msg = serializers.CharField()
     data = serializers.JSONField(required=False)
+

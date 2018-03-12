@@ -583,7 +583,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                     <input type="text" name="price" id="id_price" required
                                                            class="form-control"
                                                            value={{ book.price }}></div>
-                                                <span class="help-block">单位（分）</span>
+                                                <span class="help-block">单位（元）</span>
 
                                             </div>
                                             <div class="form-group" style="visibility: hidden">
@@ -594,8 +594,18 @@ License: You must have a valid license purchased only from themeforest(the above
                                                     <input type="text" name="isbn" id="id_isbn" required
                                                            class="form-control"
                                                            value={{ book.isbn }}></div>
-                                                <span class="help-block">单位（分）</span>
                                             </div>
+                                            <div class="form-group" >
+                                                <label class="control-label col-md-3">分类
+                                                </label>
+                                                <div class="col-md-4">
+                                                    <select id="pSelect2" class="form-control js-data-example-ajax" multiple>
+                                                        {% for o in  book.cid %}
+                                                            <option value ={{o.id}} selected="selected">{{o.name}}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>                                            
                                             <div class="form-group">
                                                 <label class="control-label col-md-3">Description:</label>
                                                 <div class="col-md-4">
@@ -885,16 +895,19 @@ License: You must have a valid license purchased only from themeforest(the above
         $("form").submit(function(e){
             e.preventDefault();
             var data = UE.getEditor('container').getContent();
+            var gSelections = $('#pSelect2').select2('val');
 
             $.ajax({
                 url: window.location.pathname,
                 type: 'PATCH',
                 dataType: 'json',
+                traditional: true,
                 data: {
                     name: document.getElementById('id_name').value,
                     author: document.getElementById('id_author').value,
                     press: document.getElementById('id_press').value,
                     price: document.getElementById('id_price').value,
+                    cid:gSelections,
                     desc : data,
                 },                
                 success: function() { alert('修改成功'); }
@@ -1394,6 +1407,24 @@ License: You must have a valid license purchased only from themeforest(the above
     updateTotalProgress();
 
             $(document).ready(function() {
+
+                $('#pSelect2').select2({
+                  ajax: {
+                    url: '/sku/category/weblist/',
+                    dataType:'json',
+                    success: function(data){
+                        console.log(data);
+                        var str = "";
+                        data.forEach(function(obj, index, array){
+                            str += "<option value='" + obj.pk + "'>" + obj.name + "</option>"
+                        })
+                        $('#pSelect2').html(str);
+                        $('#pSelect2').select2();                    
+                    }
+                  }
+                });     
+
+
                var isbn = document.getElementById('id_isbn').value;
 
                 $("#sample_1").dataTable(

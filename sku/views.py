@@ -20,7 +20,7 @@ from django.views import generic
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.edit import DeleteView
 from rest_framework import generics, renderers, status
-from rest_framework.authentication import BasicAuthentication, SessionAuthentication
+from rest_framework.authentication import BasicAuthentication, SessionAuthentication, TokenAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -624,7 +624,7 @@ class restbookUpdate(generics.RetrieveUpdateDestroyAPIView):
     def retrieve(self, request, *args, **kwargs):
         isbn = kwargs.pop('isbn')
         book = get_object_or_404(Book, isbn=isbn)
-        serializer = BooklistSerializer(book, fields={'name','isbn','author','press','price','desc'})
+        serializer = BooklistSerializer(book, fields={'name','isbn','author','press','price','desc', 'cid'})
 
         return Response({'book': serializer.data})
 
@@ -654,7 +654,7 @@ class restaddBook(APIView):
     def get(self, request, format=None):
         return render(request, 'p_bookAdd.html')
     def post(self, request, format=None):
-        serializer = BooklistSerializer(data=request.data, fields={'name','author','press','price','isbn','desc'})
+        serializer = BooklistSerializer(data=request.data, fields={'name','author','press','price','isbn','desc','cid'})
         isbn = request.POST['isbn']
         # make sure the users commit SKU pictures 
         pics = UploadedImage.objects.filter(isbn=isbn)
@@ -693,10 +693,16 @@ def category_view(request, format=None):
 class categoryList(generics.ListAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    authentication_classes = (BasicAuthentication, SessionAuthentication)
+    authentication_classes = (TokenAuthentication, BasicAuthentication, SessionAuthentication)
     permission_classes = (IsAuthenticated,)
 
 class category(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    authentication_classes = (BasicAuthentication, SessionAuthentication)
+    permission_classes = (IsAuthenticated,)
+
+class webCategoryList(generics.ListAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     authentication_classes = (BasicAuthentication, SessionAuthentication)

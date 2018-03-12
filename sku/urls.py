@@ -52,7 +52,10 @@ urlpatterns = [
     # Category related
     url(r'^category/$', views.category_view, name='category'),
     url(r'^category/list/$', views.categoryList.as_view(), name='categorylist'),
+    url(r'^category/(?P<pk>\d+)/$', views.category.as_view()),
 
-    url('^category/(?P<pk>\d+)/$', views.category.as_view()),
+    url(r'^category/weblist/$', views.webCategoryList.as_view(), name='webcategorylist'),
+
+
 
 ]

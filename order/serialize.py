@@ -30,50 +30,6 @@ class DynamicFieldsModelSerializer(serializers.ModelSerializer):
                 self.fields.pop(field_name)
 
 
-#
-# class BooklistSerializer(DynamicFieldsModelSerializer):
-#     totalAmount = serializers.SerializerMethodField(read_only=True)
-#     isbn = serializers.IntegerField(required=False)
-#     pics = serializers.SerializerMethodField()
-#     stores = serializers.SerializerMethodField()
-#
-#     class Meta:
-#         model = Book
-#         fields = ('pics', 'name', 'isbn', 'author', 'press', 'price', 'totalAmount', 'outAmount', 'totalOutAmount',
-#                   'totalBrokenAmount', 'desc', 'stores')
-#
-#     def get_totalAmount(self, obj):
-#         return obj.libbook_set.count()
-#
-#     def get_pics(self, obj):
-#         qs = UploadedImage.objects.all()
-#         qs = qs.filter(isbn=obj.isbn)
-#
-#         serialize = UploadedImageSerializer(qs, fields={'image'}, many=True)
-#         return serialize.data
-#
-#     def get_stores(self,obj):
-#         return self.get_totalAmount(obj) - obj.outAmount
-#
-#
-#
-#
-# class BannerSerializer(serializers.ModelSerializer):
-#     book = BooklistSerializer(required=True, fields={'name', 'isbn', 'author', 'press', 'price'})
-#     pics = serializers.SerializerMethodField()
-#
-#     class Meta:
-#         model = Banner
-#         fields = ('book', 'pics')
-#
-#     def get_pics(self, obj):
-#         qs = UploadedImage.objects.all()
-#         qs = qs.filter(isbn=obj.book.isbn)
-#
-#         serialize = UploadedImageSerializer(qs, fields={'image'}, many=True)
-#         return serialize.data
-
-
 class OrderGoodsDetailSerializer(DynamicFieldsModelSerializer):
     isbn = serializers.ReadOnlyField(source='sku.isbn')
     name = serializers.ReadOnlyField(source='sku.name')

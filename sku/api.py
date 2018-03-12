@@ -2,11 +2,13 @@
 from __future__ import unicode_literals
 
 from rest_framework import status, generics
+from rest_framework.authentication import TokenAuthentication, BasicAuthentication, SessionAuthentication
 from rest_framework.decorators import api_view
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 
-from sku.models import Book, Banner, LibBook
+from sku.models import Book, Banner
 from .serialize import JsonResponseSerializer, BooklistSerializer
 
 
@@ -14,12 +16,29 @@ class libraryBookList(generics.ListAPIView):
     '''
     api used for wx index page to get book list
     '''
-    objects = LibBook.objects.all()
-    booknames = objects.values_list("book__name")
-    booklist = Book.objects.filter(name__in=booknames.distinct())
-    queryset = booklist
 
+
+    queryset = Book.objects.all()
     serializer_class = BooklistSerializer
+
+    #Auth and permission
+    authentication_classes = (TokenAuthentication, BasicAuthentication, SessionAuthentication)
+    permission_classes = (IsAuthenticated,)
+
+
+
+    def get_queryset(self):
+        queryset = Book.objects.all()
+        category_id = self.request.query_params.get('cid', None)
+        if category_id is not None:
+            queryset = queryset.filter(cid__id = category_id)
+
+        name = self.request.query_params.get('nameLike', None)
+        if name is not None:
+            queryset = queryset.filter(name__contains=name)
+
+        return queryset
+
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
