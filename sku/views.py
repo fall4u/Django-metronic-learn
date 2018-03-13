@@ -151,7 +151,7 @@ def getPrice(unicodeStr):
     s = unicodeStr.encode('utf-8')
     s = filter(isPrice, s)
 
-    return str(int(float(s)*100)) if s else ""
+    return str((float(s))) if s else ""
 
 def getBookInfo_douban(url):
     isbn = ''
