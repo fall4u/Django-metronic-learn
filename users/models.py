@@ -38,6 +38,11 @@ class Address(models.Model):
     zipcode = models.PositiveIntegerField(default = 0)
     isDefault = models.BooleanField(default = False)
 
+class SearchInfo(models.Model):
+    user = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True)
+    info = models.TextField(null=True)
+    time = models.DateTimeField(auto_now_add=True)
+
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):

@@ -56,6 +56,6 @@ urlpatterns = [
 
     url(r'^category/weblist/$', views.webCategoryList.as_view(), name='webcategorylist'),
 
-
+    url(r'^category/api/list/$', api.wxcategoryList.as_view(), name='apicategorylist'),
 
 ]

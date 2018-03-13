@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import generic
 from rest_framework import renderers, status
 from rest_framework.authentication import TokenAuthentication, BasicAuthentication, SessionAuthentication
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -15,8 +15,8 @@ from rest_framework.response import Response
 # Create your views here.
 from .cons import Constant
 from .form_user_login import UserForm
-from .models import Profile, Address
-from .serialize import UserProfileSerializer, AddressSerializer
+from .models import Profile, Address, SearchInfo
+from .serialize import UserProfileSerializer, AddressSerializer, SearchInfoSerializer
 from .wxapp import WXAppData
 
 
@@ -75,6 +75,37 @@ class UserList(ListAPIView):
     queryset = Profile.objects.all()
     serializer_class = UserProfileSerializer
 
+    authentication_classes = (TokenAuthentication,BasicAuthentication,SessionAuthentication)
+    permission_class = (IsAuthenticated,)
+
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        print serializer.data
+        return Response(serializer.data)
+
+
+@api_view(['GET'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
+def User(request):
+    return render(request, 'p_users.html')
+
+@api_view(['GET'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
+def searchInfo(request):
+    return render(request, 'p_usersearchinfo.html')
+
+
+class searchInfoList(ListAPIView):
+    queryset = SearchInfo.objects.all()
+    serializer_class = SearchInfoSerializer
+
+    authentication_classes = (TokenAuthentication, BasicAuthentication, SessionAuthentication)
+    permission_class = (IsAuthenticated,)
+
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
@@ -83,9 +114,6 @@ class UserList(ListAPIView):
 
 
 
-class User(generic.View):
-    def get(self, request):
-        return render(request, 'p_users.html')
 
 class getDefaultAddress(RetrieveAPIView):
     authentication_classes = (TokenAuthentication,BasicAuthentication,SessionAuthentication)
