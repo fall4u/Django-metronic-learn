@@ -405,6 +405,10 @@ class libbookUpdate(generics.RetrieveUpdateDestroyAPIView):
     template_name = 'p_libbookdetail.html'
     serializer_class = LibbookSerializer
 
+    authentication_classes = ( BasicAuthentication, SessionAuthentication)
+    permission_classes = (IsAuthenticated,)
+
+
     def retrieve(self, request, *args, **kwargs):
         uuid = kwargs.pop('uuid')
         libbook = get_object_or_404(LibBook, uuid=uuid)
@@ -412,21 +416,22 @@ class libbookUpdate(generics.RetrieveUpdateDestroyAPIView):
         return Response({'libbook': serializer.data})
 
     def update(self, request, *args, **kwargs):
+        '''
+        只允许更改 UUID 和 状态
+        '''
+        print (" +++ libbookUpdate -update +++")
         uuid = kwargs['uuid']
         libbook = get_object_or_404(LibBook, uuid=uuid)
 
-        serializer = LibbookSerializer(data=request.data)
+        serializer = LibbookSerializer(libbook, data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        libbook.status = serializer.data['status']
-        libbook.uuid = serializer.data['uuid']
-
-        libbook.save()
+        serializer.save()
 
         resp = {
             'code': 0,
             'msg': "OK",
-            "data": []
+            "data": serializer.data
         }
         return HttpResponse(json.dumps(resp), content_type="application/json")
 
