@@ -105,7 +105,6 @@ class LibBook(models.Model):
     STATUS_ALL = ''
     STATUS_ONLINE = '1'
     STATUS_OFFLINE = '2'
-    STATUS_IDLE = '3'
     STATUS_OUT = '4'
     STATUS_BOOKED = '5'
     STATUS_BROKEN = '6'
@@ -114,7 +113,6 @@ class LibBook(models.Model):
         (STATUS_ALL, 'all'),
         (STATUS_ONLINE, 'online'),
         (STATUS_OFFLINE, 'offline'),
-        (STATUS_IDLE, 'idle'),
         (STATUS_OUT, 'out'),
         (STATUS_BOOKED, 'booked'),
         (STATUS_BROKEN, 'broken'),

@@ -6,6 +6,9 @@ from rest_framework import serializers
 from sku.models import Book
 from uploadimages.models import UploadedImage
 from uploadimages.serialize import UploadedImageSerializer
+from users.models import Address
+from users.serialize import AddressSerializer
+from users.serialize import UserProfileSerializer
 from .models import Order, OrderGoodsDetail
 
 
@@ -36,10 +39,12 @@ class OrderGoodsDetailSerializer(DynamicFieldsModelSerializer):
     price = serializers.ReadOnlyField(source='sku.price')
 
     pics = serializers.SerializerMethodField()
+    available = serializers.SerializerMethodField()
+    inStock = serializers.SerializerMethodField()
 
     class Meta:
         model = OrderGoodsDetail
-        fields = ('isbn', 'name', 'price', 'amount', 'pics')
+        fields = ('isbn', 'name', 'price', 'amount', 'pics', 'available', 'inStock')
 
     def to_internal_value(self, data):
         ret = {
@@ -56,6 +61,18 @@ class OrderGoodsDetailSerializer(DynamicFieldsModelSerializer):
         serialize = UploadedImageSerializer(qs, fields={'image'}, many=True)
         return serialize.data
 
+    #获得可用库存数量
+    def get_available(self, obj):
+        avail = obj.sku.libbook_set.filter(status="1").count()
+        print "avail = %d"%(avail)
+        return avail
+    #获得实际库存数量
+    def get_inStock(self, obj):
+        store = obj.sku.libbook_set.count()
+        print obj.sku.libbook_set
+        print obj.sku
+        print "--- get_inStock ---"
+        return store
 
 class ChoicesField(serializers.Field):
     def __init__(self, choices, **kwargs):
@@ -71,9 +88,10 @@ class ChoicesField(serializers.Field):
 
 class OrderSerializer(DynamicFieldsModelSerializer):
     goods = OrderGoodsDetailSerializer(source='ordergoodsdetail_set', many=True)
-
+    user = UserProfileSerializer(read_only=True)
     status = ChoicesField(required=False, choices=Order.STATUS)
     stsidx = serializers.SerializerMethodField()
+    addr = serializers.SerializerMethodField()
     totalCharge = serializers.SerializerMethodField()
     createTime = serializers.DateTimeField(read_only=True, format="%Y-%m-%d %H:%M:%S")
     updateTime = serializers.DateTimeField(read_only=True, format="%Y-%m-%d %H:%M:%S")
@@ -82,7 +100,7 @@ class OrderSerializer(DynamicFieldsModelSerializer):
         model = Order
         fields = (
         'stsidx', 'goods', 'status', 'pk', 'remark', 'createTime', 'updateTime', 'orderId', 'totalCharge', 'goodsFee',
-        'deliveryFee', 'serviceFee')
+        'deliveryFee', 'serviceFee','user', 'addr')
 
     def create(self, validated_data):
         status = '0'
@@ -101,3 +119,10 @@ class OrderSerializer(DynamicFieldsModelSerializer):
 
     def get_totalCharge(self, obj):
         return obj.goodsFee + obj.deliveryFee + obj.serviceFee
+
+    def get_addr(self, obj):
+        #user = Profile.objects.filter(user = self.user)
+        addrs = Address.objects.filter(user=obj.user)
+        addr = addrs.get(isDefault=True)
+
+        return AddressSerializer(addr).data
