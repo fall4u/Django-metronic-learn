@@ -95,10 +95,12 @@ class BannerSerializer(serializers.ModelSerializer):
 class LibbookSerializer(serializers.ModelSerializer):
     book = BooklistSerializer(required=False, fields={'name', 'isbn', 'author', 'press', 'price'})
     pics = serializers.SerializerMethodField()
+#    order = OrderSerializer(required=False)
+
 
     class Meta:
         model = LibBook
-        fields = ('uuid', 'book', 'inDate', 'status', 'dueDate', 'overDays', 'LendAmount', 'pics')
+        fields = ('uuid', 'book', 'inDate', 'status', 'dueDate', 'overDays', 'LendAmount', 'pics', 'pk', )
 
     def get_pics(self, obj):
         qs = UploadedImage.objects.all()

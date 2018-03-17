@@ -36,6 +36,8 @@ urlpatterns = [
     url(r'^libraryBook/update/(?P<uuid>[a-f\d]{8}(-[a-f\d]{4}){3}-[a-f\d]{12}?)/$', views.libbookUpdate.as_view(),
         name='libbookUpdate'),
 
+    url(r'^libraryBook/query/$', views.libBookQuery.as_view(),name='libbookquery'),
+
     # wx library book related
     url(r'^libraryBook/list/$', api.libraryBookList.as_view(), name="librarybooklist"),
 

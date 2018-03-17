@@ -92,15 +92,18 @@ class OrderSerializer(DynamicFieldsModelSerializer):
     status = ChoicesField(required=False, choices=Order.STATUS)
     stsidx = serializers.SerializerMethodField()
     addr = serializers.SerializerMethodField()
-    totalCharge = serializers.SerializerMethodField()
-    createTime = serializers.DateTimeField(read_only=True, format="%Y-%m-%d %H:%M:%S")
-    updateTime = serializers.DateTimeField(read_only=True, format="%Y-%m-%d %H:%M:%S")
+    libbook = serializers.SerializerMethodField()
+
+    totalCharge  = serializers.SerializerMethodField()
+    createTime   = serializers.DateTimeField(read_only=True, format="%Y-%m-%d %H:%M:%S")
+    updateTime   = serializers.DateTimeField(read_only=True, format="%Y-%m-%d %H:%M:%S")
+    deliveryTime = serializers.DateTimeField(required=False, format= "%Y-%m-%d")
 
     class Meta:
         model = Order
         fields = (
         'stsidx', 'goods', 'status', 'pk', 'remark', 'createTime', 'updateTime', 'orderId', 'totalCharge', 'goodsFee',
-        'deliveryFee', 'serviceFee','user', 'addr')
+        'deliveryFee', 'serviceFee','user', 'addr', 'deliveryTime', 'libbook')
 
     def create(self, validated_data):
         status = '0'
@@ -126,3 +129,13 @@ class OrderSerializer(DynamicFieldsModelSerializer):
         addr = addrs.get(isDefault=True)
 
         return AddressSerializer(addr).data
+
+    def get_libbook(self, obj):
+        from sku.serialize import LibbookSerializer
+        libbooks = obj.libbook_set.all()
+        return LibbookSerializer(libbooks, many=True).data
+
+
+
+
+

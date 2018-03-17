@@ -119,5 +119,6 @@ class orderStatistics(RetrieveAPIView):
             "count_id_no_confirm": self.get_queryset().filter(status='2').count(),
             "count_id_no_reputation": self.get_queryset().filter(status='3').count(),
             "count_id_success": self.get_queryset().filter(status='4').count(),
+            "count_id_pay" : self.get_queryset().filter(status='6').count(),
         }
         return Response(ret, status=status.HTTP_200_OK)

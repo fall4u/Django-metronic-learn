@@ -7,6 +7,9 @@ from django.db import models
 from django.db.models import Max
 
 
+#from order.models import Order
+
+
 # Create your models here.
 
 class Document(models.Model):
@@ -120,6 +123,8 @@ class LibBook(models.Model):
     )
     # Relations
     book = models.ForeignKey(Book, on_delete=models.PROTECT,null=False)
+    from order.models import Order
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True, blank=True)
     # Attributes
     # 3F2504E0-4F89-11D3-9A0C-0305E82C3301
 
@@ -131,8 +136,8 @@ class LibBook(models.Model):
     LendAmount = models.PositiveIntegerField(default=0)
 
 
-        # def __unicode__(self):
-        #     return "%s %s %s" %(self.book.name , self.inDate.strftime('%Y-%m-%d'), str(self.uuid))
+    def __unicode__(self):
+        return "%s %s %s" %(self.book.name , self.inDate.strftime('%Y-%m-%d'), str(self.uuid))
 
 
 class Banner(models.Model):

@@ -16,13 +16,10 @@ from .utils import unique_order_id_generator
 
 
 class Order(models.Model):
-    # STATUS_ALL = ''
-    # STATUS_USER_CREATE = '1' #订单创建  （已经下单，未付款，用户可以取消和付款） 对应小程序 待付款
-    # STATUS_NEED_HANDLE = '3' #订单待处理 （用户已经付款， 等待后台处理）       对应小程序  待发货
-    # STATUS_IN_DELIVER  = '4' #已发货 待确认                                对应小程序  待收货
-    # STATUS_TO_COMMENT  = '5' #已收货 待评价                                对应小程序  待评价
-    # STATUS_CLOSED      = '6' #已经评价
-    # STATUS_OVERDUE     = '7'
+    STATUS_ALL = ''
+    STATUS_CREATE = '0'
+    STATUS_TO_DELIVER = '1'
+    STATUS_USER_PAYED = '6'
     #
     # STATUS_CHOICES = (
     #     (STATUS_ALL, 'all'),
@@ -34,6 +31,7 @@ class Order(models.Model):
     #     (STATUS_CLOSED, 'closed'),
     #     (STATUS_OVERDUE, 'overdue'),
     # )
+
     STATUS = Choices(
         ('', 'All'),
         ('0', u'待支付'),
@@ -42,6 +40,7 @@ class Order(models.Model):
         ('3', u'待评价'),
         ('4', u'已完成'),
         ('5', u'已超期'),
+        ('6', u'已付款'),
     )
     goods = models.ManyToManyField(Book, through='OrderGoodsDetail')
     user = models.ForeignKey(Profile, on_delete=models.PROTECT)
@@ -52,11 +51,16 @@ class Order(models.Model):
     status = models.CharField(max_length=1, choices=STATUS, default='0')
     createTime = models.DateTimeField(auto_now_add=True)
     updateTime = models.DateTimeField(auto_now=True)
+    deliveryTime = models.DateTimeField(null=True, blank=True)
     dueDate = models.DateField(blank=True, null=True)
 
-    goodsFee = models.DecimalField(default=0.00, max_digits=6, decimal_places=2)
+    goodsFee    = models.DecimalField(default=0.00, max_digits=6, decimal_places=2)
     deliveryFee = models.DecimalField(default=0.00, max_digits=4, decimal_places=2)
     serviceFee  = models.DecimalField(default=0.00, max_digits=5, decimal_places=2)
+
+
+    def __unicode__(self):
+        return "%s %s" %(self.user.nickName , self.createTime.strftime('%Y-%m-%d'))
 
 class OrderGoodsDetail(models.Model):
     sku = models.ForeignKey(Book, on_delete=models.CASCADE)

@@ -541,23 +541,31 @@ License: You must have a valid license purchased only from themeforest(the above
                                     <div class="tabbable-line">
                                         <ul class="nav nav-tabs nav-tabs-lg">
                                             <li class="active">
-                                                <a href="#tab_1" data-toggle="tab"> 待付款 </a>
+                                                <a id="a_tab_1" href="#tab_1" data-toggle="tab" data-status="0"> 待付款 
+                                                    <span class="badge badge-success"></span>
+                                                </a>
+
                                             </li>
                                             <li>
-                                                <a href="#tab_2" data-toggle="tab"> Invoices
-                                                    <span class="badge badge-success">4</span>
+                                                <a id="a_tab_2" href="#tab_2" data-toggle="tab" data-status="1"> 已付款
+                                                    <span class="badge badge-success"></span>
                                                 </a>
                                             </li>
                                             <li>
-                                                <a href="#tab_3" data-toggle="tab"> Credit Memos </a>
+                                                <a id="a_tab_3" href="#tab_3" data-toggle="tab"> 待发货
+                                                    <span class="badge badge-success"></span>                 
+                                                </a>                               
                                             </li>
                                             <li>
-                                                <a href="#tab_4" data-toggle="tab"> Shipments
-                                                    <span class="badge badge-danger"> 2 </span>
+                                                <a id="a_tab_4" href="#tab_4" data-toggle="tab"> 待收货
+                                                    <span class="badge badge-success"></span>
                                                 </a>
                                             </li>
                                             <li>
-                                                <a href="#tab_5" data-toggle="tab"> History </a>
+                                                <a id="a_tab_5" href="#tab_5" data-toggle="tab"> 待归还 </a>
+                                            </li>
+                                            <li>
+                                                <a id="a_tab_6" href="#tab_6" data-toggle="tab"> 已完成 </a>
                                             </li>
                                         </ul>
                                         <div class="tab-content">
@@ -573,6 +581,8 @@ License: You must have a valid license purchased only from themeforest(the above
                                                                 <th> 用户地区 </th>
                                                                 <th> 创建时间 </th>
                                                                 <th> 更新时间 </th>
+                                                                <th> 预计送达 </th>
+                                                                <th> 备注 </th>
                                                                 <th> 商品价格 </th>
                                                                 <th> 快递费用 </th>
                                                                 <th> 服务费   </th>
@@ -583,325 +593,29 @@ License: You must have a valid license purchased only from themeforest(the above
                                                         </tbody>             
                                                     </table>
                                                 </div>
-                                                <div class="row">
-                                                    <div class="col-md-6 col-sm-12">
-                                                        <div class="portlet yellow-crusta box">
-                                                            <div class="portlet-title">
-                                                                <div class="caption">
-                                                                    <i class="fa fa-cogs"></i>Order Details </div>
-                                                                <div class="actions">
-                                                                    <a href="javascript:;" class="btn btn-default btn-sm">
-                                                                        <i class="fa fa-pencil"></i> Edit </a>
-                                                                </div>
-                                                            </div>
-                                                            <div class="portlet-body">
-                                                                <div class="row static-info">
-                                                                    <div class="col-md-5 name"> Order #: </div>
-                                                                    <div class="col-md-7 value"> 12313232
-                                                                        <span class="label label-info label-sm"> Email confirmation was sent </span>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row static-info">
-                                                                    <div class="col-md-5 name"> Order Date & Time: </div>
-                                                                    <div class="col-md-7 value"> Dec 27, 2013 7:16:25 PM </div>
-                                                                </div>
-                                                                <div class="row static-info">
-                                                                    <div class="col-md-5 name"> Order Status: </div>
-                                                                    <div class="col-md-7 value">
-                                                                        <span class="label label-success"> Closed </span>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row static-info">
-                                                                    <div class="col-md-5 name"> Grand Total: </div>
-                                                                    <div class="col-md-7 value"> $175.25 </div>
-                                                                </div>
-                                                                <div class="row static-info">
-                                                                    <div class="col-md-5 name"> Payment Information: </div>
-                                                                    <div class="col-md-7 value"> Credit Card </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6 col-sm-12">
-                                                        <div class="portlet blue-hoki box">
-                                                            <div class="portlet-title">
-                                                                <div class="caption">
-                                                                    <i class="fa fa-cogs"></i>Customer Information </div>
-                                                                <div class="actions">
-                                                                    <a href="javascript:;" class="btn btn-default btn-sm">
-                                                                        <i class="fa fa-pencil"></i> Edit </a>
-                                                                </div>
-                                                            </div>
-                                                            <div class="portlet-body">
-                                                                <div class="row static-info">
-                                                                    <div class="col-md-5 name"> Customer Name: </div>
-                                                                    <div class="col-md-7 value"> Jhon Doe </div>
-                                                                </div>
-                                                                <div class="row static-info">
-                                                                    <div class="col-md-5 name"> Email: </div>
-                                                                    <div class="col-md-7 value"> jhon@doe.com </div>
-                                                                </div>
-                                                                <div class="row static-info">
-                                                                    <div class="col-md-5 name"> State: </div>
-                                                                    <div class="col-md-7 value"> New York </div>
-                                                                </div>
-                                                                <div class="row static-info">
-                                                                    <div class="col-md-5 name"> Phone Number: </div>
-                                                                    <div class="col-md-7 value"> 12234389 </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-6 col-sm-12">
-                                                        <div class="portlet green-meadow box">
-                                                            <div class="portlet-title">
-                                                                <div class="caption">
-                                                                    <i class="fa fa-cogs"></i>Billing Address </div>
-                                                                <div class="actions">
-                                                                    <a href="javascript:;" class="btn btn-default btn-sm">
-                                                                        <i class="fa fa-pencil"></i> Edit </a>
-                                                                </div>
-                                                            </div>
-                                                            <div class="portlet-body">
-                                                                <div class="row static-info">
-                                                                    <div class="col-md-12 value"> Jhon Done
-                                                                        <br> #24 Park Avenue Str
-                                                                        <br> New York
-                                                                        <br> Connecticut, 23456 New York
-                                                                        <br> United States
-                                                                        <br> T: 123123232
-                                                                        <br> F: 231231232
-                                                                        <br> </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6 col-sm-12">
-                                                        <div class="portlet red-sunglo box">
-                                                            <div class="portlet-title">
-                                                                <div class="caption">
-                                                                    <i class="fa fa-cogs"></i>Shipping Address </div>
-                                                                <div class="actions">
-                                                                    <a href="javascript:;" class="btn btn-default btn-sm">
-                                                                        <i class="fa fa-pencil"></i> Edit </a>
-                                                                </div>
-                                                            </div>
-                                                            <div class="portlet-body">
-                                                                <div class="row static-info">
-                                                                    <div class="col-md-12 value"> Jhon Done
-                                                                        <br> #24 Park Avenue Str
-                                                                        <br> New York
-                                                                        <br> Connecticut, 23456 New York
-                                                                        <br> United States
-                                                                        <br> T: 123123232
-                                                                        <br> F: 231231232
-                                                                        <br> </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-12 col-sm-12">
-                                                        <div class="portlet grey-cascade box">
-                                                            <div class="portlet-title">
-                                                                <div class="caption">
-                                                                    <i class="fa fa-cogs"></i>Shopping Cart </div>
-                                                                <div class="actions">
-                                                                    <a href="javascript:;" class="btn btn-default btn-sm">
-                                                                        <i class="fa fa-pencil"></i> Edit </a>
-                                                                </div>
-                                                            </div>
-                                                            <div class="portlet-body">
-                                                                <div class="table-responsive">
-                                                                    <table class="table table-hover table-bordered table-striped">
-                                                                        <thead>
-                                                                            <tr>
-                                                                                <th> Product </th>
-                                                                                <th> Item Status </th>
-                                                                                <th> Original Price </th>
-                                                                                <th> Price </th>
-                                                                                <th> Quantity </th>
-                                                                                <th> Tax Amount </th>
-                                                                                <th> Tax Percent </th>
-                                                                                <th> Discount Amount </th>
-                                                                                <th> Total </th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                            <tr>
-                                                                                <td>
-                                                                                    <a href="javascript:;"> Product 1 </a>
-                                                                                </td>
-                                                                                <td>
-                                                                                    <span class="label label-sm label-success"> Available </td>
-                                                                                <td> 345.50$ </td>
-                                                                                <td> 345.50$ </td>
-                                                                                <td> 2 </td>
-                                                                                <td> 2.00$ </td>
-                                                                                <td> 4% </td>
-                                                                                <td> 0.00$ </td>
-                                                                                <td> 691.00$ </td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td>
-                                                                                    <a href="javascript:;"> Product 1 </a>
-                                                                                </td>
-                                                                                <td>
-                                                                                    <span class="label label-sm label-success"> Available </td>
-                                                                                <td> 345.50$ </td>
-                                                                                <td> 345.50$ </td>
-                                                                                <td> 2 </td>
-                                                                                <td> 2.00$ </td>
-                                                                                <td> 4% </td>
-                                                                                <td> 0.00$ </td>
-                                                                                <td> 691.00$ </td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td>
-                                                                                    <a href="javascript:;"> Product 1 </a>
-                                                                                </td>
-                                                                                <td>
-                                                                                    <span class="label label-sm label-success"> Available </td>
-                                                                                <td> 345.50$ </td>
-                                                                                <td> 345.50$ </td>
-                                                                                <td> 2 </td>
-                                                                                <td> 2.00$ </td>
-                                                                                <td> 4% </td>
-                                                                                <td> 0.00$ </td>
-                                                                                <td> 691.00$ </td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td>
-                                                                                    <a href="javascript:;"> Product 1 </a>
-                                                                                </td>
-                                                                                <td>
-                                                                                    <span class="label label-sm label-success"> Available </td>
-                                                                                <td> 345.50$ </td>
-                                                                                <td> 345.50$ </td>
-                                                                                <td> 2 </td>
-                                                                                <td> 2.00$ </td>
-                                                                                <td> 4% </td>
-                                                                                <td> 0.00$ </td>
-                                                                                <td> 691.00$ </td>
-                                                                            </tr>
-                                                                        </tbody>
-                                                                    </table>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-6"> </div>
-                                                    <div class="col-md-6">
-                                                        <div class="well">
-                                                            <div class="row static-info align-reverse">
-                                                                <div class="col-md-8 name"> Sub Total: </div>
-                                                                <div class="col-md-3 value"> $1,124.50 </div>
-                                                            </div>
-                                                            <div class="row static-info align-reverse">
-                                                                <div class="col-md-8 name"> Shipping: </div>
-                                                                <div class="col-md-3 value"> $40.50 </div>
-                                                            </div>
-                                                            <div class="row static-info align-reverse">
-                                                                <div class="col-md-8 name"> Grand Total: </div>
-                                                                <div class="col-md-3 value"> $1,260.00 </div>
-                                                            </div>
-                                                            <div class="row static-info align-reverse">
-                                                                <div class="col-md-8 name"> Total Paid: </div>
-                                                                <div class="col-md-3 value"> $1,260.00 </div>
-                                                            </div>
-                                                            <div class="row static-info align-reverse">
-                                                                <div class="col-md-8 name"> Total Refunded: </div>
-                                                                <div class="col-md-3 value"> $0.00 </div>
-                                                            </div>
-                                                            <div class="row static-info align-reverse">
-                                                                <div class="col-md-8 name"> Total Due: </div>
-                                                                <div class="col-md-3 value"> $1,124.50 </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
                                             </div>
                                             <div class="tab-pane" id="tab_2">
-                                                <div class="table-container">
-                                                    <div class="table-actions-wrapper">
-                                                        <span> </span>
-                                                        <select class="table-group-action-input form-control input-inline input-small input-sm">
-                                                            <option value="">Select...</option>
-                                                            <option value="pending">Pending</option>
-                                                            <option value="paid">Paid</option>
-                                                            <option value="canceled">Canceled</option>
-                                                        </select>
-                                                        <button class="btn btn-sm yellow table-group-action-submit">
-                                                            <i class="fa fa-check"></i> Submit</button>
-                                                    </div>
-                                                    <table class="table table-striped table-bordered table-hover" id="datatable_invoices">
-                                                        <thead>
-                                                            <tr role="row" class="heading">
-                                                                <th width="5%">
-                                                                    <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                                                        <input type="checkbox" class="group-checkable" data-set="#sample_2 .checkboxes" />
-                                                                        <span></span>
-                                                                    </label>
-                                                                </th>
-                                                                <th width="5%"> Invoice&nbsp;# </th>
-                                                                <th width="15%"> Bill To </th>
-                                                                <th width="15%"> Invoice&nbsp;Date </th>
-                                                                <th width="10%"> Amount </th>
-                                                                <th width="10%"> Status </th>
-                                                                <th width="10%"> Actions </th>
+                                                <div class="row">
+                                                    <table class="table table-striped table-bordered table-hover table-checkable order-column" id="sample_2">
+                                                          <thead>
+                                                            <tr>
+                                                                <th> 操作 </th>
+<!--                                                                 <th> 序号</th>
+ -->                                                            <th> 订单编号</th>
+                                                                <th> 用户昵称</th>
+                                                                <th> 用户地区 </th>
+                                                                <th> 创建时间 </th>
+                                                                <th> 更新时间 </th>
+                                                                <th> 预计送达 </th>
+                                                                <th> 备注 </th>
+                                                                <th> 商品价格 </th>
+                                                                <th> 快递费用 </th>
+                                                                <th> 服务费   </th>
+                                                                <th> 总费用   </th>
                                                             </tr>
-                                                            <tr role="row" class="filter">
-                                                                <td> </td>
-                                                                <td>
-                                                                    <input type="text" class="form-control form-filter input-sm" name="order_invoice_no"> </td>
-                                                                <td>
-                                                                    <input type="text" class="form-control form-filter input-sm" name="order_invoice_bill_to"> </td>
-                                                                <td>
-                                                                    <div class="input-group date date-picker margin-bottom-5" data-date-format="dd/mm/yyyy">
-                                                                        <input type="text" class="form-control form-filter input-sm" readonly name="order_invoice_date_from" placeholder="From">
-                                                                        <span class="input-group-btn">
-                                                                            <button class="btn btn-sm default" type="button">
-                                                                                <i class="fa fa-calendar"></i>
-                                                                            </button>
-                                                                        </span>
-                                                                    </div>
-                                                                    <div class="input-group date date-picker" data-date-format="dd/mm/yyyy">
-                                                                        <input type="text" class="form-control form-filter input-sm" readonly name="order_invoice_date_to" placeholder="To">
-                                                                        <span class="input-group-btn">
-                                                                            <button class="btn btn-sm default" type="button">
-                                                                                <i class="fa fa-calendar"></i>
-                                                                            </button>
-                                                                        </span>
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <div class="margin-bottom-5">
-                                                                        <input type="text" class="form-control form-filter input-sm" name="order_invoice_amount_from" placeholder="From" /> </div>
-                                                                    <input type="text" class="form-control form-filter input-sm" name="order_invoice_amount_to" placeholder="To" /> </td>
-                                                                <td>
-                                                                    <select name="order_invoice_status" class="form-control form-filter input-sm">
-                                                                        <option value="">Select...</option>
-                                                                        <option value="pending">Pending</option>
-                                                                        <option value="paid">Paid</option>
-                                                                        <option value="canceled">Canceled</option>
-                                                                    </select>
-                                                                </td>
-                                                                <td>
-                                                                    <div class="margin-bottom-5">
-                                                                        <button class="btn btn-sm yellow filter-submit margin-bottom">
-                                                                            <i class="fa fa-search"></i> Search</button>
-                                                                    </div>
-                                                                    <button class="btn btn-sm red filter-cancel">
-                                                                        <i class="fa fa-times"></i> Reset</button>
-                                                                </td>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody> </tbody>
+                                                        </thead> 
+                                                        <tbody>
+                                                        </tbody>             
                                                     </table>
                                                 </div>
                                             </div>
@@ -1664,13 +1378,104 @@ License: You must have a valid license purchased only from themeforest(the above
                 var table = $('#sample_1').DataTable();
                 var data = table.row($(this).parents('tr')).data();
                 var pk = data.pk;
-                console.log(pk);
                 window.location.href = "" + pk;
+            });
+
+            $('#sample_2').on("click", "a.delete", function(){
+                var table = $('#sample_2').DataTable();
+                var data = table.row($(this).parents('tr')).data();
+                var pk = data.pk;
+                window.location.href = "" + pk;
+            });
+
+            var fetchData = function(query, dataURL) {
+                // Return the $.ajax promise
+                return $.ajax({
+                    data: query,
+                    dataType: 'json',
+                    url: dataURL
+                });
+            }
+
+
+            function refreshBadge(){
+                var getOrderStatistics = fetchData('', 'statistics/');
+                $.when(getOrderStatistics).then(function(order){
+                    console.log(order);
+                    var count_id_no_pay      = order['count_id_no_pay'];
+                    var count_id_no_transfer = order['count_id_no_transfer'];
+                    var count_id_pay         = order['count_id_pay'];
+                    // modify badge 
+                    console.log(count_id_no_pay);
+                    $("#a_tab_2 .badge").text(count_id_pay);
+                    $("#a_tab_1 .badge").text(count_id_no_pay);
+                    $("#a_tab_3 .badge").text(count_id_no_transfer);
+                    return order;
+                });
+            }
+
+
+            $('a[data-toggle=tab]').click(function(){
+                status = this.dataset.status;
+                refreshBadge();
+                if(status == 0){
+                    console.log(0);
+                    table = $("#sample_1").DataTable();
+                    table.ajax.reload();
+                }
+                if(status == 1){
+                    console.log(1);
+                    $("#sample_2").dataTable(
+                        { 
+                            searching : false,
+                            destroy : true,
+                            "processing" : true,
+                            "autoWidth" : false,
+                            "ajax": {
+                                "url": "list/",
+                                "dataSrc": "",
+                                "data":{
+                                    status: 6,
+                                }
+                            },
+                            columns: [
+                                { },
+                                { data: 'orderId'},
+                                { data: 'user.nickName' },
+                                { data: 'user.city'},
+                                { data: 'createTime' },
+                                { data: 'updateTime'},
+                                { data: 'deliveryTime'},
+                                { data: 'remark' },   
+                                { data: 'goodsFee' },      
+                                { data: 'deliveryFee' },
+                                { data: 'serviceFee' },
+                                { data: 'totalCharge' },
+                            ],
+                            columnDefs:[
+                                {
+                                    'targets': 0,
+                                    'searchable': false,
+                                    'orderable': false,
+                                    'render': function(data,type,full,meta){
+                                        data = '<a class="delete" href="javascript:;"> 详情 </a>';
+                                        return data
+
+                                    }
+                                },
+
+                            ],            
+
+                         }
+
+                    );
+                }            
             });
 
 
 
-            $(document).ready(function() {              
+            $(document).ready(function() {  
+                refreshBadge();            
                 $("#sample_1").dataTable(
                     { 
                         searching : false,
@@ -1691,7 +1496,9 @@ License: You must have a valid license purchased only from themeforest(the above
                             { data: 'user.city'},
                             { data: 'createTime' },
                             { data: 'updateTime'},
-                            { data: 'goodsFee' },         
+                            { data: 'deliveryTime'},
+                            { data: 'remark' },   
+                            { data: 'goodsFee' },      
                             { data: 'deliveryFee' },
                             { data: 'serviceFee' },
                             { data: 'totalCharge' },

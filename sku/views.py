@@ -19,6 +19,7 @@ from django.urls import reverse_lazy
 from django.views import generic
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.edit import DeleteView
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, renderers, status
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication, TokenAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
@@ -396,6 +397,17 @@ class libBook(generic.View):
         }
 
         return HttpResponse(json.dumps(resp), content_type="application/json")
+
+
+class libBookQuery(generics.ListAPIView):
+    queryset = LibBook.objects.all()
+    serializer_class = LibbookSerializer
+
+    authentication_classes = ( BasicAuthentication, SessionAuthentication)
+    permission_classes = (IsAuthenticated,)
+
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('status', 'book__isbn',)
 
 
 class libbookUpdate(generics.RetrieveUpdateDestroyAPIView):

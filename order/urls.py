@@ -16,6 +16,7 @@ urlpatterns = [
     # web admin endpoint
     url(r'^$', webviews.webOrderPage, name='webOrderPage'),
     url(r'^list/$',webviews.webOrderList.as_view(),name='webOrderList'),
-    url(r'^(?P<pk>\d+)/$', webviews.webOrderDetail.as_view(), name='bookUpdate'),
+    url(r'^(?P<pk>\d+)/$', webviews.webOrderDetail.as_view(), name='webOrderDetail'),
+    url(r'^statistics/$', webviews.weborderStatistics.as_view(), name='statstics'),
 
 ]
