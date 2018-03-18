@@ -66,11 +66,20 @@ class webOrderDetail(generics.RetrieveUpdateDestroyAPIView):
             libbooks = request.data.getlist('info')
             self._order_status_from_pay_to_deliver(pk , None, libbooks)
 
+        if type == "2":
+            self._order_status_from_delivery_to_confirm(pk)
+
         return HttpResponse(json.dumps({"status":"ok"}), content_type="application/json")
+
+    def _order_status_from_delivery_to_confirm(self, pk):
+        instance = self.queryset.get(pk=pk)
+        if instance.status == Order.STATUS_TO_DELIVER :
+            instance.status = Order.STATUS_TO_CONFIRM
+            instance.save()
 
     def _order_status_from_pay_to_deliver(self, orderPk, deliveryTime, libbooks):
         instance = self.queryset.get(pk=orderPk)
-
+        print (" _order_status_from_pay_to_deliver +++ ")
         if deliveryTime is not None:
             instance.deliveryTime = deliveryTime
             instance.status = Order.STATUS_TO_DELIVER #待发货
@@ -82,8 +91,11 @@ class webOrderDetail(generics.RetrieveUpdateDestroyAPIView):
                 libbook.order = instance
                 libbook.status = '4' #set status OUT
                 libbook.save()
+        else:
+            print "libbooks is None"
+        print (" _order_status_from_pay_to_deliver ---")
 
-
+        return
 
 
 

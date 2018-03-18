@@ -19,6 +19,7 @@ class Order(models.Model):
     STATUS_ALL = ''
     STATUS_CREATE = '0'
     STATUS_TO_DELIVER = '1'
+    STATUS_TO_CONFIRM = '2'
     STATUS_USER_PAYED = '6'
     #
     # STATUS_CHOICES = (
