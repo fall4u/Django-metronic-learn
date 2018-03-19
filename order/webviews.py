@@ -114,8 +114,8 @@ class weborderStatistics(RetrieveAPIView):
             "count_id_no_pay": self.get_queryset().filter(status='0').count(),
             "count_id_no_transfer": self.get_queryset().filter(status='1').count(),
             "count_id_no_confirm": self.get_queryset().filter(status='2').count(),
-            "count_id_no_reputation": self.get_queryset().filter(status='3').count(),
-            "count_id_success": self.get_queryset().filter(status='4').count(),
+           # "count_id_no_reputation": self.get_queryset().filter(status='3').count(),
+            "count_id_success": self.get_queryset().filter(status=Order.STATUS_COMPLETED).count(),
             "count_id_pay": self.get_queryset().filter(status='6').count(),
 
         }

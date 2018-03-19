@@ -20,6 +20,7 @@ class Order(models.Model):
     STATUS_CREATE = '0'
     STATUS_TO_DELIVER = '1'
     STATUS_TO_CONFIRM = '2'
+    STATUS_COMPLETED = '3'
     STATUS_USER_PAYED = '6'
     #
     # STATUS_CHOICES = (
@@ -38,9 +39,9 @@ class Order(models.Model):
         ('0', u'待支付'),
         ('1', u'待发货'),
         ('2', u'待收货'),
-        ('3', u'待评价'),
-        ('4', u'已完成'),
-        ('5', u'已超期'),
+        ('3', u'已完成'),
+        # ('4', u'已完成'),
+        # ('5', u'已超期'),
         ('6', u'已付款'),
     )
     goods = models.ManyToManyField(Book, through='OrderGoodsDetail')
