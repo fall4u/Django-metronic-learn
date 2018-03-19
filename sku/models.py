@@ -93,7 +93,7 @@ class Book(models.Model):
     desc = models.TextField(null=True)
 
     # Relations
-    cid = models.ManyToManyField(Category, null=True)
+    cid = models.ManyToManyField(Category)
 
 
     objects = GetOrNoneManager()
@@ -105,12 +105,12 @@ class Book(models.Model):
 
 
 class LibBook(models.Model):
-    STATUS_ALL = ''
-    STATUS_ONLINE = '1'
+    STATUS_ALL     = ''
+    STATUS_ONLINE  = '1'
     STATUS_OFFLINE = '2'
-    STATUS_OUT = '4'
-    STATUS_BOOKED = '5'
-    STATUS_BROKEN = '6'
+    STATUS_OUT     = '4'
+    STATUS_BOOKED  = '5'
+    STATUS_BROKEN  = '6'
     STATUS_DUEDATE = '7'
     STATUS_CHOICES = (
         (STATUS_ALL, 'all'),

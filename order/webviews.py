@@ -15,6 +15,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from sku.models import LibBook
+from sku.serialize import  LibbookSerializer
 from .models import Order
 from .serialize import OrderSerializer
 
@@ -89,7 +90,7 @@ class webOrderDetail(generics.RetrieveUpdateDestroyAPIView):
             for item in libbooks:
                 libbook = LibBook.objects.get(pk=item)
                 libbook.order = instance
-                libbook.status = '4' #set status OUT
+                libbook.status = LibBook.STATUS_OUT #'4' #set status OUT
                 libbook.save()
         else:
             print "libbooks is None"
@@ -120,3 +121,52 @@ class weborderStatistics(RetrieveAPIView):
 
         }
         return Response(ret, status=status.HTTP_200_OK)
+
+
+
+@api_view(['GET'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
+def webOutbooksPage(request):
+    return render(request, 'p_outbooks.html')
+
+
+class webOutbooksList(ListAPIView):
+    authentication_classes = (BasicAuthentication, SessionAuthentication)
+    queryset = LibBook.objects.all()
+    serializer_class = LibbookSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def list(self, request, *args, **kwargs):
+        objects = LibBook.objects.all()
+
+        recordsTotal = objects.count()
+        recordsFiltered = recordsTotal
+
+        start = int(request.GET['start'])
+        length = int(request.GET['length'])
+        draw = int(request.GET['draw'])
+
+        # filter objects according to user inputs
+        serializer = LibbookSerializer(objects, many=True)
+
+        objects = objects.filter(status = LibBook.STATUS_OUT)
+
+        recordsFiltered = objects.count()
+
+        objects = objects[start:(start + length)]
+
+        serializer = LibbookSerializer(objects, many=True)
+        # dic = [obj.as_dict() for obj in objects]
+
+        print serializer.data
+
+        resp = {
+            'draw': draw,
+            'recordsTotal': recordsTotal,
+            'recordsFiltered': recordsFiltered,
+            'data': serializer.data,
+        }
+
+        return HttpResponse(json.dumps(resp), content_type="application/json")
+

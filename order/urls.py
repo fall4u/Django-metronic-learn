@@ -19,4 +19,8 @@ urlpatterns = [
     url(r'^(?P<pk>\d+)/$', webviews.webOrderDetail.as_view(), name='webOrderDetail'),
     url(r'^statistics/$', webviews.weborderStatistics.as_view(), name='statstics'),
 
+
+    url(r'^outbooks/$', webviews.webOutbooksPage, name='webOutbooksPage'),
+    url(r'^outbooks/list/$', webviews.webOutbooksList.as_view(), name='webOutbooksList'),
+
 ]
