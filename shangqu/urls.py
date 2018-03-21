@@ -31,9 +31,11 @@ urlpatterns = [
     # homepage
 #    url(r'^login/', include('users.urls')),
     url(r'^$', users_views.loginView.as_view()),
-    url(r'index.html/', users_views.index),
-
+#    url(r'index/$', users_views.index, name='index'),
+    url(r'index/$', users_views.Statistics.as_view(), name='index'),
     url(r'user/',include('users.urls')),
+    url(r'statistics/order/$', users_views.StatisticsOrder.as_view(),name="statisticsOrder"),
+    url(r'statistics/users/$', users_views.StatisticsUsers.as_view(), name="statisticsUsers"),
 
     # sku
     url(r'^sku/', include(sku_urls)),

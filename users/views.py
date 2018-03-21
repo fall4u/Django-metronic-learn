@@ -1,17 +1,22 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import time
+from datetime import datetime, timedelta
+
 from django.contrib.auth import authenticate, login
 from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import generic
 from rest_framework import renderers, status
-from rest_framework.authentication import TokenAuthentication, BasicAuthentication, SessionAuthentication
+from rest_framework.authentication import BasicAuthentication, SessionAuthentication
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from order.models import Order
 # Create your views here.
 from .cons import Constant
 from .form_user_login import UserForm
@@ -37,7 +42,7 @@ class loginView(generic.View):
 
             if user is not None:
                 login(request, user)
-                return redirect("index.html")
+                return redirect("index")
             else:
                 raise Http404("User is not invalid")
         else:
@@ -46,7 +51,9 @@ class loginView(generic.View):
 
 #def login(request):
 #    return render(request, "page_user_login_1.html")
-
+@api_view(['GET'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
 def index(request):
     return render(request, "index.html")
 
@@ -242,8 +249,93 @@ class profile(RetrieveUpdateDestroyAPIView):
 
 
 
+class Statistics(RetrieveAPIView):
+    '''
+    used in webadmin
+    return the order statistics
+    '''
+    authentication_classes = (BasicAuthentication, SessionAuthentication)
+    permission_classes = (IsAuthenticated,)
+
+    renderer_classes = [renderers.TemplateHTMLRenderer]
+    template_name = 'index.html'
+
+    def retrieve(self, request, *args, **kwargs):
+        today = datetime.now().date()
+        tomorrow = today + timedelta(1)
+        print today
+        print tomorrow
+        ret = {
+            "total_orders": Order.objects.all().count(),
+            "total_users": Profile.objects.all().count() - 1,
+            "orders": Order.objects.all().filter(createTime__gte=today).filter(createTime__lt=tomorrow).count(),
+            "users": Profile.objects.all().filter(registerTime__gte=today).filter(registerTime__lt=tomorrow).count(),
+        }
+        return Response(ret, status=status.HTTP_200_OK)
 
 
+class StatisticsOrder(RetrieveAPIView):
+    '''
+    used in webadmin
+    return the order statistics
+    '''
+    authentication_classes = (BasicAuthentication, SessionAuthentication)
+    permission_classes = (IsAuthenticated,)
 
 
+    def retrieve(self, request, *args, **kwargs):
+        end = datetime.now().date()
+        start = end - timedelta(7)
+        delta = timedelta(days=1)
+        orderdata = []
+        d = start
+        while d <= end:
+            item = []
+            s = d
+            e = s + delta
+            o = Order.objects.all().filter(createTime__gte=s).filter(createTime__lt=e).count()
+            item.append(time.mktime(d.timetuple()) * 1000)
+            item.append(o)
+            orderdata.append(item)
+            d += delta
+
+
+        ret = {
+            "label": "Orders",
+            "data": orderdata,
+        }
+
+        return Response(ret, status=status.HTTP_200_OK)
+
+class StatisticsUsers(RetrieveAPIView):
+    '''
+    used in webadmin
+    return the order statistics
+    '''
+    authentication_classes = (BasicAuthentication, SessionAuthentication)
+    permission_classes = (IsAuthenticated,)
+
+    def retrieve(self, request, *args, **kwargs):
+        end = datetime.now().date()
+        start = end - timedelta(7)
+        delta = timedelta(days=1)
+        userdata = []
+        d = start
+        while d <= end:
+            item = []
+            s = d
+            e = s + delta
+            o = Profile.objects.all().filter(registerTime__gte=s).filter(registerTime__lt=e).count()
+            item.append(time.mktime(d.timetuple()) * 1000)
+            item.append(o)
+            userdata.append(item)
+            d += delta
+
+
+        ret = {
+            "label": "New Users",
+            "data": userdata,
+        }
+
+        return Response(ret, status=status.HTTP_200_OK)
 

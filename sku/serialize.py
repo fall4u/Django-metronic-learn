@@ -96,11 +96,13 @@ class LibbookSerializer(serializers.ModelSerializer):
     book = BooklistSerializer(required=False, fields={'name', 'isbn', 'author', 'press', 'price'})
     pics = serializers.SerializerMethodField()
 #    order = OrderSerializer(required=False)
-
+    order = serializers.SerializerMethodField()
+    user = serializers.SerializerMethodField()
 
     class Meta:
         model = LibBook
-        fields = ('uuid', 'book', 'inDate', 'status', 'dueDate', 'overDays', 'LendAmount', 'pics', 'pk', )
+        fields = ('uuid', 'book', 'inDate', 'status', 'dueDate', 'overDays', 'LendAmount', 'pics', 'pk', 'order',
+                  'user')
 
     def get_pics(self, obj):
         qs = UploadedImage.objects.all()
@@ -108,6 +110,19 @@ class LibbookSerializer(serializers.ModelSerializer):
 
         serialize = UploadedImageSerializer(qs, fields={'image'}, many=True)
         return serialize.data
+
+    def get_order(self, obj):
+        ret = None
+        if obj.order:
+            ret = obj.order.pk
+        return ret
+
+    def get_user(self,obj):
+        ret = None
+        if obj.order:
+            ret = obj.order.user.nickName
+
+        return ret
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:

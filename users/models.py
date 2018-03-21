@@ -23,7 +23,7 @@ class Profile(models.Model):
     province = models.CharField(max_length=128,blank=True)
     country = models.CharField(max_length=128,blank=True)
     language = models.CharField(max_length=128,blank=True)
-
+    registerTime = models.DateTimeField(auto_now_add=True)
 
 
 

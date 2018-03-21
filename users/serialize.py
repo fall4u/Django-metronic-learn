@@ -62,9 +62,10 @@ class AddressSerializer(DynamicFieldsModelSerializer):
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
+    registerTime = serializers.DateTimeField(required=False, format= "%Y-%m-%d")
     class Meta:
         model = Profile
-        fields = ('nickName', 'avatarUrl', 'gender', 'city', 'province', 'country', 'language', 'pk')
+        fields = ('nickName', 'avatarUrl', 'gender', 'city', 'province', 'country', 'language', 'pk', 'registerTime')
 
 class SearchInfoSerializer(serializers.ModelSerializer):
     user = UserProfileSerializer()
