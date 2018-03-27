@@ -14,6 +14,15 @@ from .utils import unique_order_id_generator
 # Create your models here.
 
 
+class GetOrNoneManager(models.Manager):
+    """Adds get_or_none method to objects
+    """
+
+    def get_or_none(self, **kwargs):
+        try:
+            return self.get(**kwargs)
+        except self.model.DoesNotExist:
+            return None
 
 class Order(models.Model):
     STATUS_ALL = ''
@@ -60,9 +69,10 @@ class Order(models.Model):
     deliveryFee = models.DecimalField(default=0.00, max_digits=4, decimal_places=2)
     serviceFee  = models.DecimalField(default=0.00, max_digits=5, decimal_places=2)
 
+    objects = GetOrNoneManager()
 
     def __unicode__(self):
-        return "%s %s" %(self.user.nickName , self.createTime.strftime('%Y-%m-%d'))
+        return "%s %s %s" %(self.user.nickName , self.createTime.strftime('%Y-%m-%d'), self.status)
 
 class OrderGoodsDetail(models.Model):
     sku = models.ForeignKey(Book, on_delete=models.CASCADE)

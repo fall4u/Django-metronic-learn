@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from datetime import timedelta
+
 from rest_framework import serializers
 
 from sku.models import Book
@@ -98,12 +100,13 @@ class OrderSerializer(DynamicFieldsModelSerializer):
     createTime   = serializers.DateTimeField(read_only=True, format="%Y-%m-%d %H:%M:%S")
     updateTime   = serializers.DateTimeField(read_only=True, format="%Y-%m-%d %H:%M:%S")
     deliveryTime = serializers.DateTimeField(required=False, format= "%Y-%m-%d")
+    payTime  = serializers.SerializerMethodField()
 
     class Meta:
         model = Order
         fields = (
         'stsidx', 'goods', 'status', 'pk', 'remark', 'createTime', 'updateTime', 'orderId', 'totalCharge', 'goodsFee',
-        'deliveryFee', 'serviceFee','user', 'addr', 'deliveryTime', 'libbook')
+        'deliveryFee', 'serviceFee','user', 'addr', 'deliveryTime', 'libbook', 'payTime')
 
     def create(self, validated_data):
         status = '0'
@@ -134,6 +137,10 @@ class OrderSerializer(DynamicFieldsModelSerializer):
         from sku.serialize import LibbookSerializer
         libbooks = obj.libbook_set.all()
         return LibbookSerializer(libbooks, many=True).data
+
+    def get_payTime(self, obj):
+        paytime =  obj.createTime + timedelta(seconds=300)
+        return paytime.strftime("%Y-%m-%d %H:%M:%S")
 
 
 

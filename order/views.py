@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from datetime import timedelta, datetime
+
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
@@ -12,6 +14,7 @@ from rest_framework.response import Response
 
 from .models import Order
 from .serialize import OrderSerializer
+from .tasks import cancel_order
 
 
 # Create your views here.
@@ -32,6 +35,10 @@ class order(RetrieveUpdateDestroyAPIView):
         if serializer.is_valid():
             print "valid"
             serializer.save(user=request.user.profile)
+            orderId = serializer.data['pk']
+            #auto delete non pay orders in 5 minutes
+            cancel_order.apply_async(args=[orderId], eta=datetime.now()+timedelta(seconds=300))
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
