@@ -580,7 +580,7 @@ License: You must have a valid license purchased only from themeforest(the above
 
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <div class="form-group">
                                                 <label class="control-label">ISBN</label>
                                                 <input type="text" class="form-control" id="isbn" name="ISBN"
@@ -588,7 +588,15 @@ License: You must have a valid license purchased only from themeforest(the above
 
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label class="control-label">IsReal</label>
+                                                <input type="checkbox" class="form-control" id="isReal" name="isReal"
+                                                           >
+
+                                            </div>
+                                        </div>                                        
+                                        <div class="col-md-2">
                                             <div class="form-group">
                                                 <label class="control-label">UID</label>
                                                 <input type="text" class="form-control" id="id_uid" name="UID"
@@ -629,6 +637,7 @@ License: You must have a valid license purchased only from themeforest(the above
                           <thead>
                           <tr role="row" class="heading">
                               <th width="15%"> UID</th>
+                              <th> isReal</th>
                               <th width="15%"> 书名</th>
                               <th width="10%"> ISBN</th>
                               <th width="8%"> 作者</th>
@@ -910,7 +919,20 @@ License: You must have a valid license purchased only from themeforest(the above
                 data = row[data];
                 return data;
             }
+
+            function getisRealCheckboxValue(){
+                var sdata = 0;
+                var isChecked = $('#isReal').prop('checked');   
+
+                if (isChecked)
+                    sdata = 1   
+                
+                return sdata;            
+            }
             $(document).ready(function() {
+
+
+
                 $("#sample_1").dataTable(
                     {
                         "sScrollX": "100%",
@@ -930,11 +952,13 @@ License: You must have a valid license purchased only from themeforest(the above
                                     "uuid"        : document.getElementById('id_uid').value,
                                     "book__isbn"  : document.getElementById('isbn').value,
                                     "book__name"  : document.getElementById('book').value,
+                                    "isReal"      : getisRealCheckboxValue(),
                                     });
                             }
                         },
                         "columns": [
                             { data: 'uuid' },
+                            { data: 'isReal'},
                             { data: 'book.name'},
                             { data: 'book.isbn'},
                             { data: 'book.author' },
@@ -956,7 +980,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                 }
                             },
                             {
-                                'targets': 7,
+                                'targets': 8,
                                 'render': function(data, type, full, meta){
                                     data = getSelectText(data);
                                     return data;

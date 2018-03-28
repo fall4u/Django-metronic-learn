@@ -579,6 +579,15 @@ License: You must have a valid license purchased only from themeforest(the above
                                                    value={{libbook.LendAmount}} {% endif %}></div>
                                     </div>
                                     <div class="form-group">
+                                            <label class="col-md-2 control-label" for="title">isReal?</label>
+                                            <div class="col-md-4">
+                                                <div class="checkbox-list">
+                                                    <label class="checkbox-inline">
+                                                        <input type="checkbox" id="id_isReal" {% if libbook.isReal %} checked {% endif %}> </label>
+                                                </div>
+                                            </div>
+                                    </div>
+                                    <div class="form-group">
                                         <label for="id_status" class="col-md-2 control-label">Status</label>
                                         <div class="col-md-4">
                                             <select class="bs-select form-control" id="id_status">
@@ -793,6 +802,12 @@ License: You must have a valid license purchased only from themeforest(the above
             e.preventDefault();
             alert(UUID.value);
 
+            var sdata = 0;
+            var isChecked = $('#id_isReal').prop('checked');   
+
+            if (isChecked)
+                sdata = 1
+
             $.ajax({
                 url: window.location.pathname,
                 type: 'PUT',
@@ -800,6 +815,7 @@ License: You must have a valid license purchased only from themeforest(the above
                 data: {
                     uuid: document.getElementById('id_UUID').value,
                     status: document.getElementById('id_status').value,
+                    isReal: sdata,
                 },                
                 success: function() { alert('修改成功'); }
             });

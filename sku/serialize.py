@@ -70,8 +70,9 @@ class BooklistSerializer(DynamicFieldsModelSerializer):
         serialize = UploadedImageSerializer(qs, fields={'image'}, many=True)
         return serialize.data
 
-    def get_stores(self,obj):
-        return self.get_totalAmount(obj) - obj.outAmount
+    def get_stores(self, obj):
+        outbooks = obj.libbook_set.filter(status=LibBook.STATUS_OUT).count()
+        return self.get_totalAmount(obj) - outbooks
 
 
 
@@ -102,7 +103,7 @@ class LibbookSerializer(serializers.ModelSerializer):
     class Meta:
         model = LibBook
         fields = ('uuid', 'book', 'inDate', 'status', 'dueDate', 'overDays', 'LendAmount', 'pics', 'pk', 'order',
-                  'user')
+                  'user','isReal')
 
     def get_pics(self, obj):
         qs = UploadedImage.objects.all()

@@ -30,9 +30,9 @@ License: You must have a valid license purchased only from themeforest(the above
     <meta content="" name="description"/>
     <meta content="" name="author"/>
     <!-- BEGIN GLOBAL MANDATORY STYLES -->
-    <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet"
+<!--     <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet"
           type="text/css"/>
-    <link href="{% static '/global/plugins/font-awesome/css/font-awesome.min.css' %} " rel="stylesheet"
+ -->    <link href="{% static '/global/plugins/font-awesome/css/font-awesome.min.css' %} " rel="stylesheet"
           type="text/css"/>
     <link href="{% static '/global/plugins/simple-line-icons/simple-line-icons.min.css' %} " rel="stylesheet"
           type="text/css"/>
@@ -649,7 +649,22 @@ License: You must have a valid license purchased only from themeforest(the above
                                                 </select>
                                             </div>                                   
                                         </div>
-
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3">请输入数量</label>
+                                            <div class="col-md-4">
+                                                <input type="text" name="amount" id="id_amount" 
+                                                       class="form-control"
+                                                       placeholder="请输入数量"/></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label" for="title">上架?</label>
+                                            <div class="col-md-4">
+                                                <div class="checkbox-list">
+                                                    <label class="checkbox-inline">
+                                                        <input type="checkbox" id="id_online" checked value="1"> </label>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="form-group">
                                             <label class="control-label col-md-3">图片信息
                                             </label>
@@ -1367,10 +1382,34 @@ License: You must have a valid license purchased only from themeforest(the above
         }
 
 
+        function addlibbook(){
+            var sdata = 0;
+            status = document.getElementById("id_online");
+            if (status.checked)
+                sdata = 1
 
+            $.ajax({
+                type: 'post',
+                url: '/sku/libraryBook/create/',
+                dataType:"json",
+                traditional: true,
+                data:{
+                    isbn: $('#id_isbn').val(),
+                    amount:$('#id_amount').val(),
+                    online:sdata,
+                }
+            }).done(function(data){
+                alert("信息添加成功");
+                // reset form with default value                  
+            }).error(function(jqXHR, textStatus, errorThrown){
+                alert(jqXHR.responseText);
+            });
+
+        }
 
         $( document ).ready( function () {
-    
+            $('#id_amount').val(3);
+
             $('#pSelect2').select2({
               ajax: {
                 url: '/sku/category/weblist/',
@@ -1462,6 +1501,7 @@ License: You must have a valid license purchased only from themeforest(the above
                         }
                     }).done(function(data){
                         alert("信息添加成功");
+                        addlibbook();
                         // reset form with default value
                         $("#form_1")[0].reset();
                         ue.execCommand('cleardoc'); 
@@ -1474,6 +1514,8 @@ License: You must have a valid license purchased only from themeforest(the above
                         webuploaderReset();
 
                     });
+
+                    
                 }
             });
         } );

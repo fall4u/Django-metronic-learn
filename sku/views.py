@@ -688,7 +688,29 @@ class restaddBook(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(['POST'])
+@authentication_classes((SessionAuthentication,BasicAuthentication))
+@permission_classes((IsAuthenticated,))
+def createLibbook(request, format=None):
+    isbn = request.POST['isbn']
+    amount = request.POST['amount']
+    online = request.POST['online']
 
+    print isbn,amount,online
+
+    book = Book.objects.get_or_none(isbn=isbn)
+    if book:
+        for i in range(int(amount)):
+            if int(online):
+                print "create online libbook "
+                book.libbook_set.create(status=LibBook.STATUS_ONLINE)
+            else:
+                print "create offline libbook"
+                book.libbook_set.create(status=LibBook.STATUS_OFFLINE)
+
+    else:
+        print "can not find book"
+    return Response({"status":"OK"},status=status.HTTP_201_CREATED)
 
 @api_view(['GET', 'POST'])
 @authentication_classes((SessionAuthentication, BasicAuthentication))

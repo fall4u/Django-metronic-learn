@@ -134,10 +134,11 @@ class LibBook(models.Model):
     dueDate = models.DateField(blank=True, null=True)
     overDays = models.PositiveIntegerField(default=0)
     LendAmount = models.PositiveIntegerField(default=0)
+    isReal = models.PositiveIntegerField(default=0)
 
 
     def __unicode__(self):
-        return "%s %s %s" %(self.book.name , self.inDate.strftime('%Y-%m-%d'), str(self.uuid))
+        return "%s %s %s isReal: %d" %(self.book.name , self.inDate.strftime('%Y-%m-%d'), str(self.uuid), self.isReal)
 
 
 class Banner(models.Model):

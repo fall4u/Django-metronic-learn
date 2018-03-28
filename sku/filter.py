@@ -21,4 +21,4 @@ class LibBookFilter(django_filters.FilterSet):
 
     class Meta:
         model = LibBook
-        fields = {'book__name', 'uuid', 'status', 'book__isbn'}
+        fields = {'book__name', 'uuid', 'status', 'book__isbn','isReal'}
