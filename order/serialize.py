@@ -66,14 +66,10 @@ class OrderGoodsDetailSerializer(DynamicFieldsModelSerializer):
     #获得可用库存数量
     def get_available(self, obj):
         avail = obj.sku.libbook_set.filter(status="1").count()
-        print "avail = %d"%(avail)
         return avail
     #获得实际库存数量
     def get_inStock(self, obj):
         store = obj.sku.libbook_set.count()
-        print obj.sku.libbook_set
-        print obj.sku
-        print "--- get_inStock ---"
         return store
 
 class ChoicesField(serializers.Field):

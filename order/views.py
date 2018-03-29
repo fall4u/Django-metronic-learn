@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from datetime import timedelta, datetime
 
+from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
@@ -12,6 +13,7 @@ from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListAPIView, R
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from sku.models import LibBook
 from .models import Order
 from .serialize import OrderSerializer
 from .tasks import cancel_order
@@ -34,10 +36,19 @@ class order(RetrieveUpdateDestroyAPIView):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             print "valid"
+            # is user allowed to borrow books
+            # check libbook stores
+            print request.data
+
+            with transaction.atomic():
+                ret = LibBook.acquire_books(request.data['goods'])
+                if not ret:
+                    return Response({"status":"not enough books"}, status=status.HTTP_400_BAD_REQUEST)
+
             serializer.save(user=request.user.profile)
             orderId = serializer.data['pk']
-            #auto delete non pay orders in 5 minutes
-            cancel_order.apply_async(args=[orderId], eta=datetime.now()+timedelta(seconds=300))
+            # auto delete non pay orders in 5 minutes
+            cancel_order.apply_async(args=[orderId], eta=datetime.utcnow()+timedelta(seconds=300))
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 

@@ -139,6 +139,49 @@ class LibBook(models.Model):
 
     def __unicode__(self):
         return "%s %s %s isReal: %d" %(self.book.name , self.inDate.strftime('%Y-%m-%d'), str(self.uuid), self.isReal)
+    @classmethod
+    def acquire_books(cls, books):
+        ret = 0
+        for item in books:
+            print item
+            amount =  item['amount']
+            if amount > cls.objects.select_for_update().filter(book__isbn=item['isbn']).filter(status=LibBook.STATUS_ONLINE).count():
+                return ret 
+
+        for item in books:
+            amount = item['amount']
+            for i in range(amount):
+                instance = cls.objects.select_for_update().filter(book__isbn=item['isbn']).filter(status=LibBook.STATUS_ONLINE).first()
+                if instance:
+                    instance.status = LibBook.STATUS_BOOKED
+                    instance.save()
+        ret = 1
+
+        return ret
+    @classmethod
+    def release_books(cls, books):
+        print "+++ release books +++"
+        ret = 0
+        for item in books:
+            print item.amount
+            print item.sku.name
+            print item.sku.isbn
+            isbn = item.sku.isbn
+            if item.amount > cls.objects.select_for_update().filter(book__isbn=isbn).filter(status=LibBook.STATUS_BOOKED).count():
+                print "error: this could not happen"
+                return ret
+
+        for item in books:
+            amount = item.amount
+            isbn =item.sku.isbn
+            for i in range(amount):
+                instance = cls.objects.select_for_update().filter(book__isbn=isbn).filter(status=LibBook.STATUS_BOOKED).first()
+                if instance:
+                    instance.status = LibBook.STATUS_ONLINE
+                    instance.save()
+        ret = 1
+        print "--- release books ---"
+        return 
 
 
 class Banner(models.Model):

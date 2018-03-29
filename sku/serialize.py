@@ -59,8 +59,6 @@ class BooklistSerializer(DynamicFieldsModelSerializer):
 
     def get_totalAmount(self, obj):
         store = obj.libbook_set.count()
-        if store < 3:
-            store = 3
         return store
 
     def get_pics(self, obj):
@@ -71,8 +69,8 @@ class BooklistSerializer(DynamicFieldsModelSerializer):
         return serialize.data
 
     def get_stores(self, obj):
-        outbooks = obj.libbook_set.filter(status=LibBook.STATUS_OUT).count()
-        return self.get_totalAmount(obj) - outbooks
+        books = obj.libbook_set.filter(status=LibBook.STATUS_ONLINE).count()
+        return books
 
 
 
