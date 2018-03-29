@@ -61,6 +61,14 @@ class order(RetrieveUpdateDestroyAPIView):
             pk = self.request.data.get('pk', '')
         return get_object_or_404(self.get_queryset(), pk=pk)
 
+    # api for wx users to delete a order
+    def delete(self, request, *args, **kwargs):
+        instance = self.get_object()
+        with transaction.atomic():
+            if instance:
+                LibBook.release_books(instance.ordergoodsdetail_set.all())
+            
+        return self.destroy(request, *args, **kwargs)
 
 class orderList(ListAPIView):
     '''
