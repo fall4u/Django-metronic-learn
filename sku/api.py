@@ -5,7 +5,8 @@ from datetime import date
 
 import django.dispatch
 from django.dispatch import receiver
-from rest_framework import status, generics
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import status, generics, filters
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication, TokenAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -177,3 +178,36 @@ class wxcategoryList(generics.ListAPIView):
     serializer_class = CategorySerializer
 
 
+
+class listCoupon(generics.ListAPIView):
+    '''
+    api used for wx index page to get book list
+    '''
+
+
+    queryset = Coupon.objects.all()
+    serializer_class = CouponSerializer
+
+    filter_backends = (filters.OrderingFilter, DjangoFilterBackend)
+
+    #Auth and permission
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    ordering_fields = ('createTime')
+    ordering = ['-createTime', ]
+
+    def get_queryset(self):
+        qs = self.queryset.filter(users=self.request.user.profile)
+        return qs
+
+
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        r = {
+            "code" : 0,
+            "msg"  : "OK",
+            "data" : self.get_serializer(queryset,many=True).data
+        }
+        return Response(r)

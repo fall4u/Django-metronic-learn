@@ -86,20 +86,6 @@ class orderList(ListAPIView):
     ordering = ['-createTime', ]
     filter_fields = ('status',)
 
-    # def list(self, request, *args, **kwargs):
-    # 	status = request.GET.get('status', '')
-    #     print status
-    #     if status:
-    #         qs = self.get_queryset().filter(user=request.user.profile)
-    #         print qs
-    #         print qs.count()
-    #         print status
-    #         qs = qs.filter(status=status)
-    #         print qs
-    #         print qs.count()
-    #         serialize = self.get_serializer(qs, many=True)
-    #         return Response(serialize.data)
-    #     return Response("fail", status=status.HTTP_400_BAD_REQUEST)
     def get_queryset(self):
         qs = self.queryset.filter(user=self.request.user.profile)
         return qs

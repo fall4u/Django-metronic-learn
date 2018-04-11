@@ -66,6 +66,7 @@ urlpatterns = [
     url(r'^coupons/$', views.coupons_page, name='CouponsPage'),
     url(r'^coupons/query/$', views.CouponsQuery.as_view(), name='couponQuery'),
     url(r'^coupons/api/get/$', api.getCoupon.as_view(), name='getCoupon'),
+    url(r'^coupons/api/list/$', api.listCoupon.as_view(), name='listCoupon'),
     #url(r'^coupons/api/list/$', api.listCoupon, name='listCoupon'),
 
 ]

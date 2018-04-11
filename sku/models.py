@@ -254,6 +254,7 @@ class Coupon(models.Model):
     status    = models.CharField(choices=STATUS_S, default=STATUS_UNUSE, max_length=2)
     amount    = models.DecimalField(default=0.00, max_digits=6, decimal_places=2)
     uuid      = models.UUIDField(default=uuid.uuid4, null=False)
+    createTime = models.DateTimeField(auto_now_add=True)
 
     # Relations
     users =  models.ForeignKey(Profile, on_delete=models.CASCADE)
