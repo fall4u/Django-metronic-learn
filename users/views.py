@@ -92,6 +92,12 @@ class UserList(ListAPIView):
         print serializer.data
         return Response(serializer.data)
 
+@api_view(['GET'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
+def notice(request):
+    return render(request, 'p_notice.html')
+
 
 @api_view(['GET'])
 @authentication_classes((SessionAuthentication, BasicAuthentication))

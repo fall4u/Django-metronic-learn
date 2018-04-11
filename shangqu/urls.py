@@ -33,6 +33,8 @@ urlpatterns = [
     url(r'^$', users_views.loginView.as_view()),
 #    url(r'index/$', users_views.index, name='index'),
     url(r'index/$', users_views.Statistics.as_view(), name='index'),
+    url(r'notice/$', users_views.notice, name='wxnotice'),
+
     url(r'user/',include('users.urls')),
     url(r'statistics/order/$', users_views.StatisticsOrder.as_view(),name="statisticsOrder"),
     url(r'statistics/users/$', users_views.StatisticsUsers.as_view(), name="statisticsUsers"),

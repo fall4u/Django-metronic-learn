@@ -1,23 +1,48 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from datetime import date
+
 import django.dispatch
 from django.dispatch import receiver
 from rest_framework import status, generics
-from rest_framework.authentication import BasicAuthentication, SessionAuthentication
+from rest_framework.authentication import BasicAuthentication, SessionAuthentication, TokenAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 
-from sku.models import Book, Banner, Category
+from sku.models import Book, Banner, Category, Coupon
 from users.models import SearchInfo
-from .serialize import JsonResponseSerializer, BooklistSerializer, CategorySerializer
+from .serialize import JsonResponseSerializer, BooklistSerializer, CategorySerializer, CouponSerializer
+from .tools import create_discount
 
 userSearchSignal = django.dispatch.Signal(providing_args=["info","user"])
 
 
 
+class getCoupon(generics.CreateAPIView):
+    '''
+    api used for wx user to get coupon after share to others
+        coupon amount is random 
+    '''
+
+    queryset = Coupon.objects.all()
+    serializer_class = CouponSerializer
+
+    # Auth and permission
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
+        qs = Coupon.objects.filter(users=request.user.profile).filter(startTime = date.today())
+        if qs.count() == 0:
+            discount = create_discount(1,48)
+            instance = Coupon.objects.create(name = "shareCoupon", users= request.user.profile, startTime = date.today() , endTime = date.today(), amount = discount )
+        else:
+            print "this user already get coupon today"
+            return Response({"detail": "already get today"}, status = status.HTTP_400_BAD_REQUEST)
+        return Response(self.get_serializer(instance).data, status=status.HTTP_201_CREATED)
 
 
 class libraryBookList(generics.ListAPIView):

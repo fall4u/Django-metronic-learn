@@ -6,8 +6,10 @@ import uuid
 from django.db import models
 from django.db.models import Max
 
+from users.models import Profile
 
-#from order.models import Order
+
+# from order.models import Order
 
 
 # Create your models here.
@@ -28,10 +30,10 @@ class GetOrNoneManager(models.Manager):
 
 
 class Category(models.Model):
-    name  = models.CharField(max_length=48)
+    name = models.CharField(max_length=48)
     objects = GetOrNoneManager()
 
-    #ording
+    # ording
     s = models.PositiveIntegerField(editable=False, db_index=True)
 
     class Meta:
@@ -79,8 +81,6 @@ class Category(models.Model):
         super(Category, self).save(*args, **kwargs)
 
 
-
-
 class Book(models.Model):
     name = models.CharField(max_length=128)
     isbn = models.IntegerField(primary_key=True, unique=True)
@@ -95,22 +95,19 @@ class Book(models.Model):
     # Relations
     cid = models.ManyToManyField(Category)
 
-
     objects = GetOrNoneManager()
-
 
     def __unicode__(self):
         return "%s %d" % (self.name, self.isbn)
 
 
-
 class LibBook(models.Model):
-    STATUS_ALL     = ''
-    STATUS_ONLINE  = '1'
+    STATUS_ALL = ''
+    STATUS_ONLINE = '1'
     STATUS_OFFLINE = '2'
-    STATUS_OUT     = '4'
-    STATUS_BOOKED  = '5'
-    STATUS_BROKEN  = '6'
+    STATUS_OUT = '4'
+    STATUS_BOOKED = '5'
+    STATUS_BROKEN = '6'
     STATUS_DUEDATE = '7'
     STATUS_CHOICES = (
         (STATUS_ALL, 'all'),
@@ -122,7 +119,7 @@ class LibBook(models.Model):
         (STATUS_DUEDATE, 'overdue'),
     )
     # Relations
-    book = models.ForeignKey(Book, on_delete=models.PROTECT,null=False)
+    book = models.ForeignKey(Book, on_delete=models.PROTECT, null=False)
     from order.models import Order
     order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True, blank=True)
     # Attributes
@@ -136,52 +133,53 @@ class LibBook(models.Model):
     LendAmount = models.PositiveIntegerField(default=0)
     isReal = models.PositiveIntegerField(default=0)
 
-
     def __unicode__(self):
-        return "%s %s %s isReal: %d" %(self.book.name , self.inDate.strftime('%Y-%m-%d'), str(self.uuid), self.isReal)
+        return "%s %s %s isReal: %d" % (self.book.name, self.inDate.strftime('%Y-%m-%d'), str(self.uuid), self.isReal)
+
     @classmethod
     def acquire_books(cls, books):
         ret = 0
         for item in books:
-            print item
-            amount =  item['amount']
-            if amount > cls.objects.select_for_update().filter(book__isbn=item['isbn']).filter(status=LibBook.STATUS_ONLINE).count():
-                return ret 
+            amount = item['amount']
+            if amount > cls.objects.select_for_update().filter(book__isbn=item['isbn']).filter(
+                    status=LibBook.STATUS_ONLINE).count():
+                return ret
 
         for item in books:
             amount = item['amount']
             for i in range(amount):
-                instance = cls.objects.select_for_update().filter(book__isbn=item['isbn']).filter(status=LibBook.STATUS_ONLINE).first()
+                instance = cls.objects.select_for_update().filter(book__isbn=item['isbn']).filter(
+                    status=LibBook.STATUS_ONLINE).first()
                 if instance:
-                    instance.status = LibBook.STATUS_BOOKED
+                    instance.status = LibBook.STATUS_OFFLINE
                     instance.save()
         ret = 1
 
         return ret
+
     @classmethod
     def release_books(cls, books):
         print "+++ release books +++"
         ret = 0
         for item in books:
-            print item.amount
-            print item.sku.name
-            print item.sku.isbn
             isbn = item.sku.isbn
-            if item.amount > cls.objects.select_for_update().filter(book__isbn=isbn).filter(status=LibBook.STATUS_BOOKED).count():
+            if item.amount > cls.objects.select_for_update().filter(book__isbn=isbn).filter(
+                    status=LibBook.STATUS_OFFLINE).count():
                 print "error: this could not happen"
                 return ret
 
         for item in books:
             amount = item.amount
-            isbn =item.sku.isbn
+            isbn = item.sku.isbn
             for i in range(amount):
-                instance = cls.objects.select_for_update().filter(book__isbn=isbn).filter(status=LibBook.STATUS_BOOKED).first()
+                instance = cls.objects.select_for_update().filter(book__isbn=isbn).filter(
+                    status=LibBook.STATUS_OFFLINE).first()
                 if instance:
                     instance.status = LibBook.STATUS_ONLINE
                     instance.save()
         ret = 1
         print "--- release books ---"
-        return 
+        return
 
 
 class Banner(models.Model):
@@ -237,3 +235,25 @@ class Banner(models.Model):
         super(Banner, self).save(*args, **kwargs)
 
 
+class Coupon(models.Model):
+    STATUS_ALL= ''
+    STATUS_UNUSE = '1'
+    STATUS_USED = '2'
+    STATUS_S = (
+        (STATUS_ALL, 'all'),
+        (STATUS_UNUSE, 'unuse'),
+        (STATUS_USED, 'used'),
+    )
+
+    objects = GetOrNoneManager()
+
+    name      = models.CharField(max_length=128)
+    startTime = models.DateField(null=True)
+    endTime   = models.DateField(null=True)
+    usedTime  = models.DateField(null=True)
+    status    = models.CharField(choices=STATUS_S, default=STATUS_UNUSE, max_length=2)
+    amount    = models.DecimalField(default=0.00, max_digits=6, decimal_places=2)
+    uuid      = models.UUIDField(default=uuid.uuid4, null=False)
+
+    # Relations
+    users =  models.ForeignKey(Profile, on_delete=models.CASCADE)

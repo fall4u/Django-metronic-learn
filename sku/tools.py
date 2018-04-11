@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import os
+import random
 import urllib
 
 from django.conf import settings
@@ -25,3 +26,24 @@ def download_photo(img_url, filename):
     except:
         return False
     return True
+
+
+def countIndexNumer(idx):
+    #y = 1 * np.exp(-1  * idx)
+    idx = idx + 1
+    y = 100 / idx 
+    return y
+
+def create_discount(minNum, maxNum):
+    amount = []
+    idx = 0
+    maxNum = maxNum + 1
+    for i in range(1,maxNum):
+        j = i 
+        num = int(countIndexNumer(j))
+        for j in range(num):
+            amount.append(i)
+
+    idx = random.randint(0, len(amount) - 1)
+    ret =  amount[idx]
+    return float(ret)/10

@@ -27,11 +27,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from sku.models import Book, LibBook, Banner, Category
+from sku.models import Book, LibBook, Banner, Category, Coupon
 from uploadimages.models import UploadedImage
 from .filter import BookFilter, LibBookFilter
 from .form import UploadFileForm, bookAddForm, libBookAddForm
-from .serialize import BannerSerializer, BooklistSerializer, LibbookSerializer, CategorySerializer
+from .serialize import BannerSerializer, BooklistSerializer, LibbookSerializer, CategorySerializer, CouponSerializer
 from .tools import download_photo
 
 
@@ -410,6 +410,48 @@ class libBookQuery(generics.ListAPIView):
     filter_fields = ('status', 'book__isbn',)
 
 
+@api_view(['GET'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
+def coupons_page(request, format=None):
+    if request.method == "GET":
+        return render(request, 'p_coupons.html')
+
+
+class CouponsQuery(generics.ListAPIView):
+    queryset = Coupon.objects.all()
+    serializer_class = CouponSerializer
+
+    authentication_classes = ( BasicAuthentication, SessionAuthentication)
+    permission_classes = (IsAuthenticated,)
+
+    def list(self, request, *args, **kwargs):
+        objects = Coupon.objects.all()
+
+        recordsTotal = objects.count()
+        recordsFiltered = recordsTotal
+
+        start = int(request.GET['start'])
+        length = int(request.GET['length'])
+        draw = int(request.GET['draw'])
+
+        # filter objects according to user inputs
+
+        objects = objects[start:(start + length)]
+
+        serializer = self.get_serializer(objects, many=True)
+        # dic = [obj.as_dict() for obj in objects]
+
+
+        resp = {
+            'draw': draw,
+            'recordsTotal': recordsTotal,
+            'recordsFiltered': recordsFiltered,
+            'data': serializer.data,
+        }
+
+        return HttpResponse(json.dumps(resp), content_type="application/json")
+
 class libbookUpdate(generics.RetrieveUpdateDestroyAPIView):
     # Get /Update /Delete a libbook
     queryset = LibBook.objects.all()
@@ -746,3 +788,6 @@ class webCategoryList(generics.ListAPIView):
     serializer_class = CategorySerializer
     authentication_classes = (BasicAuthentication, SessionAuthentication)
     permission_classes = (IsAuthenticated,)
+
+
+
