@@ -20,7 +20,7 @@ from django.views import generic
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.edit import DeleteView
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import generics, renderers, status
+from rest_framework import generics, renderers, status, filters
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication, TokenAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -425,8 +425,14 @@ class CouponsQuery(generics.ListAPIView):
     authentication_classes = ( BasicAuthentication, SessionAuthentication)
     permission_classes = (IsAuthenticated,)
 
+
+    filter_backends = (filters.OrderingFilter, DjangoFilterBackend)
+    ordering_fields = ('createTime')
+    ordering = ['-createTime', ]
+
     def list(self, request, *args, **kwargs):
         objects = Coupon.objects.all()
+        objects = self.filter_queryset(objects)
 
         recordsTotal = objects.count()
         recordsFiltered = recordsTotal
@@ -438,6 +444,7 @@ class CouponsQuery(generics.ListAPIView):
         # filter objects according to user inputs
 
         objects = objects[start:(start + length)]
+
 
         serializer = self.get_serializer(objects, many=True)
         # dic = [obj.as_dict() for obj in objects]
