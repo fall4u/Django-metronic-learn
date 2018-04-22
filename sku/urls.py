@@ -15,7 +15,7 @@ urlpatterns = [
     #  book query 
     url(r'^book/query/$', views.books.as_view(), name='books'),
 
-    # get book information from douban v2.api
+    # get book information from douban v2. 
     url(r'^book/getinfo/$', views.getBookInfo.as_view(),name='getBookinfo_douban'),
 
     # add book 
@@ -69,4 +69,13 @@ urlpatterns = [
     url(r'^coupons/api/list/$', api.listCoupon.as_view(), name='listCoupon'),
     #url(r'^coupons/api/list/$', api.listCoupon, name='listCoupon'),
 
+    # Notice related 
+    url(r'^notices/create/$', views.CreateNotice.as_view(), name="CreateNotice"),
+    url(r'^notices/list/$', views.ListNotice.as_view(), name="ListNotice"),
+    url(r'^notices/delete/(?P<pk>\d+)/$', views.DeleteNotice.as_view(), name="DeleteNotice"),
+    url(r'^notices/api/move_up/(?P<pk>\d+)/$', api.noticesMoveUp, name="NoticeMoveUp"),
+    url(r'^notices/api/move_down/(?P<pk>\d+)/$', api.noticesMoveDown, name="NoticeMoveDown"),
+    url(r'^notices/api/list/$', api.ListNotice.as_view(), name="apiListNotice"),
+
+   
 ]

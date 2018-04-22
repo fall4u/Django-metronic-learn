@@ -27,11 +27,12 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from sku.models import Book, LibBook, Banner, Category, Coupon
+from sku.models import Book, LibBook, Banner, Category, Coupon, Notice
 from uploadimages.models import UploadedImage
 from .filter import BookFilter, LibBookFilter
 from .form import UploadFileForm, bookAddForm, libBookAddForm
-from .serialize import BannerSerializer, BooklistSerializer, LibbookSerializer, CategorySerializer, CouponSerializer
+from .serialize import BannerSerializer, BooklistSerializer, LibbookSerializer, CategorySerializer, CouponSerializer, \
+    NoticeSerializer
 from .tools import download_photo
 
 
@@ -793,6 +794,33 @@ class category(generics.RetrieveUpdateDestroyAPIView):
 class webCategoryList(generics.ListAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    authentication_classes = (BasicAuthentication, SessionAuthentication)
+    permission_classes = (IsAuthenticated,)
+
+
+
+
+class CreateNotice(generics.CreateAPIView):
+    # Create Notice for admin
+    queryset = Notice.objects.all()
+    serializer_class = NoticeSerializer
+
+    authentication_classes = (BasicAuthentication, SessionAuthentication)
+    permission_classes = (IsAuthenticated,)
+
+class ListNotice(generics.ListAPIView):
+    # list notices for admin  
+    queryset = Notice.objects.all()
+    serializer_class = NoticeSerializer
+
+    authentication_classes = (BasicAuthentication, SessionAuthentication)
+    permission_classes = (IsAuthenticated,)
+
+class DeleteNotice(generics.DestroyAPIView):
+    # Delete a notice for admin 
+    queryset = Notice.objects.all()
+    serializer_class = NoticeSerializer
+
     authentication_classes = (BasicAuthentication, SessionAuthentication)
     permission_classes = (IsAuthenticated,)
 

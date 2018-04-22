@@ -5,7 +5,7 @@ from rest_framework import serializers
 
 from uploadimages.models import UploadedImage
 from uploadimages.serialize import UploadedImageSerializer
-from .models import Book, Banner, LibBook, Category, Coupon
+from .models import Book, Banner, LibBook, Category, Coupon, Notice
 
 
 class DynamicFieldsModelSerializer(serializers.ModelSerializer):
@@ -132,6 +132,14 @@ class JsonResponseSerializer(serializers.Serializer):
     code = serializers.IntegerField()
     msg = serializers.CharField()
     data = serializers.JSONField(required=False)
+
+class NoticeSerializer(DynamicFieldsModelSerializer):
+    image = serializers.ImageField(use_url=True)
+    createTime   = serializers.DateTimeField(read_only=True, format="%Y-%m-%d %H:%M:%S")
+
+    class Meta:
+        model = Notice
+        fields = ('name','image','status','createTime','pk')
 
 class CouponSerializer(serializers.ModelSerializer):
 

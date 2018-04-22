@@ -13,9 +13,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 
-from sku.models import Book, Banner, Category, Coupon
+from sku.models import Book, Banner, Category, Coupon, Notice
 from users.models import SearchInfo
-from .serialize import JsonResponseSerializer, BooklistSerializer, CategorySerializer, CouponSerializer
+from .serialize import JsonResponseSerializer, BooklistSerializer, CategorySerializer, CouponSerializer, \
+    NoticeSerializer
 from .tools import create_discount
 
 userSearchSignal = django.dispatch.Signal(providing_args=["info","user"])
@@ -211,3 +212,39 @@ class listCoupon(generics.ListAPIView):
             "data" : self.get_serializer(queryset,many=True).data
         }
         return Response(r)
+
+
+@api_view(['POST'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
+def noticesMoveDown(request, *args, **kwargs):
+    pk = kwargs.pop('pk')
+    notice = Notice.objects.get_or_none(pk=pk)
+    if notice:
+        notice.down()
+        return Response({"code": 0, "msg": "OK", "data": []}, status=status.HTTP_200_OK)
+    else:
+        return Response({"code": 400, "msg": "banner not found", "data": []}, status=status.HTTP_400_BAD_REQUEST)
+
+    return Response({"code": 400, "msg": "fail", "data": []}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
+def noticesMoveUp(request,*args, **kwargs):
+    pk = kwargs.pop('pk')
+    notice = Notice.objects.get_or_none(pk=pk)
+    if notice:
+        notice.up()
+        return Response({"code": 0, "msg": "OK", "data": []}, status=status.HTTP_200_OK)
+    else:
+        return Response({"code": 400, "msg": "banner not found", "data": []}, status=status.HTTP_400_BAD_REQUEST)
+
+    return Response({"code": 400, "msg": "fail", "data": []}, status=status.HTTP_400_BAD_REQUEST)
+
+class ListNotice(generics.ListAPIView):
+    # list notices for admin  
+    queryset = Notice.objects.all()
+    serializer_class = NoticeSerializer
+
