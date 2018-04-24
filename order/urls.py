@@ -23,4 +23,5 @@ urlpatterns = [
     url(r'^outbooks/$', webviews.webOutbooksPage, name='webOutbooksPage'),
     url(r'^outbooks/list/$', webviews.webOutbooksList.as_view(), name='webOutbooksList'),
 
+
 ]
