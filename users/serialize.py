@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from rest_framework import serializers
 
-from .models import Address, Profile, Province, City, Distinct, SearchInfo
+from .models import Address, Profile, Province, City, Distinct, SearchInfo, RequestBookInfo
 
 
 class DynamicFieldsModelSerializer(serializers.ModelSerializer):
@@ -74,3 +74,11 @@ class SearchInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = SearchInfo
         fields = ('user', 'info','time')
+
+class RequestBookInfoSerializer(serializers.ModelSerializer):
+    createTime = serializers.DateTimeField(read_only=True, format="%Y-%m-%d %H:%M:%S")
+    user = UserProfileSerializer()
+
+    class Meta: 
+        model = RequestBookInfo
+        fields = ('name','author','createTime','status', 'formId','user')

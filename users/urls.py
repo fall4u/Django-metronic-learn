@@ -19,4 +19,9 @@ urlpatterns = [
     url(r'^searchinfo/$', views.searchInfo, name='searchInfo'),
     url(r'^searchinfo/list/$', views.searchInfoList.as_view(), name='userSearchInfoList'),
 
+    # user request book info 
+    url(r'^request/$', views.requestbook_page, name='requestbookPage'),
+    url(r'^requestbookinfo/api/create/$', views.userRequestBook.as_view(), name='userRequestBook'),
+    url(r'^request/list/$', views.requestbooklist.as_view(), name='userRequestBook'),
+
 ]

@@ -1,18 +1,21 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import json
 import time
 from datetime import datetime, timedelta
 
 from django.contrib.auth import authenticate, login
 from django.http import Http404
+from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import generic
-from rest_framework import renderers, status
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import renderers, status, filters
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
-from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView, RetrieveAPIView
+from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView, RetrieveAPIView, RetrieveUpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -20,8 +23,8 @@ from order.models import Order
 # Create your views here.
 from .cons import Constant
 from .form_user_login import UserForm
-from .models import Profile, Address, SearchInfo
-from .serialize import UserProfileSerializer, AddressSerializer, SearchInfoSerializer
+from .models import Profile, Address, SearchInfo, RequestBookInfo
+from .serialize import UserProfileSerializer, AddressSerializer, SearchInfoSerializer, RequestBookInfoSerializer
 from .wxapp import WXAppData
 
 
@@ -344,4 +347,90 @@ class StatisticsUsers(RetrieveAPIView):
         }
 
         return Response(ret, status=status.HTTP_200_OK)
+
+class userRequestBook(RetrieveUpdateAPIView):
+    '''
+    for weixin user to request book which we do not have 
+    '''
+    queryset = RequestBookInfo.objects.all()
+
+    authentication_class = (BasicAuthentication,SessionAuthentication,TokenAuthentication)
+    permission_classes = (IsAuthenticated,)
+    serializer_class = RequestBookInfoSerializer
+
+        #api for wx users create a new bookrequest information
+    def put(self, request, *args, **kwargs):
+        print "+++ bookrequest put +++"
+        print request.data 
+
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            print "valid"
+            serializer.save(user=request.user.profile)
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
+def requestbook_page(request, format=None):
+    if request.method == "GET":
+        return render(request, 'p_requestbook.html')
+
+
+
+
+class requestbooklist(ListAPIView):
+    queryset = RequestBookInfo.objects.all()
+    serializer_class = RequestBookInfoSerializer
+
+    authentication_classes = ( BasicAuthentication, SessionAuthentication)
+    permission_classes = (IsAuthenticated,)
+
+
+    filter_backends = (filters.OrderingFilter, DjangoFilterBackend)
+    ordering_fields = ('createTime')
+    ordering = ['-createTime', ]
+
+    def list(self, request, *args, **kwargs):
+
+        status = request.GET['status']
+        if status:
+            objects = RequestBookInfo.objects.filter(status=status)
+        else:
+            objects = RequestBookInfo.objects.all()
+
+        objects = self.filter_queryset(objects)
+
+
+        
+
+        recordsTotal = objects.count()
+
+        recordsFiltered = recordsTotal
+
+        start = int(request.GET['start'])
+        length = int(request.GET['length'])
+        draw = int(request.GET['draw'])
+
+        # filter objects according to user inputs
+
+        objects = objects[start:(start + length)]
+
+
+        serializer = self.get_serializer(objects, many=True)
+        # dic = [obj.as_dict() for obj in objects]
+
+
+        resp = {
+            'draw': draw,
+            'recordsTotal': recordsTotal,
+            'recordsFiltered': recordsFiltered,
+            'data': serializer.data,
+        }
+
+        return HttpResponse(json.dumps(resp), content_type="application/json")
+
 

@@ -43,6 +43,23 @@ class SearchInfo(models.Model):
     info = models.TextField(null=True)
     time = models.DateTimeField(auto_now_add=True)
 
+class RequestBookInfo(models.Model):
+    STATUS_ALL= ''
+    STATUS_SEND = '1'
+    STATUS_UNSEND = '2'
+    STATUS_S = (
+        (STATUS_ALL, 'all'),
+        (STATUS_SEND, 'send'),
+        (STATUS_UNSEND, 'unsend'),
+    )
+
+    user = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True)
+    name = models.CharField(max_length=128)
+    author = models.CharField(max_length=128)
+    createTime = models.DateTimeField(auto_now_add=True)
+    formId = models.PositiveIntegerField(default = 0)
+    status    = models.CharField(choices=STATUS_S, default=STATUS_UNSEND, max_length=2)
+
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
